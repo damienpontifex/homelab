@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  labels:
+    app.kubernetes.io/name: argocd
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
+  version: 9.1.6
+  targetNamespace: argocd
+  valuesContent: |
+    server:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          ingress.kubernetes.io/ssl-redirect: "false"
+        tls: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: homelab-project
+  namespace: argocd
+spec:
+  description: Homelab Applications
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-apps
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: homelab-project
+  source:
+    path: /apps/local
+    repoURL: file:///apps
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+
