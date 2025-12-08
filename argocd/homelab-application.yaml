@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: https://github.com/damienpontifex/homelab
     path: apps/
-    targetRevision: kyverno
+    targetRevision: main
     directory:
       recurse: true
   destination:
