@@ -1,14 +1,37 @@
+.SHELLFLAGS := -o errexit -o nounset -o pipefail
+.DELETE_ON_ERROR:
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
+## help: Display available commands and their descriptions
+help:
+	@echo "Usage:"
+	@sed -n 's/^##//p' $(MAKEFILE_LIST) \
+		| sort \
+		| awk -v bold="$$(tput bold)" -v normal="$$(tput sgr0)" '{ $$1 = bold $$1 normal; print }' \
+		| column -t -s ':'
+
+## cluster: Create a k3d cluster using the configuration in k3dcluster.yaml
 .PHONY: cluster
 cluster:
-	k3d cluster create --config k3dcluster.yaml
+	k3d cluster create --config k3d/k3dcluster.yaml
 
+## update-argocd: Download the latest Argo CD installation manifest
 .PHONY: update-argocd
 update-argocd:
 	curl -L https://raw.githubusercontent.com/argoproj/argo-cd/refs/heads/master/manifests/install.yaml -o k3d/manifests/argocd-install.yaml
 
+## clean: Delete the k3d cluster defined in k3dcluster.yaml
 .PHONY: clean
 clean:
-	k3d cluster delete --config k3dcluster.yaml || true
+	k3d cluster delete --config k3d/k3dcluster.yaml || true
 
+## recreate-cluster: Recreate the k3d cluster by cleaning and then creating it
 .PHONY: recreate-cluster
 recreate-cluster: clean cluster
+
+## watch: Watch for changes in YAML files and apply them to the local Kubernetes cluster
+.PHONY: watch
+watch:
+	@[[ $$(kubectl config current-context) == 'k3d-homelab' ]] || (echo "Error: kubectl context is not set to 'k3d-homelab'" && exit 1)
+	watchexec --exts yaml kubectl kustomize --enable-helm apps/local

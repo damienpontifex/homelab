@@ -13,10 +13,6 @@ volumes:
   - volume: ${PWD}/k3d/manifests:/var/lib/rancher/k3s/server/manifests/homlab-bootstrap
     nodeFilters:
       - "server:*"
-  # ArgoCD Applications
-  - volume: ${PWD}:/apps
-    # nodeFilters:
-    #   - "*"
 ports:
   - port: 8080:80 # same as `--port '8080:80@loadbalancer'`
     nodeFilters:
