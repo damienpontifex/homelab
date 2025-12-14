@@ -16,11 +16,6 @@ help:
 cluster:
 	k3d cluster create --config k3d/k3dcluster.yaml
 
-## update-argocd: Download the latest Argo CD installation manifest
-.PHONY: update-argocd
-update-argocd:
-	curl -L https://raw.githubusercontent.com/argoproj/argo-cd/refs/heads/master/manifests/install.yaml -o k3d/manifests/argocd-install.yaml
-
 ## clean: Delete the k3d cluster defined in k3dcluster.yaml
 .PHONY: clean
 clean:
