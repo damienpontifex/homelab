@@ -17,9 +17,19 @@ spec:
   version: 9.1.6
   targetNamespace: argocd
   valuesContent: |
+    global:
+      domain: localhost
+    configs:
+      params:
+        # Disable HTTPS for simplicity in local dev
+        server.insecure: true
     server:
+      extraArgs:
+        - --rootpath=/argocd
+        - --basehref=/argocd/
       ingress:
         enabled: true
+        path: /argocd
         ingressClassName: traefik
         annotations:
           ingress.kubernetes.io/ssl-redirect: "false"
