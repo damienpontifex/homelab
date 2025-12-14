@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    chart: kyverno
+    chart: kube-prometheus-stack
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 61.3.2
