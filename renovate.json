@@ -3,10 +3,23 @@
   "extends": [
     "config:recommended"
   ],
+  "enabledManagers": [
+    "regex"
+  ],
   "argocd": {
     "managerFilePatterns": [
       "**/*-application.yaml",
       "**/application.yaml"
     ]
-  }
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) registryUrl=(?<registryUrl>\\S+) depName=(?<depName>\\S+)\\s+version: (?<currentValue>.*)"
+      ]
+    }
+  ]
 }
