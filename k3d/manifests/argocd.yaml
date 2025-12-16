@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: argocd
 ---
+# yaml-language-server: $schema=
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
