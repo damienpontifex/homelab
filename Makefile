@@ -11,11 +11,13 @@ recreate-cluster: clean cluster
 .PHONY: cluster
 cluster:
 	k3d cluster create --config k3d/k3dcluster.yaml
+	docker compose --file cloudflare-tunnel-compose.yaml up --detach
 
 ## clean: Delete the k3d cluster defined in k3dcluster.yaml
 .PHONY: clean
 clean:
 	k3d cluster delete --config k3d/k3dcluster.yaml || true
+	docker compose --file cloudflare-tunnel-compose.yaml down --remove-orphans --volumes || true
 
 ## watch: Watch for changes in YAML files and apply them to the local Kubernetes cluster
 .PHONY: watch

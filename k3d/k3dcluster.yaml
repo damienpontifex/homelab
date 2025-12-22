@@ -3,12 +3,30 @@ apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:
   name: homelab
+kubeAPI:
+  hostPort: "6443"
 options:
   k3d:
     wait: true
   kubeconfig:
     updateDefaultKubeconfig: true
     switchCurrentContext: true
+  k3s:
+    extraArgs:
+      - arg: --kube-apiserver-arg=anonymous-auth=true
+        nodeFilters:
+          - "server:*"
+      - arg: --kube-apiserver-arg=service-account-issuer=https://homelab.pontifex.dev
+        nodeFilters:
+          - "server:*"
+      - arg: --kube-apiserver-arg=service-account-jwks-uri=https://homelab.pontifex.dev/openid/v1/jwks
+        nodeFilters:
+          - "server:*"
+          # - arg: --kube-apiserver-arg=oidc-issuer-url=https://sts.windows.net/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/
+          # - arg: --kube-apiserver-arg=oidc-client-id=71b2438a-ea2b-4e75-abae-1ef1b1659677
+          # - arg: --kube-apiserver-arg=oidc-username-claim=email
+          # - arg: --kube-apiserver-arg=oidc-groups-claim=groups
+          # - arg: "--kube-apiserver-arg=oidc-groups-prefix=azure:"
 volumes:
   - volume: ${PWD}/k3d/manifests:/var/lib/rancher/k3s/server/manifests/homlab-bootstrap
     nodeFilters:
