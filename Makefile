@@ -31,3 +31,9 @@ help:
 		| awk -v bold="$$(tput bold)" -v normal="$$(tput sgr0)" '{ $$1 = bold $$1 normal; print }' \
 		| column -t -s ':'
 
+## azure: Deploy secret infrastructure to azure
+azure:
+	az deployment group create \
+		--resource-group homelab \
+		--template-file apps/secrets.bicep \
+		--name homelab

@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: azure-workload-identity
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: azure-workload-identity
+    # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook
+    repoURL: https://azure.github.io/azure-workload-identity/charts
+    targetRevision: 1.5.1
+    helm:
+      releaseName: workload-identity-webhook
+      valuesObject:
+        azureTenantID: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: azure-workload-identity-system
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+

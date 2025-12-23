@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: external-secrets
+    # https://artifacthub.io/packages/helm/external-secrets-operator/external-secrets
+    repoURL: https://charts.external-secrets.io
+    targetRevision: 1.2.0
+    helm:
+      releaseName: external-secrets
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: external-secrets
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+
