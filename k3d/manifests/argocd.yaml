@@ -15,7 +15,7 @@ spec:
   # https://artifacthub.io/packages/helm/argo-cd-oci/argo-cd
   chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
   # renovate: datasource=helm registryUrl=https://argoproj.github.io/argo-helm depName=argo-cd
-  version: 9.1.9
+  version: 9.2.0
   targetNamespace: argocd
   valuesContent: |
     global:
