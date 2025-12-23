@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: unpoller
+
+namespace: unpoller
+
+resources:
+  - namespace.yaml
+  - secretstore.yaml
+  - externalsecret.yaml
+
+helmCharts:
+  - name: unpoller
+    repo: https://unpoller.github.io/helm-chart
+    version: 2.11.2-Chart6
+    releaseName: unpoller
+    namespace: unpoller
+    valuesInline:
+      serviceAccount:
+        name: unpoller
+        automount: true
+        annotations:
+          azure.workload.identity/client-id: 70b9ec02-f96f-4b3a-b7a7-e1825bfaae63
+          azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+      # Disable dashboard creation (use existing Grafana setup)
+      dashboards:
+        create: false
+        grafana:
+          create: false
+          url: ""
+
+      # Unpoller configuration
+      # This configuration uses environment variables from the secret
+      upConfig: "[poller]\n    debug = false\n    quiet = false\n    plugins = []\n[prometheus]\n  disable = false\n  http_listen = \"0.0.0.0:9130\"\n  report_errors = false\n[influxdb]\n  disable = true\n[unifi]\n    dynamic = false\n[loki]\n    disable = true\n[[unifi.controller]]    \n    url         = \"${UNIFI_URL}\"\n    user        = \"${UNIFI_USER}\"\n    pass        = \"${UNIFI_PASSWORD}\"\n    sites       = [\"all\"]\n    save_ids    = true\n    save_dpi    = true\n    save_sites  = true\n    hash_pii    = false\n    verify_ssl  = false\n    #magic___^_^___line\n"
+
+      env:
+        - name: UNIFI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: unifi-credentials
+              key: unifi-password
+        - name: UNIFI_USER
+          valueFrom:
+            secretKeyRef:
+              name: unifi-credentials
+              key: unifi-user
+        - name: UNIFI_URL
+          valueFrom:
+            secretKeyRef:
+              name: unifi-credentials
+              key: unifi-url
