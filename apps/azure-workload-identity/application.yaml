@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    chart: azure-workload-identity
+    chart: workload-identity-webhook
     # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook
     repoURL: https://azure.github.io/azure-workload-identity/charts
     targetRevision: 1.5.1
@@ -26,5 +26,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
-

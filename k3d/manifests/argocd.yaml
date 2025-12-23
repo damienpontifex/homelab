@@ -20,10 +20,29 @@ spec:
   valuesContent: |
     global:
       domain: localhost
+      podLabels:
+        azure.workload.identity/use: "true"
     configs:
       params:
         # Disable HTTPS for simplicity in local dev
         server.insecure: true
+      cm:
+        url: http://localhost:8081/argocd
+        users.anonymous.enabled: \"true\"
+        oidc.config: |
+          name: Azure
+          issuer: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/v2.0
+          clientID: ea227ff8-7b75-4f0f-83a9-7638e949faf3
+          azure:
+            useWorkloadIdentity: true
+          requestedScopes:
+            - openid
+            - profile
+            - email
+          requestedIDTokenClaims:
+            groups:
+              essential: false
+        kustomize.buildOptions: "--enable-helm"
     server:
       extraArgs:
         - --rootpath=/argocd
@@ -35,4 +54,6 @@ spec:
         annotations:
           ingress.kubernetes.io/ssl-redirect: "false"
         tls: false
-
+      serviceAccount:
+        annotations:
+          azure.workload.identity/client-id: 8d147af7-6f35-47c9-ab7c-300c702795a5

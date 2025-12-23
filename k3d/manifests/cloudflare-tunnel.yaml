@@ -23,23 +23,32 @@ spec:
       labels:
         app.kubernetes.io/name: cloudflared
     spec:
+      securityContext:
+        sysctls:
+          # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
+          - name: net.ipv4.ping_group_range
+            value: "65532 65532"
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:latest
           command:
             - cloudflared
             - tunnel
-            - --no-autoupdate
             - run
-            - --token
-            - $(CLOUDFLARE_TUNNEL_TOKEN)
           env:
-            - name: CLOUDFLARE_TUNNEL_TOKEN
+            - name: TUNNEL_TOKEN
               valueFrom:
-                # Created by env substitution with k3d config file
                 secretKeyRef:
                   name: cloudflare-tunnel-token
                   key: token
+            - name: TUNNEL_TRANSPORT_PROTOCOL
+              value: http2
+            - name: TUNNEL_LOGLEVEL
+              value: info
+            - name: TUNNEL_METRICS
+              value: 0.0.0.0:2000
+            - name: NO_AUTOUPDATE
+              value: "true"
           resources:
             requests:
               memory: "64Mi"
@@ -48,21 +57,12 @@ spec:
               memory: "128Mi"
               cpu: "200m"
           livenessProbe:
-            exec:
-              command:
-                - cloudflared
-                - --version
+            httpGet:
+              # Cloudflared has a /ready endpoint which returns 200 if and only if
+              # it has an active connection to Cloudflare's network.
+              path: /ready
+              port: 2000
+            failureThreshold: 1
             initialDelaySeconds: 10
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 3
-          readinessProbe:
-            exec:
-              command:
-                - cloudflared
-                - --version
-            initialDelaySeconds: 5
             periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
       restartPolicy: Always
