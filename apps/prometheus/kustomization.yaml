@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: kube-prometheus-stack
+
+namespace: monitoring
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: kube-prometheus-stack
+    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 80.6.0
+    releaseName: kube-prometheus-stack
+    namespace: monitoring
+    valuesInline:
+      prometheus:
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          pathType: Prefix
+          paths:
+            - /prometheus
+          hosts:
+            - localhost
+        prometheusSpec:
+          routePrefix: /prometheus
+          retention: 15d
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 10Gi
+      grafana:
+        enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          paths:
+            - /grafana
+      alertmanager:
+        enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          paths:
+            - /alertmanager
+        alertmanagerSpec:
+          routePrefix: /alertmanager
