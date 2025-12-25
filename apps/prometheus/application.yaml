@@ -9,13 +9,21 @@ spec:
   source:
     chart: kube-prometheus-stack
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 80.4.1
+    repoURL: oci://ghcr.io/prometheus-community/charts
+    targetRevision: 80.6.0
     helm:
       releaseName: kube-prometheus-stack
       valuesObject:
         prometheus:
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            paths:
+              - /prometheus
+            hosts:
+              - localhost
           prometheusSpec:
+            routePrefix: /prometheus
             retention: 15d
             storageSpec:
               volumeClaimTemplate:
@@ -26,9 +34,21 @@ spec:
                     requests:
                       storage: 10Gi
         grafana:
-          enabled: false # We'll deploy grafana separately
+          enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            paths:
+              - /grafana
         alertmanager:
           enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            paths:
+              - /alertmanager
+          alertmanagerSpec:
+            routePrefix: /alertmanager
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
@@ -40,4 +60,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
