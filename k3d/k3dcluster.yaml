@@ -3,6 +3,8 @@ apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:
   name: homelab
+servers: 1
+agents: 1
 kubeAPI:
   hostPort: "6443"
 options:
@@ -28,9 +30,14 @@ options:
           # - arg: --kube-apiserver-arg=oidc-groups-claim=groups
           # - arg: "--kube-apiserver-arg=oidc-groups-prefix=azure:"
 volumes:
-  - volume: ${PWD}/k3d/manifests:/var/lib/rancher/k3s/server/manifests/homlab-bootstrap
+  - volume: ${PWD}/k3d/manifests:/var/lib/rancher/k3s/server/manifests/homelab-bootstrap
     nodeFilters:
       - "server:*"
+      - "agent:*"
+  - volume: ${PWD}:/workspace/argocd_repo
+    nodeFilters:
+      - "server:*"
+      - "agent:*"
 files:
   - source: |
       apiVersion: v1
@@ -41,7 +48,7 @@ files:
       type: Opaque
       stringData:
         token: "${CLOUDFLARE_TUNNEL_TOKEN}"
-    destination: /var/lib/rancher/k3s/server/manifests/homlab-config/cloudflare-tunnel/secret.yaml
+    destination: /var/lib/rancher/k3s/server/manifests/homelab-config/cloudflare-tunnel/secret.yaml
 ports:
   - port: 8081:80 # same as `--port '8080:80@loadbalancer'`
     nodeFilters:

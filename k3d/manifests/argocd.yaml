@@ -5,6 +5,34 @@ metadata:
   labels:
     app.kubernetes.io/name: argocd
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-repo
+  namespace: argocd
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /workspace/argocd_repo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-repo-claim
+  namespace: argocd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: local-repo
+---
 # yaml-language-server: $schema=
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
@@ -17,7 +45,7 @@ spec:
   # renovate: datasource=helm registryUrl=https://argoproj.github.io/argo-helm depName=argo-cd
   version: 9.2.0
   targetNamespace: argocd
-  valuesContent: |
+  valuesContent: |-
     global:
       domain: localhost
       podLabels:
@@ -26,6 +54,11 @@ spec:
       params:
         # Disable HTTPS for simplicity in local dev
         server.insecure: true
+      rbac:
+        "policy.default": role:admin
+        policy.csv: |
+          p, role:admin, applications, *, */*, allow
+          p, role:admin, appprojects, *, */*, allow
       cm:
         url: http://localhost:8081/argocd
         users.anonymous.enabled: "true"
@@ -57,3 +90,37 @@ spec:
       serviceAccount:
         annotations:
           azure.workload.identity/client-id: 8d147af7-6f35-47c9-ab7c-300c702795a5
+    repoServer:
+      volumeMounts:
+        - name: local-repo
+          mountPath: /app/config/repos/local
+          readOnly: true
+      volumes:
+        - name: local-repo
+          persistentVolumeClaim:
+            claimName: local-repo-claim
+---
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homelab
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: file:///app/config/repos/local
+    path: apps/
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
