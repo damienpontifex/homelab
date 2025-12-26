@@ -62,6 +62,8 @@ spec:
       cm:
         url: http://localhost:8081/argocd
         users.anonymous.enabled: "true"
+        # Reduce polling interval to 15 seconds for local dev
+        timeout.reconciliation: 15s
         oidc.config: |
           name: Azure
           issuer: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/v2.0
@@ -93,7 +95,7 @@ spec:
     repoServer:
       volumeMounts:
         - name: local-repo
-          mountPath: /app/config/repos/local
+          mountPath: /tmp/local-repo
           readOnly: true
       volumes:
         - name: local-repo
@@ -109,12 +111,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: file:///app/config/repos/local
+    repoURL: file:///tmp/local-repo
     path: apps/
     directory:
       recurse: true
   destination:
-    server: https://kubernetes.default.svc
+    name: in-cluster
     namespace: default
   syncPolicy:
     automated:
@@ -124,3 +126,9 @@ spec:
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
+    retry:
+      limit: 2
+      backoff:
+        duration: "5s"
+        factor: 2
+        maxDuration: "3m"

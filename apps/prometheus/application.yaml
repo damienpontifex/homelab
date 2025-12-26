@@ -9,7 +9,7 @@ spec:
   source:
     chart: kube-prometheus-stack
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    repoURL: oci://ghcr.io/prometheus-community/charts
+    repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 80.6.0
     helm:
       releaseName: kube-prometheus-stack
