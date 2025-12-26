@@ -40,6 +40,10 @@ spec:
             ingressClassName: traefik
             paths:
               - /grafana
+          operator:
+            dashboardsConfigMapRefEnabled: true
+            matchLabels:
+              grafana_dashboard: "1"
         alertmanager:
           enabled: true
           ingress:

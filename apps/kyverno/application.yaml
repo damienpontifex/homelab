@@ -13,6 +13,11 @@ spec:
     targetRevision: 3.6.1
     helm:
       releaseName: kyverno
+      valuesObject:
+        grafana:
+          enabled: true
+          grafanaDashboard:
+            enabled: true
   destination:
     name: in-cluster
     namespace: kyverno
