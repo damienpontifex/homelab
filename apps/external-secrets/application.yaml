@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: external-secrets
   destination:
-    server: "https://kubernetes.default.svc"
+    name: in-cluster
     namespace: external-secrets
   syncPolicy:
     automated:
@@ -24,5 +24,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
-

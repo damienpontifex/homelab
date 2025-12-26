@@ -11,8 +11,8 @@ spec:
     - https://github.com/damienpontifex/*
   # Allow deployment to any namespace on the cluster
   destinations:
-    - namespace: '*'
-      server: '*'
+    - namespace: "*"
+      server: "*"
 ---
 # yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
 apiVersion: argoproj.io/v1alpha1
@@ -29,7 +29,7 @@ spec:
     directory:
       recurse: true
   destination:
-    server: https://kubernetes.default.svc
+    name: in-cluster
     namespace: default
   syncPolicy:
     automated:

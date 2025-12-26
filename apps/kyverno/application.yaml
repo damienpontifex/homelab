@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: kyverno
   destination:
-    server: "https://kubernetes.default.svc"
+    name: in-cluster
     namespace: kyverno
   syncPolicy:
     automated:
@@ -24,4 +24,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
