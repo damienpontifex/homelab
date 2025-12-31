@@ -5,7 +5,7 @@
   ],
   "configMigration": true,
   "enabledManagers": [
-    "regex"
+    "custom.regex"
   ],
   "argocd": {
     "managerFilePatterns": [
@@ -13,10 +13,11 @@
       "**/application.yaml"
     ]
   },
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": [
-        "\\.ya?ml$"
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.ya?ml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) registryUrl=(?<registryUrl>\\S+) depName=(?<depName>\\S+)\\s+version: (?<currentValue>.*)"
