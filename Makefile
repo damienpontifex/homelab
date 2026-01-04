@@ -1,7 +1,8 @@
-.SHELLFLAGS := -o errexit -o nounset -o pipefail
+SHELLFLAGS := -o errexit -o nounset -o pipefail
 .DELETE_ON_ERROR:
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
+AZURE_SERVICE_TAGS_FILE := /tmp/azure-service-tags.json
 
 ## recreate-cluster: Recreate the k3d cluster by cleaning and then creating it
 .PHONY: recreate-cluster
@@ -37,3 +38,11 @@ azure:
 		--resource-group homelab \
 		--template-file apps/secrets.bicep \
 		--name homelab
+
+## download-azure-ips: Download Azure Active Directory service IPs and prepare CSV for Cloudflare
+download-azure-ips:
+	echo "value,description" > /tmp/azure-active-directory-ips.csv && \
+	az network list-service-tags --location australiaeast --query "values[?id == 'AzureActiveDirectory'].properties.addressPrefixes[]" --output tsv \
+	| awk '{print $1",AzureActiveDirectory"}' >> /tmp/azure-active-directory-ips.csv && \
+	@echo "Navigate to Cloudflare Reusable components -> Lists and create a 'AzureActiveDirectory Service IPs' list with the csv located at /tmp/azure-active-directory-ips.csv"
+	@echo "Then link that IP List to a policy and link that policy to an application"
