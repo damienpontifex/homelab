@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: cert-manager
       valuesObject:
-        crd:
+        crds:
           enabled: true
   destination:
     name: in-cluster
