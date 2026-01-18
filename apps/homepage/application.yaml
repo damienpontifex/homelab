@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homepage
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: homepage
+    # https://jameswynn.github.io/helm-charts/
+    repoURL: https://jameswynn.github.io/helm-charts
+    targetRevision: 2.1.0
+    helm:
+      releaseName: homepage
+      valuesObject:
+        image:
+          repository: ghcr.io/gethomepage/homepage
+          tag: latest
+
+        # Enable service account for Kubernetes integration
+        serviceAccount:
+          create: true
+          name: homepage
+
+        # Enable rbac for reading cluster resources
+        enableRbac: true
+
+        # Ingress configuration
+        ingress:
+          main:
+            enabled: true
+            ingressClassName: traefik
+            hosts:
+              - host: home.pontifex.dev
+                paths:
+                  - path: /
+                    pathType: Prefix
+
+        # ConfigMaps for Homepage configuration
+        config:
+          # Enable Kubernetes integration
+          kubernetes:
+            mode: cluster
+
+          # Bookmarks configuration
+          bookmarks:
+            - Developer:
+                - Github:
+                    - abbr: GH
+                      href: https://github.com/
+
+          # Services configuration
+          services:
+            - Cluster Management:
+                - ArgoCD:
+                    href: http://localhost:8080/argocd
+                    description: GitOps Continuous Delivery
+                    widget:
+                      type: argocd
+                      url: http://argocd-server.argocd:80
+                - Prometheus:
+                    href: http://localhost:8080/prometheus
+                    description: Metrics and Monitoring
+                    widget:
+                      type: prometheus
+                      url: http://kube-prometheus-stack-prometheus.monitoring:9090
+                - Grafana:
+                    href: http://localhost:8080/grafana
+                    description: Metrics Visualization
+                    widget:
+                      type: grafana
+                      url: http://kube-prometheus-stack-grafana.monitoring:80
+
+          # Widgets configuration
+          widgets:
+            - kubernetes:
+                cluster:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+                  label: "cluster"
+                nodes:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+            - resources:
+                backend: kubernetes
+                expanded: true
+                cpu: true
+                memory: true
+            - search:
+                provider: duckduckgo
+                target: _blank
+
+          # Settings
+          settings:
+            title: Homelab Dashboard
+            theme: dark
+            color: slate
+            headerStyle: boxed
+            layout:
+              - Cluster Management:
+                  style: row
+                  columns: 3
+
+  destination:
+    server: in-cluster
+    namespace: homepage
+
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
