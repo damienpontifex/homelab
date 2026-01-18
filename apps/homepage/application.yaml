@@ -6,150 +6,157 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: homepage
+  sources:
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      path: apps/homepage/resources
+      targetRevision: HEAD
+
     # https://jameswynn.github.io/helm-charts/
-    repoURL: https://jameswynn.github.io/helm-charts
-    targetRevision: 2.1.0
-    helm:
-      releaseName: homepage
-      valuesObject:
-        image:
-          repository: ghcr.io/gethomepage/homepage
-          tag: latest
+    - repoURL: https://jameswynn.github.io/helm-charts
+      chart: homepage
+      targetRevision: 2.1.0
+      helm:
+        releaseName: homepage
+        valuesObject:
+          image:
+            repository: ghcr.io/gethomepage/homepage
+            tag: latest
 
-        # Enable service account for Kubernetes integration
-        serviceAccount:
-          create: true
-          name: homepage
+          # Enable service account for Kubernetes integration
+          serviceAccount:
+            create: true
+            name: homepage
+            annotations:
+              azure.workload.identity/client-id: 2ebfa81a-2b57-4b85-8be7-0a2db10a9ac3
+              azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
 
-        # Enable rbac for reading cluster resources
-        enableRbac: true
+          # Enable rbac for reading cluster resources
+          enableRbac: true
 
-        # Environment variables from secrets
-        env:
-          - name: HOMEPAGE_VAR_UNIFI_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: unifi-credentials
-                key: username
-          - name: HOMEPAGE_VAR_UNIFI_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: unifi-credentials
-                key: password
-          - name: HOMEPAGE_ALLOWED_HOSTS
-            value: home.pontifex.dev
+          # Environment variables from secrets
+          env:
+            - name: HOMEPAGE_VAR_UNIFI_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-credentials
+                  key: unifi-user
+            - name: HOMEPAGE_VAR_UNIFI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-credentials
+                  key: unifi-password
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: home.pontifex.dev
 
-        # Ingress configuration
-        ingress:
-          main:
-            enabled: true
-            ingressClassName: traefik
-            hosts:
-              - host: home.pontifex.dev
-                paths:
-                  - path: /
-                    pathType: Prefix
+          # Ingress configuration
+          ingress:
+            main:
+              enabled: true
+              ingressClassName: traefik
+              hosts:
+                - host: home.pontifex.dev
+                  paths:
+                    - path: /
+                      pathType: Prefix
 
-        # ConfigMaps for Homepage configuration
-        config:
-          # Enable Kubernetes integration
-          kubernetes:
-            mode: cluster
+          # ConfigMaps for Homepage configuration
+          config:
+            # Enable Kubernetes integration
+            kubernetes:
+              mode: cluster
 
-          # Bookmarks configuration
-          bookmarks:
-            - Developer:
-                - Github:
-                    - abbr: GH
-                      href: https://github.com/
+            # Bookmarks configuration
+            bookmarks:
+              - Developer:
+                  - Github:
+                      - abbr: GH
+                        href: https://github.com/
 
-          # Services configuration
-          # Widgets available https://gethomepage.dev/widgets/services/
-          services:
-            - Home:
-                - Unifi Console:
-                    href: https://192.168.1.1
-                    description: Network Management
-                    widget:
-                      type: unifi
-                      url: https://192.168.1.1
-                      username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
-                      password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
-            - Cluster Management:
-                - ArgoCD:
-                    href: https://argocd.home.pontifex.dev
-                    description: GitOps Continuous Delivery
-                    widget:
-                      type: argocd
-                      url: http://argocd-server.argocd.svc.cluster.local
-                - Prometheus:
-                    href: http://localhost:8080/prometheus
-                    description: Metrics and Monitoring
-                    widget:
-                      type: prometheus
-                      url: http://kube-prometheus-stack-prometheus.monitoring:9090
-                - Grafana:
-                    href: http://localhost:8080/grafana
-                    description: Metrics Visualization
-                    widget:
-                      type: grafana
-                      url: http://kube-prometheus-stack-grafana.monitoring:80
-
-          # Widgets configuration
-          # Widgets available https://gethomepage.dev/widgets/info/
-          widgets:
-            - datetime:
-                text_size: xl
-                locale: en-AU
-                format:
-                  timeStyle: short
-                  hourCycle: h23
-                  dateStyle: long
-            - openmeteo:
-                label: Busselton
-                timezone: Australia/Perth
-                units: metric
-                cache: 5
-                latitude: 115.3466965
-                longitude: -33.6542999
-            - kubernetes:
-                cluster:
-                  show: true
-                  cpu: true
-                  memory: true
-                  showLabel: true
-                  label: "cluster"
-                nodes:
-                  show: true
-                  cpu: true
-                  memory: true
-                  showLabel: true
-            - resources:
-                backend: kubernetes
-                expanded: true
-                cpu: true
-                memory: true
-            - unifi_console:
-                url: https://192.168.1.1
-                site: Site Name # optional
-                username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
-                password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
-            - search:
-                provider: duckduckgo
-                target: _blank
-
-          # Settings
-          settings:
-            title: Homelab Dashboard
-            theme: dark
-            color: slate
-            headerStyle: boxed
-            layout:
+            # Services configuration
+            # Widgets available https://gethomepage.dev/widgets/services/
+            services:
+              - Home:
+                  - Unifi Console:
+                      href: https://192.168.1.1
+                      description: Network Management
+                      widget:
+                        type: unifi
+                        url: https://192.168.1.1
+                        username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
+                        password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
               - Cluster Management:
-                  style: row
-                  columns: 3
+                  - ArgoCD:
+                      href: https://argocd.home.pontifex.dev
+                      description: GitOps Continuous Delivery
+                      widget:
+                        type: argocd
+                        url: http://argocd-server.argocd.svc.cluster.local
+                  - Prometheus:
+                      href: http://localhost:8080/prometheus
+                      description: Metrics and Monitoring
+                      widget:
+                        type: prometheus
+                        url: http://kube-prometheus-stack-prometheus.monitoring:9090
+                  - Grafana:
+                      href: http://localhost:8080/grafana
+                      description: Metrics Visualization
+                      widget:
+                        type: grafana
+                        url: http://kube-prometheus-stack-grafana.monitoring:80
+
+            # Widgets configuration
+            # Widgets available https://gethomepage.dev/widgets/info/
+            widgets:
+              - datetime:
+                  text_size: xl
+                  locale: en-AU
+                  format:
+                    timeStyle: short
+                    hourCycle: h23
+                    dateStyle: long
+              - openmeteo:
+                  label: Busselton
+                  timezone: Australia/Perth
+                  units: metric
+                  cache: 5
+                  latitude: 115.3466965
+                  longitude: -33.6542999
+              - kubernetes:
+                  cluster:
+                    show: true
+                    cpu: true
+                    memory: true
+                    showLabel: true
+                    label: "cluster"
+                  nodes:
+                    show: true
+                    cpu: true
+                    memory: true
+                    showLabel: true
+              - resources:
+                  backend: kubernetes
+                  expanded: true
+                  cpu: true
+                  memory: true
+              - unifi_console:
+                  url: https://192.168.1.1
+                  site: Site Name # optional
+                  username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
+                  password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
+              - search:
+                  provider: duckduckgo
+                  target: _blank
+
+            # Settings
+            settings:
+              title: Homelab Dashboard
+              theme: dark
+              color: slate
+              headerStyle: boxed
+              layout:
+                - Cluster Management:
+                    style: row
+                    columns: 3
 
   destination:
     name: in-cluster
