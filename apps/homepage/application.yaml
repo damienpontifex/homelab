@@ -65,14 +65,15 @@ spec:
 
           # Services configuration
           services:
-            - Unifi Console:
-                href: https://192.168.1.1
-                description: Network Management
-                widget:
-                  type: unifi
-                  url: https://192.168.1.1
-                  username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
-                  password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
+            - Home:
+                - Unifi Console:
+                    href: https://192.168.1.1
+                    description: Network Management
+                    widget:
+                      type: unifi
+                      url: https://192.168.1.1
+                      username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
+                      password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
             - Cluster Management:
                 - ArgoCD:
                     href: https://argocd.home.pontifex.dev
