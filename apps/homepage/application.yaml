@@ -64,6 +64,7 @@ spec:
                       href: https://github.com/
 
           # Services configuration
+          # Widgets available https://gethomepage.dev/widgets/services/
           services:
             - Home:
                 - Unifi Console:
@@ -95,7 +96,15 @@ spec:
                       url: http://kube-prometheus-stack-grafana.monitoring:80
 
           # Widgets configuration
+          # Widgets available https://gethomepage.dev/widgets/info/
           widgets:
+            - datetime:
+                text_size: xl
+                locale: en-AU
+                format:
+                  timeStyle: short
+                  hourCycle: h23
+                  dateStyle: long
             - kubernetes:
                 cluster:
                   show: true
