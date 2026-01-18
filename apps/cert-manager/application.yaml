@@ -6,16 +6,19 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    path: .
+  sources:
     # https://artifacthub.io/packages/helm/cert-manager/cert-manager
-    repoURL: oci://quay.io/jetstack/charts/cert-manager
-    targetRevision: 1.19.2
-    helm:
-      releaseName: cert-manager
-      valuesObject:
-        crds:
-          enabled: true
+    - repoURL: oci://quay.io/jetstack/charts/cert-manager
+      path: .
+      targetRevision: 1.19.2
+      helm:
+        releaseName: cert-manager
+        valuesObject:
+          crds:
+            enabled: true
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      path: apps/cert-manager/cert-manager-issuer
+      targetRevision: HEAD
   destination:
     name: in-cluster
     namespace: cert-manager
