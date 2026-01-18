@@ -26,6 +26,19 @@ spec:
         # Enable rbac for reading cluster resources
         enableRbac: true
 
+        # Environment variables from secrets
+        env:
+          - name: HOMEPAGE_VAR_UNIFI_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: unifi-credentials
+                key: username
+          - name: HOMEPAGE_VAR_UNIFI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: unifi-credentials
+                key: password
+
         # Ingress configuration
         ingress:
           main:
@@ -54,11 +67,11 @@ spec:
           services:
             - Cluster Management:
                 - ArgoCD:
-                    href: http://localhost:8080/argocd
+                    href: https://argocd.home.pontifex.dev
                     description: GitOps Continuous Delivery
                     widget:
                       type: argocd
-                      url: http://argocd-server.argocd:80
+                      url: http://argocd-server.argocd.svc.cluster.local
                 - Prometheus:
                     href: http://localhost:8080/prometheus
                     description: Metrics and Monitoring
@@ -91,6 +104,11 @@ spec:
                 expanded: true
                 cpu: true
                 memory: true
+            - unifi_console:
+                url: https://192.168.1.1
+                site: Site Name # optional
+                username: {{HOMEPAGE_VAR_UNIFI_USERNAME}}
+                password: {{HOMEPAGE_VAR_UNIFI_PASSWORD}}
             - search:
                 provider: duckduckgo
                 target: _blank
