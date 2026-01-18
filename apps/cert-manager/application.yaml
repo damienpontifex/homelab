@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    path: .
+    # https://artifacthub.io/packages/helm/cert-manager/cert-manager
+    repoURL: oci://quay.io/jetstack/charts/cert-manager
+    targetRevision: 1.19.2
+    helm:
+      releaseName: cert-manager
+      valuesObject:
+        crd:
+          enabled: true
+  destination:
+    name: in-cluster
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
