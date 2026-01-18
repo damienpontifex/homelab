@@ -107,9 +107,8 @@ spec:
                   columns: 3
 
   destination:
-    server: in-cluster
+    name: in-cluster
     namespace: homepage
-
   syncPolicy:
     automated:
       enabled: true
