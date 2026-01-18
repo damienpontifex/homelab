@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  labels:
+    app.kubernetes.io/name: cloudflared
+    app.kubernetes.io/component: tunnel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflared
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cloudflared
+    spec:
+      securityContext:
+        sysctls:
+          # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
+          - name: net.ipv4.ping_group_range
+            value: "65532 65532"
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          command:
+            - cloudflared
+            - tunnel
+            - run
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-tunnel-token
+                  key: token
+            - name: TUNNEL_TRANSPORT_PROTOCOL
+              value: http2
+            - name: TUNNEL_LOGLEVEL
+              value: info
+            - name: TUNNEL_METRICS
+              value: 0.0.0.0:2000
+            - name: NO_AUTOUPDATE
+              value: "true"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              # Cloudflared has a /ready endpoint which returns 200 if and only if
+              # it has an active connection to Cloudflare's network.
+              path: /ready
+              port: 2000
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      restartPolicy: Always

@@ -38,6 +38,8 @@ spec:
               secretKeyRef:
                 name: unifi-credentials
                 key: password
+          - name: HOMEPAGE_ALLOWED_HOSTS
+            value: home.pontifex.dev
 
         # Ingress configuration
         ingress:
