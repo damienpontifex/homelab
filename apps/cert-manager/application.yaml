@@ -16,9 +16,9 @@ spec:
         valuesObject:
           crds:
             enabled: true
-    - repoURL: $ARGOCD_APP_SOURCE_REPO_URL
+    - repoURL: https://github.com/damienpontifex/homelab.git
       path: apps/cert-manager/cluster-issuers
-      targetRevision: $ARGOCD_APP_SOURCE_TARGET_REVISION
+      targetRevision: HEAD
   destination:
     name: in-cluster
     namespace: cert-manager
