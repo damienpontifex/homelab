@@ -107,8 +107,8 @@ spec:
             - unifi_console:
                 url: https://192.168.1.1
                 site: Site Name # optional
-                username: {{HOMEPAGE_VAR_UNIFI_USERNAME}}
-                password: {{HOMEPAGE_VAR_UNIFI_PASSWORD}}
+                username: "{{HOMEPAGE_VAR_UNIFI_USERNAME}}"
+                password: "{{HOMEPAGE_VAR_UNIFI_PASSWORD}}"
             - search:
                 provider: duckduckgo
                 target: _blank
