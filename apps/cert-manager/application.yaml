@@ -17,7 +17,7 @@ spec:
           crds:
             enabled: true
     - repoURL: https://github.com/damienpontifex/homelab.git
-      path: apps/cert-manager/cert-manager-issuer
+      path: apps/cert-manager/cluster-issuers
       targetRevision: HEAD
   destination:
     name: in-cluster
