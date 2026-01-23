@@ -6,18 +6,21 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: kyverno
+  sources:
     # https://artifacthub.io/packages/helm/kyverno/kyverno
-    repoURL: https://kyverno.github.io/kyverno/
-    targetRevision: 3.6.1
-    helm:
-      releaseName: kyverno
-      valuesObject:
-        grafana:
-          enabled: true
-          grafanaDashboard:
+    - repoURL: https://kyverno.github.io/kyverno/
+      chart: kyverno
+      targetRevision: 3.6.1
+      helm:
+        releaseName: kyverno
+        valuesObject:
+          grafana:
             enabled: true
+            grafanaDashboard:
+              enabled: true
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      path: apps/kyverno/policies
+      targetRevision: HEAD
   destination:
     name: in-cluster
     namespace: kyverno

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # https://kyverno.io/policies/best-practices/check-deprecated-apis/check-deprecated-apis/
+  - https://raw.githubusercontent.com/kyverno/policies/main/best-practices/check-deprecated-apis/check-deprecated-apis.yaml
+  # https://kyverno.io/policies/best-practices/disallow-latest-tag/disallow-latest-tag/
+  - https://raw.githubusercontent.com/kyverno/policies/main/best-practices/disallow-latest-tag/disallow-latest-tag.yaml
+  # https://kyverno.io/policies/best-practices/require-pod-requests-limits/require-pod-requests-limits/
+  - https://raw.githubusercontent.com/kyverno/policies/main/best-practices/require-pod-requests-limits/require-pod-requests-limits.yaml
+  # https://kyverno.io/policies/best-practices/restrict-node-port/restrict-node-port/
+  - https://raw.githubusercontent.com/kyverno/policies/main/best-practices/restrict-node-port/restrict-node-port.yaml
+  # https://kyverno.io/policies/argo/application-prevent-default-project/application-prevent-default-project/
+  - https://raw.githubusercontent.com/kyverno/policies/main/argo/application-prevent-default-project/application-prevent-default-project.yaml
