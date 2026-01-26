@@ -53,11 +53,17 @@ spec:
             main:
               enabled: true
               ingressClassName: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
               hosts:
                 - host: home.pontifex.dev
                   paths:
                     - path: /
                       pathType: Prefix
+              tls:
+                - hosts:
+                    - home.pontifex.dev
 
           # ConfigMaps for Homepage configuration
           config:
