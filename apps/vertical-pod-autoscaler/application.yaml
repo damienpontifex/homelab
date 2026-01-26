@@ -14,16 +14,13 @@ spec:
       helm:
         releaseName: vertical-pod-autoscaler
         valuesObject:
-          # Only one node so far, so no anti-affinity needed
+          # Only one node so far, one replica (also avoids anti-affinity issues)
           admissionController:
-            affinity:
-              podAntiAffinity: {}
+            replicas: 1
           recommender:
-            affinity:
-              podAntiAffinity: {}
+            replicas: 1
           updater:
-            affinity:
-              podAntiAffinity: {}
+            replicas: 1
   destination:
     name: in-cluster
     namespace: kube-system
