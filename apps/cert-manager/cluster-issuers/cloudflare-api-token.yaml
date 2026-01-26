@@ -22,9 +22,9 @@ spec:
     name: cert-manager
     kind: SecretStore
   target:
-    name: cloudflare-api-key
+    name: cloudflare-api-token
     creationPolicy: Owner
   data:
-    - secretKey: api-key
+    - secretKey: api-token
       remoteRef:
-        key: cloudflare-api-key
+        key: cloudflare-api-token
