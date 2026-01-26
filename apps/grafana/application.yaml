@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: homelab
+  source:
+    chart: grafana
+    # https://artifacthub.io/packages/helm/grafana/grafana
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 10.5.12
+    helm:
+      releaseName: grafana
+      valuesObject:
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          hosts:
+            - grafana.home.pontifex.dev
+          tls:
+            - secretName: grafana-home-pontifex-dev-tls
+              hosts:
+                - grafana.home.pontifex.dev
+        sidecar:
+          dashboards:
+            enabled: true
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
