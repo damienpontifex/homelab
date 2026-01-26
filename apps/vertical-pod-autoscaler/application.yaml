@@ -13,7 +13,17 @@ spec:
       targetRevision: 0.8.0
       helm:
         releaseName: vertical-pod-autoscaler
-        valuesObject: {}
+        valuesObject:
+          # Only one node so far, so no anti-affinity needed
+          admissionController:
+            affinity:
+              podAntiAffinity: {}
+          recommender:
+            affinity:
+              podAntiAffinity: {}
+          updater:
+            affinity:
+              podAntiAffinity: {}
   destination:
     name: in-cluster
     namespace: kube-system
