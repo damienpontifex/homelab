@@ -6,55 +6,55 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: kube-prometheus-stack
+  sources:
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 80.6.0
-    helm:
-      releaseName: kube-prometheus-stack
-      valuesObject:
-        prometheus:
-          ingress:
+    - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+      path: .
+      targetRevision: 81.2.2
+      helm:
+        releaseName: kube-prometheus-stack
+        valuesObject:
+          prometheus:
+            ingress:
+              enabled: true
+              ingressClassName: traefik
+              paths:
+                - /prometheus
+              hosts:
+                - localhost
+            prometheusSpec:
+              routePrefix: /prometheus
+              retention: 15d
+              storageSpec:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: 10Gi
+          grafana:
+            enabled: false
+            ingress:
+              enabled: true
+              ingressClassName: traefik
+              paths:
+                - /grafana
+            operator:
+              dashboardsConfigMapRefEnabled: true
+              matchLabels:
+                grafana_dashboard: "1"
+          alertmanager:
             enabled: true
-            ingressClassName: traefik
-            paths:
-              - /prometheus
-            hosts:
-              - localhost
-          prometheusSpec:
-            routePrefix: /prometheus
-            retention: 15d
-            storageSpec:
-              volumeClaimTemplate:
-                spec:
-                  accessModes:
-                    - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 10Gi
-        grafana:
-          enabled: true
-          ingress:
-            enabled: true
-            ingressClassName: traefik
-            paths:
-              - /grafana
-          operator:
-            dashboardsConfigMapRefEnabled: true
-            matchLabels:
-              grafana_dashboard: "1"
-        alertmanager:
-          enabled: true
-          ingress:
-            enabled: true
-            ingressClassName: traefik
-            paths:
-              - /alertmanager
-          alertmanagerSpec:
-            routePrefix: /alertmanager
+            ingress:
+              enabled: true
+              ingressClassName: traefik
+              paths:
+                - /alertmanager
+            alertmanagerSpec:
+              routePrefix: /alertmanager
   destination:
-    server: "https://kubernetes.default.svc"
+    name: in-cluster
     namespace: monitoring
   syncPolicy:
     automated:
