@@ -108,11 +108,11 @@ spec:
                       href: https://alertmanager.home.pontifex.dev
                       description: Alert Management
                   - Grafana:
-                      href: http://localhost:8080/grafana
+                      href: https://grafana.home.pontifex.dev
                       description: Metrics Visualization
                       widget:
                         type: grafana
-                        url: http://kube-prometheus-stack-grafana.monitoring:80
+                        url: http://grafana.monitoring.svc.cluster.local
 
             # Widgets configuration
             # Widgets available https://gethomepage.dev/widgets/info/
