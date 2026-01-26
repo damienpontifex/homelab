@@ -5,7 +5,7 @@ metadata:
   name: prometheus
   namespace: argocd
 spec:
-  project: default
+  project: homelab
   sources:
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
     - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack

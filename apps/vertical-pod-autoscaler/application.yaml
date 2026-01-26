@@ -5,7 +5,7 @@ metadata:
   name: vertical-pod-autoscaler
   namespace: argocd
 spec:
-  project: default
+  project: homelab
   sources:
     # https://artifacthub.io/packages/helm/cluster-autoscaler/vertical-pod-autoscaler
     - repoURL: https://kubernetes.github.io/autoscaler

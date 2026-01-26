@@ -5,7 +5,7 @@ metadata:
   name: cloudflare-tunnel
   namespace: argocd
 spec:
-  project: default
+  project: homelab
   sources:
     - repoURL: https://github.com/damienpontifex/homelab.git
       path: apps/cloudflare-tunnel/resources

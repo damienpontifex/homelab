@@ -5,7 +5,7 @@ metadata:
   name: azure-workload-identity
   namespace: argocd
 spec:
-  project: default
+  project: homelab
   source:
     chart: workload-identity-webhook
     # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook

@@ -5,7 +5,7 @@ metadata:
   name: cert-manager
   namespace: argocd
 spec:
-  project: default
+  project: homelab
   sources:
     # https://artifacthub.io/packages/helm/cert-manager/cert-manager
     - repoURL: oci://quay.io/jetstack/charts/cert-manager
