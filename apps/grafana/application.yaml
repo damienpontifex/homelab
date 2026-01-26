@@ -28,6 +28,10 @@ spec:
         sidecar:
           dashboards:
             enabled: true
+        grafana.ini:
+          log:
+            console:
+              format: json
   destination:
     name: in-cluster
     namespace: monitoring
