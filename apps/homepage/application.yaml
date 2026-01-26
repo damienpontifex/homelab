@@ -99,11 +99,14 @@ spec:
                         type: argocd
                         url: http://argocd-server.argocd.svc.cluster.local
                   - Prometheus:
-                      href: http://localhost:8080/prometheus
+                      href: https://prometheus.home.pontifex.dev
                       description: Metrics and Monitoring
                       widget:
                         type: prometheus
                         url: http://kube-prometheus-stack-prometheus.monitoring:9090
+                  - AlertManager:
+                      href: https://alertmanager.home.pontifex.dev
+                      description: Alert Management
                   - Grafana:
                       href: http://localhost:8080/grafana
                       description: Metrics Visualization
