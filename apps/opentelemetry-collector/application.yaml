@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-collector
+  namespace: argocd
+spec:
+  project: homelab
+  sources:
+    # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetry-collector
+      targetRevision: 0.143.1
+      helm:
+        releaseName: opentelemetry-collector
+        valuesObject:
+          mode: daemonset
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
