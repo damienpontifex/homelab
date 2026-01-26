@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/secretstore-external-secrets-v1.json
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: cert-manager
+spec:
+  provider:
+    azurekv:
+      vaultUrl: "https://pontifex-homelab.vault.azure.net"
+      authType: WorkloadIdentity
+      serviceAccountRef:
+        name: cert-manager
+---
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone-strict/externalsecret-external-secrets-v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: cloudflare-api-token
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    name: cert-manager
+    kind: SecretStore
+  target:
+    name: cloudflare-api-key
+    creationPolicy: Owner
+  data:
+    - secretKey: api-key
+      remoteRef:
+        key: cloudflare-api-key
