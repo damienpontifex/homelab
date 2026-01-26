@@ -38,15 +38,20 @@ spec:
             - name: HOMEPAGE_VAR_UNIFI_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: unifi-credentials
+                  name: homepage-credentials
                   key: unifi-user
             - name: HOMEPAGE_VAR_UNIFI_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: unifi-credentials
+                  name: homepage-credentials
                   key: unifi-password
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: home.pontifex.dev
+            - name: HOMEPAGE_VAR_ARGOCD_USER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: homepage-credentials
+                  key: argocd-user-token
 
           # Ingress configuration
           ingress:
@@ -98,6 +103,7 @@ spec:
                       widget:
                         type: argocd
                         url: http://argocd-server.argocd.svc.cluster.local
+                        key: "{{HOMEPAGE_VAR_ARGOCD_USER_TOKEN}}"
                   - Prometheus:
                       href: https://prometheus.home.pontifex.dev
                       description: Metrics and Monitoring
