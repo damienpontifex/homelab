@@ -31,6 +31,17 @@ spec:
         grafana.ini:
           log.console:
             format: json
+
+        # https://grafana.com/docs/grafana/latest/datasources/
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                access: proxy
+                url: http://prometheus-server.monitoring.svc.cluster.local:9090
+                isDefault: true
   destination:
     name: in-cluster
     namespace: monitoring
