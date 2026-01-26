@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  project: homelab
+  sources:
+    # https://artifacthub.io/packages/helm/external-dns/external-dns
+    - repoURL: https://kubernetes-sigs.github.io/external-dns
+      chart: external-dns
+      targetRevision: 1.20.1
+      helm:
+        releaseName: external-dns
+        valuesObject:
+          serviceAccount:
+            annotations:
+              azure.workload.identity/client-id: 979492ec-caef-4258-9837-d72b7b6c9d7a
+              azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+
+          provider:
+            name: cloudflare
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token
+                  key: api-token
+
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      path: apps/external-dns/resources
+      targetRevision: HEAD
+  destination:
+    name: in-cluster
+    namespace: external-dns
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
