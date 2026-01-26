@@ -18,12 +18,17 @@ spec:
             ingress:
               enabled: true
               ingressClassName: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
               paths:
-                - /prometheus
+                - /
               hosts:
-                - localhost
+                - prometheus.home.pontifex.dev
+              tls:
+                - secretName: prometheus-home-pontifex-dev-tls
+                  hosts:
+                    - prometheus.home.pontifex.dev
             prometheusSpec:
-              routePrefix: /prometheus
               retention: 15d
               storageSpec:
                 volumeClaimTemplate:
@@ -35,24 +40,30 @@ spec:
                         storage: 10Gi
           grafana:
             enabled: false
-            ingress:
-              enabled: true
-              ingressClassName: traefik
-              paths:
-                - /grafana
-            operator:
-              dashboardsConfigMapRefEnabled: true
-              matchLabels:
-                grafana_dashboard: "1"
+            # ingress:
+            #   enabled: true
+            #   ingressClassName: traefik
+            #   paths:
+            #     - /grafana
+            # operator:
+            #   dashboardsConfigMapRefEnabled: true
+            #   matchLabels:
+            #     grafana_dashboard: "1"
           alertmanager:
             enabled: true
             ingress:
               enabled: true
               ingressClassName: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
               paths:
-                - /alertmanager
-            alertmanagerSpec:
-              routePrefix: /alertmanager
+                - /
+              hosts:
+                - alertmanager.home.pontifex.dev
+              tls:
+                - secretName: alertmanager-home-pontifex-dev-tls
+                  hosts:
+                    - alertmanager.home.pontifex.dev
   destination:
     name: in-cluster
     namespace: monitoring
