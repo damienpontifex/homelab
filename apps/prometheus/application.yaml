@@ -39,16 +39,24 @@ spec:
                       requests:
                         storage: 10Gi
           grafana:
-            enabled: false
-            # ingress:
-            #   enabled: true
-            #   ingressClassName: traefik
-            #   paths:
-            #     - /grafana
-            # operator:
-            #   dashboardsConfigMapRefEnabled: true
-            #   matchLabels:
-            #     grafana_dashboard: "1"
+            enabled: true
+            ingress:
+              enabled: true
+              ingressClassName: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              paths:
+                - /grafana
+              hosts:
+                - grafana.home.pontifex.dev
+              tls:
+                - secretName: grafana-home-pontifex-dev-tls
+                  hosts:
+                    - grafana.home.pontifex.dev
+            operator:
+              dashboardsConfigMapRefEnabled: true
+              matchLabels:
+                grafana_dashboard: "1"
           alertmanager:
             enabled: true
             ingress:
