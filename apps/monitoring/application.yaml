@@ -37,6 +37,10 @@ spec:
     - repoURL: https://github.com/damienpontifex/homelab.git
       ref: homelab
       targetRevision: HEAD
+
+    - repoURL: https://github.com/grafana/grafana-operator
+      path: config/crd
+      targetRevision: HEAD
   destination:
     name: in-cluster
     namespace: external-dns
