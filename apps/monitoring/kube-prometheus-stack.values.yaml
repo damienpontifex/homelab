@@ -1,0 +1,86 @@
+# ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - prometheus.home.pontifex.dev
+    tls:
+      - secretName: prometheus-home-pontifex-dev-tls
+        hosts:
+          - prometheus.home.pontifex.dev
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+# Dependent chart so values of `grafana.*` are based on https://github.com/grafana-community/helm-charts/blob/main/charts/grafana/values.yaml
+grafana:
+  enabled: true
+  # So if grafana is deployed separately, these are still created
+  # forceDeployDatasources: true
+  # forceDeployDashboards: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /grafana
+    hosts:
+      - grafana.home.pontifex.dev
+    tls:
+      - secretName: grafana-home-pontifex-dev-tls
+        hosts:
+          - grafana.home.pontifex.dev
+  operator:
+    dashboardsConfigMapRefEnabled: true
+    matchLabels:
+      grafana_dashboard: "1"
+  podLabels:
+    azure.workload.identity/use: "true"
+  serviceAccount:
+    annotations:
+      azure.workload.identity/client-id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
+      azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+
+  grafana.ini:
+    log.console:
+      format: json
+    server:
+      auth.azuread:
+        enabled: true
+        name: Entra ID
+        client_id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
+        scopes: openid email profile
+        auth_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/authorize
+        token_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/token
+        allowed_organizations: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+        federated_credential_audience: api://AzureADTokenExchange
+        client_authentication: workload_identity
+
+alertmanager:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - alertmanager.home.pontifex.dev
+    tls:
+      - secretName: alertmanager-home-pontifex-dev-tls
+        hosts:
+          - alertmanager.home.pontifex.dev

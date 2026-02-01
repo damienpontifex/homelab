@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://github.com/grafana/k8s-monitoring-helm/raw/refs/heads/main/charts/k8s-monitoring/values.schema.json
+cluster:
+  name: homelab
+
+destinations: []
+
+clusterMetrics:
+  enabled: true
+clusterEvents:
+  enabled: true
+nodeLogs:
+  enabled: true
+podLogs:
+  enabled: true
