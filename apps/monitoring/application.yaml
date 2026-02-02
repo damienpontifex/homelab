@@ -40,7 +40,9 @@ spec:
 
     - repoURL: https://github.com/grafana/grafana-operator
       path: config/crd
-      targetRevision: HEAD
+      targetRevision: master
+      name: grafana-operator-crds
+
   destination:
     name: in-cluster
     namespace: monitoring
