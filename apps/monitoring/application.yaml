@@ -26,8 +26,8 @@ spec:
           - $homelab/apps/monitoring/loki.values.yaml
 
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    - repoURL: oci://ghcr.io/prometheus-community/charts
-      chart: kube-prometheus-stack
+    - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+      path: .
       targetRevision: 81.4.2
       helm:
         releaseName: kube-prometheus-stack
