@@ -12,6 +12,8 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
+        chunks:
+          period: 24h
   pattern_ingester:
     enabled: true
   limits_config:
@@ -19,9 +21,22 @@ loki:
     volume_enabled: true
   ruler:
     enable_api: true
+  storage:
+    type: s3
+    s3:
+      endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+      secretAccessKey: ""
+      accessKeyId: ""
+      insecure: true
+      s3ForcePathStyle: true
+      region: ap-southeast-1
+    bucketNames:
+      chunks: loki-chunks
+      ruler: loki-ruler
 
 minio:
-  enabled: true
+  # We'll use rustfs as our S3-compatible object store, so we don't need MinIO
+  enabled: false
 
 deploymentMode: SingleBinary
 
