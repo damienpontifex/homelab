@@ -14,6 +14,7 @@ spec:
       helm:
         releaseName: external-dns
         valuesObject:
+          logFormat: json
           serviceAccount:
             annotations:
               azure.workload.identity/client-id: 979492ec-caef-4258-9837-d72b7b6c9d7a
