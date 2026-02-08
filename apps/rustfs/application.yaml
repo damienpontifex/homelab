@@ -14,6 +14,11 @@ spec:
       helm:
         releaseName: rustfs
         valuesObject:
+          mode:
+            standalone:
+              enabled: true
+            distributed:
+              enabled: false
           replicaCount: 1
           ingress:
             className: traefix
