@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rustfs
+  namespace: argocd
+spec:
+  project: homelab
+  sources:
+    # https://artifacthub.io/packages/helm/rustfs/rustfs
+    - repoURL: https://charts.rustfs.com
+      chart: rustfs
+      targetRevision: 0.0.82
+      helm:
+        releaseName: rustfs
+
+  destination:
+    name: in-cluster
+    namespace: rustfs
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
