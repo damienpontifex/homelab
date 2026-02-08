@@ -14,11 +14,16 @@ spec:
       helm:
         releaseName: external-dns
         valuesObject:
+          domainFilters:
+            - home.pontifex.dev
           logFormat: json
           serviceAccount:
             annotations:
               azure.workload.identity/client-id: 979492ec-caef-4258-9837-d72b7b6c9d7a
               azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+          # create a `ServiceMonitor` resource to support the _Prometheus Operator_
+          serviceMonitor:
+            enabled: true
 
           provider:
             name: cloudflare
