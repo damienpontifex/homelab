@@ -13,6 +13,19 @@ spec:
       targetRevision: 0.0.82
       helm:
         releaseName: rustfs
+        valuesObject:
+          replicaCount: 1
+          ingress:
+            className: traefix
+            hosts:
+              - host: rustfs.home.pontifex.dev
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              enabled: true
+              certManager:
+                enabled: true
 
   destination:
     name: in-cluster
