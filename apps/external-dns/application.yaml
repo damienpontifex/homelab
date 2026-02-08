@@ -30,7 +30,8 @@ spec:
 
     - repoURL: https://github.com/damienpontifex/homelab.git
       path: apps/external-dns/resources
-      targetRevision: HEAD
+      targetRevision: main
+
   destination:
     name: in-cluster
     namespace: external-dns
