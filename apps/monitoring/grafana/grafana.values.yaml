@@ -19,6 +19,27 @@ grafana.ini:
     level: info
   log.console:
   format: json
+  # ========================================================================
+  # Authentication
+  # ========================================================================
+  auth.azuread:
+    enabled: true
+    name: pontifex.dev
+    client_id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
+    client_authentication: workload_identity
+    federated_credential_audience: api://AzureADTokenExchange
+    scopes: openid email profile
+    auth_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/authorize
+    token_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/token
+    allowed_organizations: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+
+serviceAccount:
+  annotations:
+    azure.workload.identity/client-id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
+    azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+
+podLabels:
+  azure.workload.identity/use: "true"
 
 ingress:
   enabled: true
