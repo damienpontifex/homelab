@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://github.com/grafana/loki/raw/refs/heads/main/production/helm/loki/values.schema.json
 # https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/
 loki:
+  auth_enabled: false
   commonConfig:
     replication_factor: 1
   schemaConfig:

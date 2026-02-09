@@ -2,6 +2,7 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
+      # https://grafana.com/docs/grafana/latest/datasources/loki/
       - name: Loki
         type: loki
         access: proxy
