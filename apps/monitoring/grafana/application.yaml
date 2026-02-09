@@ -2,23 +2,47 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: k8s-monitoring
+  name: grafana
   namespace: argocd
 spec:
   project: homelab
   sources:
-    # https://artifacthub.io/packages/helm/grafana/k8s-monitoring
-    - repoURL: https://grafana.github.io/helm-charts
-      chart: k8s-monitoring
-      targetRevision: 3.8.0
+    # https://artifacthub.io/packages/helm/grafana-community/grafana
+    - repoURL: https://grafana-community.github.io/helm-charts
+      chart: grafana
+      targetRevision: 11.0.1
       helm:
-        releaseName: k8s-monitoring
-        valueFiles:
-          - $homelab/apps/monitoring/grafana/k8s-monitoring.values.yaml
+        releaseName: grafana
+        valuesObject:
+          datasources:
+            datasources.yaml:
+              apiVersion: 1
+              datasources:
+                - name: Loki
+                  type: loki
+                  access: proxy
+                  url: http://loki:3100
+                  isDefault: true
 
-    - repoURL: https://github.com/damienpontifex/homelab.git
-      ref: homelab
-      targetRevision: HEAD
+          grafana.ini:
+            log:
+              mode: json
+
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - grafana.home.pontifex.dev
+            tls:
+              - secretName: grafana-tls
+                hosts:
+                  - grafana.home.pontifex.dev
+
+          sidecar:
+            dashboards:
+              enabled: true
+            datasources:
+              enabled: false
 
   destination:
     name: in-cluster
