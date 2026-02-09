@@ -29,7 +29,7 @@ loki:
       accessKeyId: rustfsadmin
       insecure: true
       s3ForcePathStyle: true
-      region: ap-southeast-1
+      region: ap-southeast-2
     bucketNames:
       chunks: loki-chunks
       ruler: loki-ruler
@@ -42,6 +42,11 @@ deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
+
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
 
 # Zero out replica counts of other deployment modes
 backend:
