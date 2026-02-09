@@ -2,7 +2,10 @@
 cluster:
   name: homelab
 
-destinations: []
+destinations:
+  - name: loki
+    type: loki
+    url: http://loki-gateway.monitoring.svc.cluster.local:3100
 
 clusterMetrics:
   enabled: true
