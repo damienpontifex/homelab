@@ -11,6 +11,8 @@ datasources:
 
 # Ref: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
 grafana.ini:
+  server:
+    root_url: https://grafana.home.pontifex.dev/
   # ========================================================================
   # Logging
   # ========================================================================
@@ -21,6 +23,7 @@ grafana.ini:
   format: json
   # ========================================================================
   # Authentication
+  # https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/entraid/
   # ========================================================================
   auth.azuread:
     enabled: true
