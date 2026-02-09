@@ -14,35 +14,12 @@ spec:
       helm:
         releaseName: k8s-monitoring
         valueFiles:
-          - $homelab/apps/monitoring/k8s-monitoring.values.yaml
-
-    # https://artifacthub.io/packages/helm/grafana/loki
-    - repoURL: https://grafana.github.io/helm-charts
-      chart: loki
-      targetRevision: 6.52.0
-      helm:
-        releaseName: loki
-        valueFiles:
-          - $homelab/apps/monitoring/loki.values.yaml
-
-    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    # - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    #   path: .
-    #   targetRevision: 81.4.2
-    #   helm:
-    #     releaseName: kube-prometheus-stack
-    #     valueFiles:
-    #       - $homelab/apps/monitoring/kube-prometheus-stack.values.yaml
+          - $homelab/apps/monitoring/grafana/k8s-monitoring.values.yaml
 
     - repoURL: https://github.com/damienpontifex/homelab.git
       ref: homelab
       targetRevision: HEAD
 
-    # - repoURL: https://github.com/grafana/grafana-operator
-    #   path: config/crd
-    #   targetRevision: master
-    #   name: grafana-operator-crds
-    #
   destination:
     name: in-cluster
     namespace: monitoring
