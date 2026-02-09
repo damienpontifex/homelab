@@ -10,8 +10,13 @@ destinations:
 clusterMetrics:
   enabled: false # No metrics destinations yet
 clusterEvents:
-  enabled: false # Requires alloy-singleton we haven't setup yet
+  enabled: true
 nodeLogs:
   enabled: true
 podLogs:
+  enabled: true
+
+alloy-logs:
+  enabled: true
+alloy-singleton:
   enabled: true
