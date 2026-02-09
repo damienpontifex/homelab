@@ -25,6 +25,8 @@ grafana.ini:
   # Authentication
   # https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/entraid/
   # ========================================================================
+  auth.basic:
+    enabled: false
   auth.azuread:
     enabled: true
     name: pontifex.dev
@@ -35,6 +37,8 @@ grafana.ini:
     auth_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/authorize
     token_url: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/oauth2/v2.0/token
     allowed_organizations: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+    auto_login: true
+    force_use_graph_api: true
 
 serviceAccount:
   annotations:
