@@ -33,5 +33,7 @@ ingress:
 sidecar:
   dashboards:
     enabled: true
+    searchNamespace: ALL
   datasources:
     enabled: false
+    searchNamespace: ALL
