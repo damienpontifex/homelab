@@ -13,43 +13,12 @@ spec:
       targetRevision: 11.0.1
       helm:
         releaseName: grafana
-        valuesObject:
-          datasources:
-            datasources.yaml:
-              apiVersion: 1
-              datasources:
-                - name: Loki
-                  type: loki
-                  access: proxy
-                  url: http://loki:3100
-                  isDefault: true
+        valueFiles:
+          - $homelab/apps/monitoring/grafana/grafana.values.yaml
 
-          # Ref: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
-          grafana.ini: |
-            # ========================================================================
-            # Logging
-            # ========================================================================
-            [log]
-            mode = console
-            level = info
-            [log.console]:
-            format = json
-
-          ingress:
-            enabled: true
-            className: traefik
-            hosts:
-              - grafana.home.pontifex.dev
-            tls:
-              - secretName: grafana-tls
-                hosts:
-                  - grafana.home.pontifex.dev
-
-          sidecar:
-            dashboards:
-              enabled: true
-            datasources:
-              enabled: false
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      ref: homelab
+      targetRevision: HEAD
 
   destination:
     name: in-cluster
