@@ -13,7 +13,7 @@ clusterEvents:
   enabled: true
 nodeLogs:
   enabled: true
-podLogs:
+podLogsViaKubernetesApi:
   enabled: true
 
 alloy-logs:
