@@ -25,8 +25,8 @@ loki:
     type: s3
     s3:
       endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
-      secretAccessKey: ""
-      accessKeyId: ""
+      secretAccessKey: rustfsadmin
+      accessKeyId: rustfsadmin
       insecure: true
       s3ForcePathStyle: true
       region: ap-southeast-1
