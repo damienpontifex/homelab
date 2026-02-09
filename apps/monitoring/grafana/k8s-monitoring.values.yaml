@@ -8,7 +8,7 @@ destinations:
     url: http://loki-gateway.monitoring.svc.cluster.local:3100
 
 clusterMetrics:
-  enabled: true
+  enabled: false # No metrics destinations yet
 clusterEvents:
   enabled: true
 nodeLogs:
