@@ -13,6 +13,12 @@ server:
         hosts:
           - prometheus.home.pontifex.dev
 
+# Both of these provided by the k8s-monitoring chart
+prometheus-node-exporter:
+  enabled: true
+kube-state-metrics:
+  enabled: false
+
 scrapeConfigs:
   kubernetes-api-servers:
     enabled: false
@@ -30,4 +36,3 @@ scrapeConfigs:
     enabled: false
   kubernetes-ingresses:
     enabled: false
-
