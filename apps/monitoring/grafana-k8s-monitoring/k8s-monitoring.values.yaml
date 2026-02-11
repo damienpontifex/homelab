@@ -21,11 +21,21 @@ podLogs:
 
 alloy-logs:
   enabled: true
+  liveDebugging:
+    enabled: true
 alloy-singleton:
   enabled: true
+  liveDebugging:
+    enabled: true
 alloy-metrics:
   enabled: true
+  liveDebugging:
+    enabled: true
 alloy-receiver:
   enabled: false
+  liveDebugging:
+    enabled: true
 alloy-profiles:
   enabled: false
+  liveDebugging:
+    enabled: true
