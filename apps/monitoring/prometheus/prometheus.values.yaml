@@ -17,7 +17,7 @@ server:
 prometheus-node-exporter:
   enabled: false
 kube-state-metrics:
-  enabled: false
+  enabled: true
 
 scrapeConfigs:
   kubernetes-api-servers:
