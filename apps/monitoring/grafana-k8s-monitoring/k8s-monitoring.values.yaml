@@ -23,3 +23,9 @@ alloy-logs:
   enabled: true
 alloy-singleton:
   enabled: true
+alloy-metrics:
+  enabled: true
+alloy-receiver:
+  enabled: false
+alloy-profiles:
+  enabled: false
