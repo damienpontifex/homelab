@@ -15,7 +15,7 @@ server:
 
 # Both of these provided by the k8s-monitoring chart
 prometheus-node-exporter:
-  enabled: true
+  enabled: false
 kube-state-metrics:
   enabled: false
 
