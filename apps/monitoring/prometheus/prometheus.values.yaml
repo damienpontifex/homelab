@@ -1,0 +1,33 @@
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - prometheus.home.pontifex.dev
+    tls:
+      - secretName: prometheus-home-pontifex-dev-tls
+        hosts:
+          - prometheus.home.pontifex.dev
+
+scrapeConfigs:
+  kubernetes-api-servers:
+    enabled: false
+  kubernetes-nodes:
+    enabled: false
+  kubernetes-pods:
+    enabled: false
+  kubernetes-cadvisor:
+    enabled: false
+  kubernetes-service-endpoints:
+    enabled: false
+  kubernetes-services:
+    enabled: false
+  kubernetes-ingress-endpoints:
+    enabled: false
+  kubernetes-ingresses:
+    enabled: false
+

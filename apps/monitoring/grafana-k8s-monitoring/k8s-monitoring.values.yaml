@@ -6,9 +6,12 @@ destinations:
   - name: loki
     type: loki
     url: http://loki-gateway.monitoring.svc.cluster.local:3100
+  - name: prometheus
+    type: prometheus
+    url: http://prometheus.monitoring.svc.cluster.local:9090
 
 clusterMetrics:
-  enabled: false # No metrics destinations yet
+  enabled: true
 clusterEvents:
   enabled: true
 nodeLogs:
