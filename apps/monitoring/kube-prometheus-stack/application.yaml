@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: homelab
+  sources:
+    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+    - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+      path: .
+      targetRevision: 81.6.3
+      helm:
+        releaseName: kube-prometheus-stack
+        valueFiles:
+          - $homelab/apps/monitoring/kube-prometheus-stack/kube-prometheus-stack.values.yaml
+
+    - repoURL: https://github.com/damienpontifex/homelab.git
+      ref: homelab
+      targetRevision: HEAD
+
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

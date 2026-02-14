@@ -14,9 +14,46 @@ spec:
       helm:
         releaseName: opentelemetry-collector
         valuesObject:
-          mode: daemonset
+          mode: deployment
           image:
             repository: "otel/opentelemetry-collector-k8s"
+          presets:
+            hostMetrics:
+              enabled: true
+            kubernetesEvents:
+              enabled: true
+            clusterMetrics:
+              enabled: true
+            logsCollection:
+              enabled: true
+              includeCollectorLogs: true
+          config:
+            exporters:
+              logs-otlphttp:
+                endpoint: http://loki-gateway.monitoring.svc.cluster.local:3100
+              metrics-oltphttp:
+                endpoint: http://prometheus-server.monitoring.svc.cluster.local:9090
+          service:
+            pipelines:
+              logs:
+                exporters:
+                  - debug
+                  - logs-otlphttp
+                # processors:
+                #   # https://opentelemetry.io/blog/2026/log-deduplication-processor/
+                #   - logdedup:
+                #       interval: 1s
+                #     conditions:
+                #       - severity_number >= SEVERITY_NUMBER_ERROR
+                #       - attributes["log.type"] == "connection"
+                #     exclude_fields:
+                #       - attributes.request_id
+                #       - attributes.timestamp
+              metrics:
+                exporters:
+                  - debug
+                  - metrics-otlphttp
+
   destination:
     name: in-cluster
     namespace: monitoring

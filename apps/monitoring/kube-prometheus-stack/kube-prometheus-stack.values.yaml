@@ -1,0 +1,58 @@
+# ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    aths:
+      - /
+    hosts:
+      - prometheus.home.pontifex.dev
+    tls:
+      - secretName: prometheus-home-pontifex-dev-tls
+        hosts:
+          - prometheus.home.pontifex.dev
+  prometheusSpec:
+    # enableFeatures:
+    #   - oltp-receiver # Allow OTel to push via OTLP
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+    # TODO: Find appropriate place for these
+    nodeExporter:
+      enabled: false # OTel Collector can collect host metrics instead
+    kubeStateMetrics:
+      enabled: false # OTel can scrape KSM directly or provide its own k8s attributes
+    kubeControllerManager:
+      enabled: false # OTel can scrape CCM directly
+    kubeScheduler:
+      enabled: false # OTel can scrape Scheduler directly
+    kubeProxy:
+      enabled: false # OTel can scrape Kube Proxy directly
+# Dependent chart so values of `grafana.*` are based on https://github.com/grafana-community/helm-charts/blob/main/charts/grafana/values.yaml
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - alertmanager.home.pontifex.dev
+    tls:
+      - secretName: alertmanager-home-pontifex-dev-tls
+        hosts:
+          - alertmanager.home.pontifex.dev
