@@ -33,18 +33,18 @@ spec:
               resourcedetection:
                 detectors: [env, k8s, system]
             exporters:
-              otlphttp/loki:
+              otlp_http/loki:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local:3100
-              oltphttp/prometheus:
+              otlp_http/prometheus:
                 endpoint: http://prometheus-server.monitoring.svc.cluster.local:9090
             service:
               pipelines:
                 logs:
                   processors: [batch, resourcedetection]
-                  exporters: [debug, otlphttp/loki]
+                  exporters: [debug, otlp_http/loki]
                 metrics:
                   processors: [batch, resourcedetection]
-                  exporters: [debug, otlphttp/prometheus]
+                  exporters: [debug, otlp_http/prometheus]
                   # processors:
                   #   # https://opentelemetry.io/blog/2026/log-deduplication-processor/
                   #   - logdedup:
