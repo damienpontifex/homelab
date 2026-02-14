@@ -14,8 +14,9 @@ prometheus:
         hosts:
           - prometheus.home.pontifex.dev
   prometheusSpec:
-    # enableFeatures:
-    #   - oltp-receiver # Allow OTel to push via OTLP
+    additionalArgs:
+      - name: web.enable-otlp-receiver
+        value: "" # enableFeatures:
     retention: 15d
     storageSpec:
       volumeClaimTemplate:
