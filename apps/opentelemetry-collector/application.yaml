@@ -31,7 +31,7 @@ spec:
             processors:
               batch: {}
               resourcedetection:
-                detectors: [env, k8s, system]
+                detectors: [env, system]
             exporters:
               otlphttp/loki:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local:3100
