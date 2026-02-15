@@ -1,4 +1,6 @@
 server:
+  extraFlags:
+    - web.enable-remote-write-receiver
   ingress:
     enabled: true
     ingressClassName: traefik
