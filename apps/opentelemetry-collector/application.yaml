@@ -42,7 +42,7 @@ spec:
               #   zipkin: null
               prometheus:
                 target_allocator:
-                  endpoint: http://opentelemetry-target-allocator.monitoring.svc.cluster.local:8080/targets
+                  endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
                   interval: 30s
                   collector_id: collector-1
                 config:
