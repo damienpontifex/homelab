@@ -37,6 +37,8 @@ spec:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
               prometheusremotewrite:
                 endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write
+                resource_to_telemetry_conversion:
+                  enabled: true
             service:
               pipelines:
                 logs:
