@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: homelab
+  sources:
+    # https://access.crunchydata.com/documentation/postgres-operator/latest/installation/helm
+    - repoURL: oci://registry.developers.crunchydata.com/crunchydata/pgo
+      path: .
+      targetRevision: 6.0.0
+      helm:
+        releaseName: postgres-operator
+        # helm show values oci://registry.developers.crunchydata.com/crunchydata/pgo
+        valuesObject:
+          resources:
+            controller: {}
+              # TODO: determine
+              # requests:
+              #   cpu: 25m
+              #   memory: 128Mi
+              # limits:
+              #   cpu: 100m
+              #   memory: 256Mi
+
+  destination:
+    name: in-cluster
+    namespace: postgres-operator
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
