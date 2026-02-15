@@ -21,7 +21,7 @@ spec:
             replicas: 1
             podAnnotations:
               prometheus.io/scrape: "true"
-              prometheus.io/port: 8942
+              prometheus.io/port: "8942"
               prometheus.io/path: /metrics
               prometheus.io/scheme: http
           updater:
