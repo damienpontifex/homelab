@@ -34,7 +34,7 @@ spec:
                 detectors: [env, system]
             exporters:
               otlphttp/loki:
-                endpoint: http://loki-gateway.monitoring.svc.cluster.local:3100
+                endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
               otlphttp/prometheus:
                 endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091
             service:
