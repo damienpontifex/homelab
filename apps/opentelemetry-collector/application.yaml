@@ -36,7 +36,7 @@ spec:
               otlphttp/loki:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
               prometheusremotewrite:
-                endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9090/api/v1/push
+                endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091/api/v1/write
             service:
               pipelines:
                 logs:
