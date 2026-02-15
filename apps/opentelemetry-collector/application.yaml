@@ -41,7 +41,7 @@ spec:
               pipelines:
                 logs:
                   processors: [batch, resourcedetection]
-                  exporters: [debug, otlphttp/loki]
+                  exporters: [otlphttp/loki]
                 metrics:
                   processors: [batch, resourcedetection]
                   exporters: [debug, otlphttp/prometheus]
