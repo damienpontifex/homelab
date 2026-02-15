@@ -27,7 +27,7 @@ scrapeConfigs:
   kubernetes-nodes:
     enabled: false
   kubernetes-pods:
-    enabled: false
+    enabled: true
   kubernetes-cadvisor:
     enabled: false
   kubernetes-service-endpoints:
