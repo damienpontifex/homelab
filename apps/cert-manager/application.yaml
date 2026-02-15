@@ -23,6 +23,9 @@ spec:
           config:
             logging:
               format: json
+          prometheus:
+            servicemonitor:
+              enabled: true
 
     - repoURL: https://github.com/damienpontifex/homelab.git
       path: apps/cert-manager/cluster-issuers
