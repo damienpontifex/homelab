@@ -35,8 +35,8 @@ spec:
             exporters:
               otlphttp/loki:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
-              otlphttp/prometheus:
-                endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091/api/v1/write
+              prometheusremotewrite:
+                endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091/api/v1/push
             service:
               pipelines:
                 logs:
@@ -44,7 +44,7 @@ spec:
                   exporters: [otlphttp/loki]
                 metrics:
                   processors: [batch, resourcedetection]
-                  exporters: [debug, otlphttp/prometheus]
+                  exporters: [debug, prometheusremotewrite]
                   # processors:
                   #   # https://opentelemetry.io/blog/2026/log-deduplication-processor/
                   #   - logdedup:
