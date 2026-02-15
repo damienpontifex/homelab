@@ -7,14 +7,14 @@ metadata:
 spec:
   project: homelab
   sources:
-    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    # https://artifacthub.io/packages/helm/prometheus-community/prometheus
+    - repoURL: oci://ghcr.io/prometheus-community/charts/prometheus
       path: .
-      targetRevision: 81.6.3
+      targetRevision: 28.9.1
       helm:
-        releaseName: kube-prometheus-stack
+        releaseName: prometheus
         valueFiles:
-          - $homelab/apps/monitoring/kube-prometheus-stack/kube-prometheus-stack.values.yaml
+          - $homelab/apps/monitoring/kube-prometheus-stack/prometheus.values.yaml
 
     - repoURL: https://github.com/damienpontifex/homelab.git
       ref: homelab

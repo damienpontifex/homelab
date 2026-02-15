@@ -1,0 +1,35 @@
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - prometheus.home.pontifex.dev
+    tls:
+      - secretName: prometheus-home-pontifex-dev-tls
+        hosts:
+          - prometheus.home.pontifex.dev
+
+kube-state-metrics:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+
+alertmanager:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    paths:
+      - /
+    hosts:
+      - alertmanager.home.pontifex.dev
+    tls:
+      - secretName: alertmanager-home-pontifex-dev-tls
+        hosts:
+          - alertmanager.home.pontifex.dev
