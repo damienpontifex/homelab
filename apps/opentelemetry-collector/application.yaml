@@ -35,9 +35,9 @@ spec:
               includeCollectorLogs: true
 
           config:
-            receivers:
-              jaeger: null
-              zipkin: null
+            # receivers:
+            #   jaeger: null
+            #   zipkin: null
 
             processors:
               batch: {}
