@@ -17,8 +17,14 @@ spec:
           mode: deployment
           image:
             repository: otel/opentelemetry-collector-contrib
+
+          # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
           presets:
             hostMetrics:
+              enabled: true
+            kubeletMetrics:
+              enabled: true
+            kubernetesAttributes:
               enabled: true
             kubernetesEvents:
               enabled: true
@@ -27,36 +33,43 @@ spec:
             logsCollection:
               enabled: true
               includeCollectorLogs: true
+
           config:
+            receivers:
+              jaeger: null
+              zipkin: null
+
             processors:
               batch: {}
+              # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
               resourcedetection:
                 detectors: [env, system]
+              logdedup:
+                interval: 1s
+                conditions:
+                  - severity_number >= SEVERITY_NUMBER_ERROR
+                  - attributes["log.type"] == "connection"
+                exclude_fields:
+                  - attributes.request_id
+                  - attributes.timestamp
+
             exporters:
               otlphttp/loki:
                 endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+              # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
               prometheusremotewrite:
                 endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write
                 resource_to_telemetry_conversion:
                   enabled: true
+
             service:
               pipelines:
                 logs:
-                  processors: [batch, resourcedetection]
+                  processors: [logdedup, batch, resourcedetection]
                   exporters: [otlphttp/loki]
                 metrics:
                   processors: [batch, resourcedetection]
-                  exporters: [debug, prometheusremotewrite]
-                  # processors:
-                  #   # https://opentelemetry.io/blog/2026/log-deduplication-processor/
-                  #   - logdedup:
-                  #       interval: 1s
-                  #     conditions:
-                  #       - severity_number >= SEVERITY_NUMBER_ERROR
-                  #       - attributes["log.type"] == "connection"
-                  #     exclude_fields:
-                  #       - attributes.request_id
-                  #       - attributes.timestamp
+                  exporters: [prometheusremotewrite]
 
   destination:
     name: in-cluster
