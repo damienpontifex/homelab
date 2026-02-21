@@ -1,0 +1,103 @@
+mode: deployment
+image:
+  repository: otel/opentelemetry-collector-contrib
+serviceMonitor:
+  enabled: true
+
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
+presets:
+  # TODO: split otel collector, one for single replica to scrape api server pieces and another as daemonset to do app level collection and log collection
+  hostMetrics:
+    enabled: true
+  kubeletMetrics:
+    enabled: true
+  kubernetesAttributes:
+    enabled: true
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8seventsreceiver
+  kubernetesEvents:
+    enabled: true
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sclusterreceiver
+  clusterMetrics:
+    enabled: true
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: true
+  # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
+
+config:
+  receivers:
+    #   jaeger: null
+    #   zipkin: null
+    prometheus:
+      target_allocator:
+        endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
+        interval: 30s
+        collector_id: collector-1
+      config:
+        scrape_configs:
+          - job_name: annotation-discovery
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - source_labels:
+                  [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                action: keep
+                regex: "true"
+              - source_labels:
+                  [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                action: replace
+                target_label: __metrics_path__
+                regex: (.+)
+              - source_labels:
+                  [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+                action: replace
+                regex: (https?)
+                target_label: __scheme__
+              - source_labels:
+                  [
+                    __address__,
+                    __meta_kubernetes_pod_annotation_prometheus_io_port,
+                  ]
+                action: replace
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: $$1:$$2
+                target_label: __address__
+              - source_labels: [__meta_kubernetes_namespace]
+                action: replace
+                target_label: namespace
+              - source_labels: [__meta_kubernetes_pod_name]
+                action: replace
+                target_label: pod
+
+  processors:
+    batch: {}
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
+    resourcedetection:
+      detectors: [env, system]
+    logdedup:
+      interval: 1s
+      conditions:
+        - severity_number >= SEVERITY_NUMBER_ERROR
+        - attributes["log.type"] == "connection"
+      exclude_fields:
+        - attributes.request_id
+        - attributes.timestamp
+
+  exporters:
+    otlphttp/loki:
+      endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
+    prometheusremotewrite:
+      endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write
+      resource_to_telemetry_conversion:
+        enabled: true
+
+  service:
+    pipelines:
+      logs:
+        processors:
+          [memory_limiter, resourcedetection, k8sattributes, logdedup, batch]
+        exporters: [otlphttp/loki]
+      metrics:
+        processors: [memory_limiter, resourcedetection, k8sattributes, batch]
+        exporters: [prometheusremotewrite]
