@@ -22,19 +22,23 @@ spec:
 
           # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
           presets:
+            # TODO: split otel collector, one for single replica to scrape api server pieces and another as daemonset to do app level collection and log collection
             hostMetrics:
               enabled: true
             kubeletMetrics:
               enabled: true
             kubernetesAttributes:
               enabled: true
+            # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8seventsreceiver
             kubernetesEvents:
               enabled: true
+            # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sclusterreceiver
             clusterMetrics:
               enabled: true
             logsCollection:
               enabled: true
               includeCollectorLogs: true
+            # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
 
           config:
             receivers:
@@ -113,10 +117,18 @@ spec:
             service:
               pipelines:
                 logs:
-                  processors: [logdedup, batch, resourcedetection]
+                  processors:
+                    [
+                      memory_limiter,
+                      resourcedetection,
+                      k8sattributes,
+                      logdedup,
+                      batch,
+                    ]
                   exporters: [otlphttp/loki]
                 metrics:
-                  processors: [batch, resourcedetection]
+                  processors:
+                    [memory_limiter, resourcedetection, k8sattributes, batch]
                   exporters: [prometheusremotewrite]
 
     # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
