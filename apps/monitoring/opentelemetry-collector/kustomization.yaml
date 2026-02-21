@@ -3,9 +3,16 @@ kind: Kustomization
 
 namespace: monitoring
 
-resources: []
+resources:
+  - namespace.yaml
 
 helmCharts:
+  # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
+  # - repo: oci://ghcr.io/prometheus-community/charts
+  #   name: prometheus-operator-crds
+  #   version: 27.0.0
+  #   releaseName: prometheus-operator-crds
+
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     name: opentelemetry-collector
