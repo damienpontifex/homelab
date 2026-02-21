@@ -1,6 +1,8 @@
 mode: deployment
+
 image:
   repository: otel/opentelemetry-collector-contrib
+
 serviceMonitor:
   enabled: false
 
@@ -20,14 +22,14 @@ presets:
   clusterMetrics:
     enabled: true
   logsCollection:
-    enabled: true
-    includeCollectorLogs: true
+    enabled: false
+    includeCollectorLogs: false
   # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
 
 config:
   receivers:
-    #   jaeger: null
-    #   zipkin: null
+    jaeger: null
+    zipkin: null
     prometheus:
       target_allocator:
         endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
@@ -84,6 +86,8 @@ config:
         - attributes.timestamp
 
   exporters:
+    debug:
+      verbosity: detailed
     otlphttp/loki:
       endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
@@ -95,9 +99,13 @@ config:
   service:
     pipelines:
       logs:
-        processors:
-          [memory_limiter, resourcedetection, k8sattributes, logdedup, batch]
-        exporters: [otlphttp/loki]
+        # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
+        processors: [memory_limiter, resourcedetection, logdedup, batch]
+        # exporters: [otlphttp/loki]
+        exporters: [debug]
       metrics:
+        # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
         processors: [memory_limiter, resourcedetection, k8sattributes, batch]
         exporters: [prometheusremotewrite]
+      traces:
+        receivers: [otlp]
