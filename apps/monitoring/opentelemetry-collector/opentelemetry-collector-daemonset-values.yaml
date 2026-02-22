@@ -36,6 +36,7 @@ config:
         # TODO: investigate resourcedetection, logdedup processors
         exporters: [otlphttp]
         # exporters: [debug]
+      traces: null
 
 ports:
   jaeger-compact:
