@@ -4,25 +4,21 @@ kind: Application
 metadata:
   name: prometheus
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
 spec:
   project: homelab
-  sources:
-    # https://artifacthub.io/packages/helm/prometheus-community/prometheus
-    - repoURL: oci://ghcr.io/prometheus-community/charts/prometheus
-      path: .
-      targetRevision: 28.9.0
-      helm:
-        releaseName: prometheus
-        valueFiles:
-          - $homelab/apps/monitoring/prometheus/prometheus.values.yaml
 
-    - repoURL: https://github.com/damienpontifex/homelab.git
-      ref: homelab
-      targetRevision: HEAD
+  source:
+    repoURL: https://github.com/damienpontifex/homelab.git
+    targetRevision: HEAD
+    path: apps/monitoring/prometheus
 
   destination:
     name: in-cluster
     namespace: monitoring
+
   syncPolicy:
     automated:
       enabled: true
