@@ -63,7 +63,7 @@ config:
       metrics:
         # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
         processors: [memory_limiter, resourcedetection, k8sattributes, batch]
-        exporters: [prometheusremotewrite, debug]
+        exporters: [prometheusremotewrite]
       traces: null # TODO: no destination for traces yet, need to setup tempo
 
 ports:
