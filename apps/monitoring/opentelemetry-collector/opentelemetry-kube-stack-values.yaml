@@ -1,2 +1,18 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-kube-stack/values.schema.json
+clusterName: homelab
 
+kubernetesServiceMonitors:
+  enabled: true
+  ignoreNamespaceSelectors: false
+
+kubelet:
+  enabled: true
+
+kubeControllerManager:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
