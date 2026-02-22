@@ -17,8 +17,15 @@ helmCharts:
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     name: opentelemetry-collector
     version: 0.143.1
-    releaseName: opentelemetry-collector
-    valuesFile: opentelemetry-collector-values.yaml
+    releaseName: opentelemetry-collector-deployment
+    valuesFile: opentelemetry-collector-deployment-values.yaml
+
+  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+  - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    name: opentelemetry-collector
+    version: 0.143.1
+    releaseName: opentelemetry-collector-daemonset
+    valuesFile: opentelemetry-collector-daemonset-values.yaml
 
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts

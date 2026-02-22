@@ -1,0 +1,59 @@
+mode: daemonset
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+
+serviceMonitor:
+  enabled: true
+
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
+presets:
+  # TODO: split otel collector, one for single replica to scrape api server pieces and another as daemonset to do app level collection and log collection
+  hostMetrics:
+    enabled: true
+  kubeletMetrics:
+    enabled: true
+  kubernetesAttributes:
+    enabled: true
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8seventsreceiver
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: false
+  # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
+
+config:
+  receivers:
+    jaeger: null
+    zipkin: null
+  exporters:
+    otlphttp:
+      endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+
+  service:
+    pipelines:
+      logs:
+        # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
+        # TODO: investigate resourcedetection, logdedup processors
+        exporters: [otlphttp]
+        # exporters: [debug]
+
+ports:
+  jaeger-compact:
+    enabled: false
+  jaeger-thrift:
+    enabled: false
+  jaeger-grpc:
+    enabled: false
+  zipkin:
+    enabled: false
+  metrics:
+    enabled: true
+
+internalTelemetryViaOTLP:
+  metrics:
+    enabled: true
+  logs:
+    enabled: true
+  traces:
+    enabled: false # TODO: setup tempo
+
