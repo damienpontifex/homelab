@@ -26,7 +26,8 @@ config:
     jaeger: null
     zipkin: null
   exporters:
-    otlphttp:
+    # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+    otlphttp/loki:
       endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
 
   service:
@@ -34,7 +35,8 @@ config:
       logs:
         # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
         # TODO: investigate resourcedetection, logdedup processors
-        exporters: [otlphttp]
+        exporters:
+          - otlphttp/loki
         # exporters: [debug]
       traces: null
 

@@ -55,7 +55,9 @@ config:
 
   service:
     pipelines:
-      logs: null
+      logs:
+        exporters:
+          - otlphttp/loki
       metrics:
         # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
         processors: [memory_limiter, resourcedetection, k8sattributes, batch]
