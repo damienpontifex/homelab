@@ -14,25 +14,32 @@ helmCharts:
   #   releaseName: prometheus-operator-crds
 
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+  #   name: opentelemetry-collector
+  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
+  #   version: 0.143.1
+  #   releaseName: opentelemetry-collector-deployment
+  #   valuesFile: opentelemetry-collector-deployment-values.yaml
+  #
+  # # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+  #   name: opentelemetry-collector
+  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
+  #   version: 0.143.1
+  #   releaseName: opentelemetry-collector-daemonset
+  #   valuesFile: opentelemetry-collector-daemonset-values.yaml
+  #
+  # # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
+  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+  #   name: opentelemetry-target-allocator
+  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-target-allocator
+  #   version: 0.126.10
+  #   releaseName: opentelemetry-target-allocator
+  #   valuesFile: opentelemetry-target-allocator-values.yaml
+  #
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    name: opentelemetry-collector
-    # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
-    version: 0.143.1
-    releaseName: opentelemetry-collector-deployment
-    valuesFile: opentelemetry-collector-deployment-values.yaml
-
-  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
-  - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    name: opentelemetry-collector
-    # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
-    version: 0.143.1
-    releaseName: opentelemetry-collector-daemonset
-    valuesFile: opentelemetry-collector-daemonset-values.yaml
-
-  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
-  - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    name: opentelemetry-target-allocator
+    name: opentelemetry-kube-stack
     # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-target-allocator
-    version: 0.126.10
-    releaseName: opentelemetry-target-allocator
-    valuesFile: opentelemetry-target-allocator-values.yaml
+    version: 0.14.4
+    releaseName: opentelemetry-kube-stack
+    valuesFile: opentelemetry-kube-stack-values.yaml
