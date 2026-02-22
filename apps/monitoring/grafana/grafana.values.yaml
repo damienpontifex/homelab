@@ -47,6 +47,9 @@ grafana.ini:
     auto_login: true
     force_use_graph_api: true
 
+persistence:
+  enabled: true
+
 serviceAccount:
   annotations:
     azure.workload.identity/client-id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
