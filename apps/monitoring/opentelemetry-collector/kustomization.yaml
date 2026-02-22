@@ -43,3 +43,4 @@ helmCharts:
     version: 0.14.4
     releaseName: opentelemetry-kube-stack
     valuesFile: opentelemetry-kube-stack-values.yaml
+    includeCRDs: true
