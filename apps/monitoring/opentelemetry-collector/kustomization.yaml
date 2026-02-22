@@ -32,3 +32,4 @@ helmCharts:
     name: opentelemetry-target-allocator
     version: 0.126.10
     releaseName: opentelemetry-target-allocator
+    valuesFile: opentelemetry-target-allocator-values.yaml

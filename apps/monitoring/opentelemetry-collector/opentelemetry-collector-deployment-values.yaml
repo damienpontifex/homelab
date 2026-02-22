@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
 mode: deployment
 
 image:
@@ -22,6 +23,7 @@ config:
   receivers:
     jaeger: null
     zipkin: null
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md
     prometheus:
       target_allocator:
         endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
@@ -49,7 +51,7 @@ config:
       endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
     prometheusremotewrite:
-      endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write
+      endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/push
       resource_to_telemetry_conversion:
         enabled: true
 

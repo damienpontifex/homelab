@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
 mode: daemonset
 
 image:
@@ -8,7 +9,6 @@ serviceMonitor:
 
 # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
 presets:
-  # TODO: split otel collector, one for single replica to scrape api server pieces and another as daemonset to do app level collection and log collection
   hostMetrics:
     enabled: true
   kubeletMetrics:
