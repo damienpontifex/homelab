@@ -19,7 +19,7 @@ server:
 prometheus-node-exporter:
   enabled: false
 kube-state-metrics:
-  enabled: true
+  enabled: false
   # https://artifacthub.io/packages/helm/prometheus-community/kube-state-metrics
   releaseLabel: true
   prometheusScrape: false # Mutually exclusive with prometheus.monitor.enabled
