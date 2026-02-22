@@ -51,7 +51,7 @@ config:
       endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
     prometheusremotewrite:
-      endpoint: http://prometheus-prometheus-pushgateway.monitoring.svc.cluster.local:9091/api/v1/write
+      endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/write
       resource_to_telemetry_conversion:
         enabled: true
 
