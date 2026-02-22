@@ -74,3 +74,13 @@ ports:
     enabled: false
   metrics:
     enabled: true
+
+internalTelemetryViaOTLP:
+  endpoint: http://localhost:4318
+  metrics:
+    enabled: true
+  logs:
+    enabled: true
+  traces:
+    enabled: false # TODO: setup tempo
+

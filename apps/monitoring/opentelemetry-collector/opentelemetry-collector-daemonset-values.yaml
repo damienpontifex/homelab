@@ -50,6 +50,7 @@ ports:
     enabled: true
 
 internalTelemetryViaOTLP:
+  endpoint: http://localhost:4318
   metrics:
     enabled: true
   logs:
