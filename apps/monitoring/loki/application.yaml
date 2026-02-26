@@ -4,30 +4,16 @@ kind: Application
 metadata:
   name: loki
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
 spec:
   project: homelab
-  sources:
-    # https://artifacthub.io/packages/helm/grafana/loki
-    - repoURL: https://grafana.github.io/helm-charts
-      chart: loki
-      targetRevision: 6.52.0
-      helm:
-        releaseName: loki
-        valueFiles:
-          - $homelab/apps/monitoring/loki/loki.values.yaml
 
-    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    # - repoURL: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    #   path: .
-    #   targetRevision: 81.4.2
-    #   helm:
-    #     releaseName: kube-prometheus-stack
-    #     valueFiles:
-    #       - $homelab/apps/monitoring/kube-prometheus-stack.values.yaml
-
-    - repoURL: https://github.com/damienpontifex/homelab.git
-      ref: homelab
-      targetRevision: HEAD
+  source:
+    repoURL: https://github.com/damienpontifex/homelab.git
+    targetRevision: HEAD
+    path: apps/monitoring/loki
 
   destination:
     name: in-cluster

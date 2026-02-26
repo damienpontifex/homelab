@@ -5,6 +5,57 @@ defaultCRConfig:
   presets:
     kubernetesAttributes:
       enabled: true
+  config:
+    exporters:
+      otlp_http/prometheus:
+        endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
+      debug:
+        # verbosity: detailed
+
+collectors:
+  daemon:
+    config:
+      service:
+        pipelines:
+          metrics:
+            exporters: [otlp_http/prometheus, debug]
+
+  deployment:
+    enabled: true
+    replicas: 1
+    mode: statefulset
+    targetAllocator:
+      enabled: true
+      replicas: 1
+      prometheusCR:
+        enabled: true
+        serviceMonitorSelector: {}
+        podMonitorSelector: {}
+
+    presets:
+      kubernetesAttributes:
+        enabled: true
+    config:
+      receivers:
+        # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver
+        prometheus:
+          target_allocator:
+            endpoint: http://opentelemetry-kube-stack-collector-targetallocator
+            interval: 30s
+            collector_id: ${POD_NAME}
+          config:
+            scrape_configs:
+              # Placeholder config require but the Target Allocator will override it with dynamically discovered targets
+              - job_name: "otel-collector"
+                scrape_interval: 30s
+                static_configs:
+                  - targets: ["0.0.0.0:8888"]
+
+      service:
+        pipelines:
+          metrics:
+            receivers: [prometheus]
+            exporters: [otlp_http/prometheus, debug]
 
 kubernetesServiceMonitors:
   enabled: true
@@ -21,3 +72,10 @@ kubeStateMetrics:
 
 nodeExporter:
   enabled: true
+
+# opentelemetry-operator:
+#   admissionWebhooks:
+#     certManager:
+#       enabled: false
+#     autoGenerateCert:
+#       enabled: false

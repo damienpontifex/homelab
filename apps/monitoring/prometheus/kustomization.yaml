@@ -10,3 +10,4 @@ helmCharts:
     version: 28.9.0
     releaseName: prometheus
     valuesFile: prometheus.values.yaml
+    includeCRDs: true
