@@ -39,7 +39,7 @@ helmCharts:
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     name: opentelemetry-kube-stack
     # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-kube-stack
-    version: 0.14.5
+    version: 0.14.6
     releaseName: opentelemetry-kube-stack
     valuesFile: opentelemetry-kube-stack-values.yaml
     includeCRDs: true
