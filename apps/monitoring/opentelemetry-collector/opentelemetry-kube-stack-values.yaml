@@ -7,7 +7,7 @@ defaultCRConfig:
       enabled: true
   config:
     extensions:
-      healthcheckv2:
+      health_check:
     exporters:
       # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
       otlp_http/prometheus:
@@ -19,7 +19,7 @@ defaultCRConfig:
       debug:
         # verbosity: detailed
     service:
-      extensions: [healthcheckv2]
+      extensions: [health_check]
 
 collectors:
   daemon:
