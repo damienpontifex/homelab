@@ -43,3 +43,4 @@ helmCharts:
     releaseName: opentelemetry-kube-stack
     valuesFile: opentelemetry-kube-stack-values.yaml
     includeCRDs: true
+    namespace: monitoring
