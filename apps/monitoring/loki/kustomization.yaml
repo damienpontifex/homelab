@@ -11,3 +11,4 @@ helmCharts:
     releaseName: loki
     valuesFile: loki.values.yaml
     skipTests: true
+    namespace: monitoring
