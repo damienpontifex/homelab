@@ -6,11 +6,20 @@ defaultCRConfig:
     kubernetesAttributes:
       enabled: true
   config:
+    extensions:
+      healthcheckv2:
     exporters:
+      # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
       otlp_http/prometheus:
         endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
+      # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+      otlp_http/loki:
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+      # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
       debug:
         # verbosity: detailed
+    service:
+      extensions: [healthcheckv2]
 
 collectors:
   daemon:
@@ -18,7 +27,9 @@ collectors:
       service:
         pipelines:
           metrics:
-            exporters: [otlp_http/prometheus, debug]
+            exporters: [otlp_http/prometheus]
+          logs:
+            exporters: [otlp_http/loki]
 
   deployment:
     enabled: true
