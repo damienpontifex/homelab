@@ -5,7 +5,7 @@ namespace: monitoring
 
 helmCharts:
   # https://artifacthub.io/packages/helm/grafana-community/tempo
-  - repo: https://grafana.github.io/helm-charts
+  - repo: oci://ghcr.io/grafana-community/helm-charts
     name: tempo
     version: 1.26.5
     releaseName: tempo
