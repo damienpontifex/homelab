@@ -1,0 +1,12 @@
+tempo:
+  metricsGenerator:
+    enabled: true
+  receivers:
+    jaeger: null
+    opencensus: null
+
+serviceMonitor:
+  enabled: true
+
+persistence:
+  enabled: true

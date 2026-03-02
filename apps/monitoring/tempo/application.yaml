@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/application-argoproj-v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tempo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: homelab
+
+  source:
+    repoURL: https://github.com/damienpontifex/homelab.git
+    targetRevision: HEAD
+    path: apps/monitoring/tempo
+
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
