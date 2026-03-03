@@ -15,7 +15,9 @@
     ]
   },
   "kustomize": {
-    "fileMatch": ["(^|/)kustomization\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/(^|/)kustomization\\.ya?ml$/"
+    ]
   },
   "customManagers": [
     {
