@@ -36,6 +36,20 @@
         "tooltip": "View source file in repository",
         "type": "link",
         "url": "https://github.com/damienpontifex/homelab/blob/main/apps/monitoring/grafana/dashboardskubernetes-overview.json"
+      },
+      {
+        "asDropdown": true,
+        "icon": "external link",
+        "includeVars": true,
+        "keepTime": true,
+        "tags": [
+          "kubernetes"
+        ],
+        "targetBlank": false,
+        "title": "Kubernetes",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
       }
     ],
     "liveNow": true,
@@ -573,7 +587,9 @@
     ],
     "preload": false,
     "schemaVersion": 42,
-    "tags": [],
+    "tags": [
+      "kubernetes"
+    ],
     "templating": {
       "list": [
         {
