@@ -223,7 +223,7 @@
               "uid": "PBFA97CFB590B2093"
             },
             "editorMode": "code",
-            "expr": "count(\n    max by (cluster, namespace, workload, workload_type, asserts_env, asserts_site) (\n      # replicaset\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\".+\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset) (last_over_time((kube_replicaset_owner{namespace=~\".+\", replicaset=~\".+\", owner_kind=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"replicaset\", \"(.+)\"\n          )\n          , \"workload_type\", \"replicaset\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_replicaset)\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\".+\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset, owner_name) (last_over_time((kube_replicaset_owner{namespace=~\".+\", replicaset=~\".+\", owner_is_controller=\"true\", owner_kind=\"Deployment\", owner_name!=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"owner_name\", \"(.+)\"\n          )\n          , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_deployment)\n      label_replace(\n        label_replace(\n            max by (cluster, namespace, deployment, asserts_env, asserts_site) (last_over_time((kube_deployment_spec_replicas{namespace=~\".+\", deployment=~\".+\"})[$__range:]))\n            , \"workload\", \"$1\", \"deployment\", \"(.+)\"\n        )\n        , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # daemonset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, daemonset, asserts_env, asserts_site) (last_over_time((kube_daemonset_status_desired_number_scheduled{namespace=~\".+\", daemonset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"daemonset\", \"(.+)\"\n          )\n      , \"workload_type\", \"daemonset\", \"\", \"\"\n      )\n\n      OR\n\n      # statefulset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, statefulset, asserts_env, asserts_site) (last_over_time((kube_statefulset_replicas{namespace=~\".+\", statefulset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"statefulset\", \"(.+)\"\n          )\n      , \"workload_type\", \"statefulset\", \"\", \"\"\n      )\n\n      OR\n\n      # everything else\n      last_over_time((namespace_workload_pod:kube_pod_owner:relabel{\n        namespace=~\".+\",\n        workload=~\".+\",\n        workload_type!=\"replicaset\",\n        workload_type!=\"deployment\",\n        workload_type!=\"daemonset\",\n        workload_type!=\"statefulset\"\n      })[$__range:])\n    )\n    )",
+            "expr": "count(\n    max by (cluster, namespace, workload, workload_type, asserts_env, asserts_site) (\n      # replicaset\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\"$namespace\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset) (last_over_time((kube_replicaset_owner{namespace=~\"$namespace\", replicaset=~\".+\", owner_kind=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"replicaset\", \"(.+)\"\n          )\n          , \"workload_type\", \"replicaset\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_replicaset)\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\"$namespace\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset, owner_name) (last_over_time((kube_replicaset_owner{namespace=~\"$namespace\", replicaset=~\".+\", owner_is_controller=\"true\", owner_kind=\"Deployment\", owner_name!=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"owner_name\", \"(.+)\"\n          )\n          , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_deployment)\n      label_replace(\n        label_replace(\n            max by (cluster, namespace, deployment, asserts_env, asserts_site) (last_over_time((kube_deployment_spec_replicas{namespace=~\"$namespace\", deployment=~\".+\"})[$__range:]))\n            , \"workload\", \"$1\", \"deployment\", \"(.+)\"\n        )\n        , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # daemonset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, daemonset, asserts_env, asserts_site) (last_over_time((kube_daemonset_status_desired_number_scheduled{namespace=~\"$namespace\", daemonset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"daemonset\", \"(.+)\"\n          )\n      , \"workload_type\", \"daemonset\", \"\", \"\"\n      )\n\n      OR\n\n      # statefulset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, statefulset, asserts_env, asserts_site) (last_over_time((kube_statefulset_replicas{namespace=~\"$namespace\", statefulset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"statefulset\", \"(.+)\"\n          )\n      , \"workload_type\", \"statefulset\", \"\", \"\"\n      )\n\n      OR\n\n      # everything else\n      last_over_time((namespace_workload_pod:kube_pod_owner:relabel{\n        namespace=~\".+\",\n        workload=~\".+\",\n        workload_type!=\"replicaset\",\n        workload_type!=\"deployment\",\n        workload_type!=\"daemonset\",\n        workload_type!=\"statefulset\"\n      })[$__range:])\n    )\n    )",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -287,7 +287,7 @@
               "uid": "PBFA97CFB590B2093"
             },
             "editorMode": "code",
-            "expr": "count(group by (cluster, namespace, pod) (kube_pod_info{namespace=~\".+\", pod!=\"\"}))",
+            "expr": "count(group by (cluster, namespace, pod) (kube_pod_info{namespace=~\"$namespace\", pod!=\"\"}))",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -351,7 +351,7 @@
               "uid": "PBFA97CFB590B2093"
             },
             "editorMode": "code",
-            "expr": "count(group by (cluster, namespace, pod, container) (kube_pod_container_info{namespace=~\".+\", pod!=\"\", container!=\"POD\", container!=\"\"}))",
+            "expr": "count(group by (cluster, namespace, pod, container) (kube_pod_container_info{namespace=~\"$namespace\", pod!=\"\", container!=\"POD\", container!=\"\"}))",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -577,15 +577,17 @@
     "templating": {
       "list": [
         {
+          "allValue": ".+",
           "current": {
-            "text": "argocd",
-            "value": "argocd"
+            "text": "All",
+            "value": "$__all"
           },
           "datasource": {
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
           "definition": "label_values(kube_namespace_status_phase{job=\"monitoring/kube-state-metrics\"},namespace)",
+          "includeAll": true,
           "name": "namespace",
           "options": [],
           "query": {
