@@ -583,6 +583,98 @@
         ],
         "title": "Cluster CPU Usage",
         "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "footer": {
+                "reducers": []
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        },
+        "id": 8,
+        "options": {
+          "cellHeight": "sm",
+          "frameIndex": 0,
+          "showHeader": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "exemplar": false,
+            "expr": "last_over_time((max by (asserts_env, asserts_site, cluster, container_runtime_version, internal_ip, kernel_version, kubelet_version, node, os_image, pod_cidr, provider_id, system_uuid) (kube_node_info{node=~\".+\"}))[$__range:])",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "__auto",
+            "range": false,
+            "refId": "info"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "exemplar": false,
+            "expr": "avg_over_time((sum by (cluster, node) (label_join(sum by (cluster, instance) (max by (cluster, instance, cpu, core) (1 - rate(node_cpu_seconds_total{instance=~\".+\", mode=~\"idle\"}[$__rate_interval]) \u003e= 0)) or sum by (cluster, instance) (rate(node_cpu_usage_seconds_total{instance=~\".+\"}[$__rate_interval]) \u003e= 0) or sum by (cluster, instance) (label_join(label_join(k8s_node_cpu_usage, \"cluster\", \",\", \"k8s_cluster_name\"), \"instance\", \",\", \"k8s_node_name\")), \"node\", \",\", \"instance\")))[$__range:])",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "__auto",
+            "range": false,
+            "refId": "cpu_usage_avg"
+          }
+        ],
+        "title": "Nodes",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "node",
+              "mode": "outer"
+            }
+          }
+        ],
+        "type": "table"
       }
     ],
     "preload": false,
