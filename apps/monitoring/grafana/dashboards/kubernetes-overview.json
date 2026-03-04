@@ -672,6 +672,22 @@
               "byField": "node",
               "mode": "outer"
             }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "node",
+                  "container_runtime_version",
+                  "internal_ip",
+                  "kernel_version",
+                  "kubelet_version",
+                  "os_image",
+                  "pod_cidr"
+                ]
+              }
+            }
           }
         ],
         "type": "table"
