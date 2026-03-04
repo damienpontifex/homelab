@@ -38,7 +38,21 @@
         "url": "https://github.com/damienpontifex/homelab/blob/main/apps/monitoring/grafana/dashboardskubernetes-overview.json"
       }
     ],
+    "liveNow": true,
     "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 6,
+        "panels": [],
+        "title": "Row title",
+        "type": "row"
+      },
       {
         "datasource": {
           "type": "prometheus",
@@ -66,7 +80,7 @@
           "h": 3,
           "w": 3,
           "x": 0,
-          "y": 0
+          "y": 1
         },
         "id": 1,
         "options": {
@@ -130,7 +144,7 @@
           "h": 3,
           "w": 3,
           "x": 3,
-          "y": 0
+          "y": 1
         },
         "id": 2,
         "options": {
@@ -194,7 +208,7 @@
           "h": 3,
           "w": 3,
           "x": 6,
-          "y": 0
+          "y": 1
         },
         "id": 3,
         "options": {
@@ -258,7 +272,7 @@
           "h": 3,
           "w": 3,
           "x": 9,
-          "y": 0
+          "y": 1
         },
         "id": 4,
         "options": {
@@ -322,7 +336,7 @@
           "h": 3,
           "w": 3,
           "x": 12,
-          "y": 0
+          "y": 1
         },
         "id": 5,
         "options": {
