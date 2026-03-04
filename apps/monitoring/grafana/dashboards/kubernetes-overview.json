@@ -599,10 +599,11 @@
               "cellOptions": {
                 "type": "auto"
               },
+              "filterable": true,
               "footer": {
                 "reducers": []
               },
-              "inspect": false
+              "inspect": true
             },
             "mappings": [],
             "thresholds": {
