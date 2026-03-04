@@ -41,19 +41,6 @@
     "liveNow": true,
     "panels": [
       {
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 0
-        },
-        "id": 6,
-        "panels": [],
-        "title": "Row title",
-        "type": "row"
-      },
-      {
         "datasource": {
           "type": "prometheus",
           "uid": "PBFA97CFB590B2093"
@@ -80,7 +67,7 @@
           "h": 3,
           "w": 3,
           "x": 0,
-          "y": 1
+          "y": 0
         },
         "id": 1,
         "options": {
@@ -144,7 +131,7 @@
           "h": 3,
           "w": 3,
           "x": 3,
-          "y": 1
+          "y": 0
         },
         "id": 2,
         "options": {
@@ -208,7 +195,7 @@
           "h": 3,
           "w": 3,
           "x": 6,
-          "y": 1
+          "y": 0
         },
         "id": 3,
         "options": {
@@ -272,7 +259,7 @@
           "h": 3,
           "w": 3,
           "x": 9,
-          "y": 1
+          "y": 0
         },
         "id": 4,
         "options": {
@@ -336,7 +323,7 @@
           "h": 3,
           "w": 3,
           "x": 12,
-          "y": 1
+          "y": 0
         },
         "id": 5,
         "options": {
@@ -372,6 +359,216 @@
         ],
         "title": "Containers",
         "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed"
+              }
+            },
+            "mappings": [],
+            "max": 0,
+            "min": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 0.6
+                },
+                {
+                  "color": "red",
+                  "value": 0.9
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 3
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "  sum(\n    label_join(\n          sum by (instance) (\n            max by (instance, cpu, core) (1 - rate(node_cpu_seconds_total{mode=~\"idle\"}[$__rate_interval]) \u003e= 0)\n          )\n        or\n          sum by (instance) (rate(node_cpu_usage_seconds_total[$__rate_interval]) \u003e= 0)\n      or\n        sum by (instance) (\n          label_join(\n            label_join(k8s_node_cpu_usage, \"cluster\", \",\", \"k8s_cluster_name\"),\n            \"instance\",\n            \",\",\n            \"k8s_node_name\"\n          )\n        ),\n      \"node\",\n      \",\",\n      \"instance\"\n    )\n  )\n/ on (cluster)\n  sum by (cluster) (\n      sum by (cluster) (max by (node, resource) (kube_node_status_capacity{resource=~\"cpu\"}))\n    or\n      sum by (cluster) (\n        label_join(\n          label_join(system_cpu_logical_count, \"cluster\", \",\", \"k8s_cluster_name\"),\n          \"node\",\n          \",\",\n          \"k8s_node_name\"\n        )\n      )\n  )",
+            "legendFormat": "CPU",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cluster CPU Usage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed"
+              }
+            },
+            "mappings": [],
+            "max": 0,
+            "min": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 0.6
+                },
+                {
+                  "color": "red",
+                  "value": 0.9
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 3
+        },
+        "id": 7,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "  sum(\n    label_join(\n          max by (instance) (node_memory_Active_file_bytes)\n        + on (instance) group_left ()\n          max by (instance) (node_memory_AnonPages_bytes)\n      or\n        max by (instance) (node_memory_working_set_bytes),\n      \"node\",\n      \",\",\n      \"instance\"\n    )\n  )",
+            "legendFormat": "Memory",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cluster Memory Usage",
+        "type": "timeseries"
       }
     ],
     "preload": false,
@@ -405,7 +602,7 @@
       ]
     },
     "time": {
-      "from": "now-6h",
+      "from": "now-1h",
       "to": "now"
     },
     "timepicker": {},
