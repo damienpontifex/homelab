@@ -10,4 +10,9 @@ helmCharts:
     version: 28.9.0
     releaseName: prometheus
     valuesFile: prometheus.values.yaml
-    includeCRDs: true
+
+  # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
+  - repo: oci://ghcr.io/prometheus-community/charts
+    name: prometheus-operator-crds
+    version: 28.0.0
+    releaseName: prometheus-operator-crds
