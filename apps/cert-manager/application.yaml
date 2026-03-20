@@ -12,7 +12,7 @@ spec:
 
   source:
     repoURL: https://github.com/damienpontifex/homelab.git
-    path: apps/cert-manager/cluster-issuers
+    path: apps/cert-manager
     targetRevision: HEAD
 
   destination:
