@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: home-pontifex-dev-wildcard-tls-certificate
+  namespace: kube-system
+spec:
+  secretName: home-pontifex-dev-wildcard-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "*.home.pontifex.dev"
+  dnsNames:
+    - "*.home.pontifex.dev"
+    - "home.pontifex.dev"
