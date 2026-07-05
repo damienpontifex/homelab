@@ -1,0 +1,15 @@
+apiVersion: provisioning.grafana.app/v0alpha1
+kind: Connection
+metadata:
+  name: homelab
+  namespace: default
+spec:
+  title: homelab
+  type: github
+  url: https://github.com
+  github:
+    appID: "<GITHUB_APP_ID>"
+    installationID: "<GITHUB_INSTALL_ID>"
+secure:
+  privateKey:
+    create: "<GITHUB_PRIVATE_KEY>"

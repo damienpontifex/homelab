@@ -1,0 +1,10 @@
+build: _jsonnet
+  kustomize build
+
+apply: _jsonnet
+  kustomize build | kubectl apply --filename -
+
+_jsonnet:
+  [[ -d vendor ]] || jb update
+  jsonnet --jpath vendor --multi . kustomization.jsonnet
+  jq --raw-output . kustomization.yaml > kustomization.yaml.tmp && mv kustomization.yaml.tmp kustomization.yaml

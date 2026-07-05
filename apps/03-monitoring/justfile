@@ -1,0 +1,14 @@
+loki:
+  kustomize build --enable-helm loki | kubectl apply --server-side=true --filename -
+
+prometheus:
+  kustomize build --enable-helm prometheus | kubectl apply --server-side=true --filename -
+
+otel:
+  kustomize build --enable-helm opentelemetry-collector | kubectl apply --server-side=true --force-conflicts --filename -
+
+tempo:
+  kustomize build --enable-helm tempo | kubectl apply --server-side=true --filename -
+
+provision-grafana:
+  grafanactl resources push --path {{justfile_directory()}}/grafana/provisioning

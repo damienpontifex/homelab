@@ -36,6 +36,16 @@ resource kv 'Microsoft.KeyVault/vaults@2025-05-01' = {
   }
 }
 
+type identityInfo = {
+  name: string
+  namespace: string?
+}
+var identities identityInfo[] = [
+  { name: 'unpoller', namespace: 'unpoller' }
+  { name: 'cert-manager' }
+  { name: 'homepage' }
+]
+
 resource unpollerIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: 'unpoller'
   location: location

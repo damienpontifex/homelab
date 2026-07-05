@@ -1,0 +1,171 @@
+apiVersion: "kustomize.config.k8s.io/v1beta1"
+configMapGenerator:
+- files:
+  - "dashboards/apiserver.json"
+  name: "apiserver-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/argocd-overview.json"
+  name: "argocd-overview-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/cluster-total.json"
+  name: "cluster-total-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/collector.json"
+  name: "collector-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/controller-manager.json"
+  name: "controller-manager-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-cluster.json"
+  name: "k8s-resources-cluster-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-namespace.json"
+  name: "k8s-resources-namespace-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-node.json"
+  name: "k8s-resources-node-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-pod.json"
+  name: "k8s-resources-pod-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-windows-cluster.json"
+  name: "k8s-resources-windows-cluster-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-windows-namespace.json"
+  name: "k8s-resources-windows-namespace-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-windows-pod.json"
+  name: "k8s-resources-windows-pod-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-workload.json"
+  name: "k8s-resources-workload-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-resources-workloads-namespace.json"
+  name: "k8s-resources-workloads-namespace-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-windows-cluster-rsrc-use.json"
+  name: "k8s-windows-cluster-rsrc-use-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/k8s-windows-node-rsrc-use.json"
+  name: "k8s-windows-node-rsrc-use-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/kubelet.json"
+  name: "kubelet-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/namespace-by-pod.json"
+  name: "namespace-by-pod-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/namespace-by-workload.json"
+  name: "namespace-by-workload-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/persistentvolumesusage.json"
+  name: "persistentvolumesusage-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/pod-total.json"
+  name: "pod-total-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/proxy.json"
+  name: "proxy-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/scheduler.json"
+  name: "scheduler-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+- files:
+  - "dashboards/workload-total.json"
+  name: "workload-total-dashboard"
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
+kind: "Kustomization"
