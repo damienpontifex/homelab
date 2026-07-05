@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: argocd
+
+resources:
+- namespace.yaml
+- https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.0/standard-install.yaml
+
+helmCharts:
+  # https://artifacthub.io/packages/helm/argo-cd-oci/argo-cd
+  - name: argo-cd
+    repo: oci://ghcr.io/argoproj/argo-helm
+    # renovate: datasource=helm registryUrl=https://argoproj.github.io/argo-helm depName=argo-cd
+    version: 10.1.2
+    releaseName: argocd
+    namespace: argocd
+    # https://github.com/argoproj/argo-helm/tree/main#charts-use-helm-capabilities
+    apiVersions: []
+    valuesFile: argocd.values.yaml
+
