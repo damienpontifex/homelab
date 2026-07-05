@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared
+  namespace: cloudflare-tunnel
   labels:
     app.kubernetes.io/name: cloudflared
     app.kubernetes.io/component: tunnel
@@ -16,6 +17,12 @@ spec:
         app.kubernetes.io/name: cloudflared
     spec:
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532     # Standard non-root user ID for distroless images
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
         sysctls:
           # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
           - name: net.ipv4.ping_group_range
@@ -23,6 +30,11 @@ spec:
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:2026.1.2
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           command:
             - cloudflared
             - tunnel
