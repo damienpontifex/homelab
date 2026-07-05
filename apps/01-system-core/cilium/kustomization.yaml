@@ -5,6 +5,9 @@ metadata:
 
 namespace: kube-system
 
+resources:
+  - cilium-gateway.yaml
+
 helmCharts:
   # https://artifacthub.io/packages/helm/cilium/cilium
   - name: cilium

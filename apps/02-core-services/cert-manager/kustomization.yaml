@@ -13,7 +13,7 @@ helmCharts:
     includeCRDs: true
 
 resources:
-  - cloudflare-api-token.yaml
+  - secret-store.yaml
   - letsencrypt-staging.yaml
   - letsencrypt-prod.yaml
   - vertical-pod-autoscaler.yaml

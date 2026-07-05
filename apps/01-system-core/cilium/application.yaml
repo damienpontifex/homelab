@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloudflare-tunnel
+  name: cilium
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,14 +10,14 @@ metadata:
 spec:
   project: homelab
 
-  sources:
-    - repoURL: https://github.com/damienpontifex/homelab.git
-      path: apps/02-core-services/cloudflare-tunnel
-      targetRevision: HEAD
+  source:
+    repoURL: https://github.com/damienpontifex/homelab.git
+    path: apps/01-system-core/cilium
+    targetRevision: HEAD
 
   destination:
     name: in-cluster
-    namespace: cloudflare-tunnel
+    namespace: kube-system
   syncPolicy:
     automated:
       enabled: true
@@ -26,3 +26,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+
