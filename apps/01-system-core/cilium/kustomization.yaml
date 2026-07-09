@@ -7,6 +7,7 @@ namespace: kube-system
 
 resources:
   - cilium-gateway.yaml
+  - bgp.yaml
 
 helmCharts:
   # https://artifacthub.io/packages/helm/cilium/cilium
@@ -15,5 +16,4 @@ helmCharts:
     releaseName: cilium
     namespace: kube-system
     valuesFile: cilium.values.yaml
-    # renovate: datasource=helm registryUrl=https://helm.cilium.io/ depName=cilium
     version: 1.19.5

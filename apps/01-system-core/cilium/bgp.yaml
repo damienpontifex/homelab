@@ -1,0 +1,63 @@
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: unifi-bgp-config
+spec:
+  nodeSelector: {} # All nodes
+  bgpInstances:
+    - name: UniFi
+      localASN: 64513
+      peers:
+        - name: dream-machine
+          peerAddress: 10.10.10.1
+          peerASN: 64512
+          # UniFi can't do dynamic discovery
+          # autoDiscovery:
+          #   mode: DefaultGateway
+          #   defaultGateway:
+          #     addressFamily: ipv4
+          peerConfigRef:
+            name: unifi-peer-policy
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: unifi-peer-policy
+spec:
+  timers:
+    connectRetryTimeSeconds: 120
+    holdTimeSeconds: 90
+    keepAliveTimeSeconds: 30
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 15
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: "lb-only"
+---
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: unifi-lan-pool
+spec:
+  allowFirstLastIPs: "Yes"
+  blocks:
+    - cidr: 10.200.10.1/29 # Hands out 10.200.10.0 through 10.10.10.7
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: lb-advertisement
+  labels:
+    advertise: "lb-only" # This matches the label selector in your CiliumBGPPeerConfig
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector: {} # All load balancer services
+        
