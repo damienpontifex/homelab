@@ -30,7 +30,7 @@ gatewayAPI:
   hostNetwork:
     enabled: true
 envoy:
-  enabled: true
+  enabled: false
   securityContext:
     capabilities:
       # Bind to privileged ports

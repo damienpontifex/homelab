@@ -5,10 +5,6 @@ metadata:
 
 namespace: kube-system
 
-resources:
-  - cilium-gateway.yaml
-  - bgp.yaml
-
 helmCharts:
   # https://artifacthub.io/packages/helm/cilium/cilium
   - name: cilium
@@ -17,3 +13,4 @@ helmCharts:
     namespace: kube-system
     valuesFile: cilium.values.yaml
     version: 1.19.5
+    includeCRDs: true
