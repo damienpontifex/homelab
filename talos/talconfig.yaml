@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=talconfig.schema.json
+
+clusterName: ${cluster_name}
+# https://github.com/siderolabs/talos/releases
+talosVersion: v1.13.6
+# https://kubernetes.io/releases/
+kubernetesVersion: v1.36.2
+endpoint: https://${control_plane_ip}:6443
+allowSchedulingOnMasters: true
+additionalApiServerCertSans:
+  - ${control_plane_ip}
+  - homelab.local
+  - home.pontifex.dev
+clusterPodNets:
+  - 10.244.0.0/16
+clusterSvcNets:
+  - 10.96.0.0/12
+cniConfig:
+  # Will install Cilium CNI
+  name: none
+nodes:
+  - hostname: homelab-control-01
+    installDiskSelector:
+      uuid: 4c820395-6fce-4b21-a84d-1395ffc765dd
+    ipAddress: ${control_plane_ip}
+    controlPlane: true
+
+controlPlane:
+  certSANs:
+    - ${control_plane_ip}
+  nodeLabels:
+      app.kubernetes.io/cluster: ${cluster_name}
+      topology.kubernetes.io/region: home
+      topology.kubernetes.io/zone: home-a
+  patches:
+    # https://kubernetes.io/docs/tutorials/security/seccomp/#enable-the-use-of-runtimedefault-as-the-default-seccomp-profile-for-all-workloads
+    # Talos machine config patch to enable default seccomp
+    - |-
+      machine:
+        kubelet:
+          defaultRuntimeSeccompProfileEnabled: true
+    # https://kubernetes.io/docs/tutorials/security/cluster-level-pss
+    # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+    - |-
+      cluster:
+        apiServer:
+          admissionControl:
+            - name: PodSecurity
+              configuration:
+                defaults:
+                  enforce: baseline
+                  enforce-version: latest
+                  warn: restricted
+                  warn-version: latest
+                  audit: restricted
+                  audit-version: latest
+                exemptions:
+                  namespaces: []
+                  runtimeClasses: []
+                  usernames: []
+patches:
+  # Replace kube-proxy with Cilium
+  - |-
+    cluster:
+      proxy:
+        disabled: true
+    machine:
+      sysctls:
+        net.ipv4.ip_forward: "1"
+        net.ipv6.conf.all.forwarding: "1"
+
+        # Disable strict reverse path filtering (allows asymmetric L3 BGP paths)
+        net.ipv4.conf.all.rp_filter: "0"
+        net.ipv4.conf.default.rp_filter: "0"
+    
+        # Accept incoming traffic targeted at local load balancer pools
+        net.ipv4.conf.all.accept_local: "1"
+        net.ipv4.conf.default.accept_local: "1"
+

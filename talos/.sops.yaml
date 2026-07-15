@@ -1,0 +1,6 @@
+creation_rules:
+  - path_regex: \.sops\.yaml$
+    key_groups:
+    azure_keyvault: https://pontifex-sops.vault.azure.net/keys/sops-age/fc3762d867974758b2fcfd830a507789
+    age: age1fn9hqngnz0582zwe6qxzzq7l7dy2kwxf23ujzcrqsp5sha52zs2q5tcazn
+
