@@ -61,7 +61,7 @@ genconfig:
 # Add kubeconfig
 [group("ops")]
 kubeconfig:
-	talhelper gencommand kubeconfig | sh
+	talhelper gencommand kubeconfig --extra-flags . | sh
 
 reset:
 	talhelper gencommand reset --extra-flags --reboot | sh
@@ -80,9 +80,9 @@ shutdown:
 	@just _talosctl shutdown
 
 apply-cilium:
-	kustomize build --enable-helm ~/dev/homelab/apps/01-system-core/cilium/ \
+	kustomize build --enable-helm ../apps/01-system-core/cilium/ \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-	kustomize build --enable-helm ~/dev/homelab/apps/01-system-core/cilium-resources/ \
+	kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
 # k exec -it -n kube-system cilium-lhg9v -- cilium bgp peers
 

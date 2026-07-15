@@ -21,7 +21,9 @@ cniConfig:
 nodes:
   - hostname: homelab-control-01
     installDiskSelector:
-      uuid: 4c820395-6fce-4b21-a84d-1395ffc765dd
+      # talosctl get disks --insecure --nodes $NODE_IP --output json | jq 'select(.spec.dev_path == "/dev/sda")'
+      wwid: "naa.50014ee20d45f411"
+      # uuid: 9e307860-849f-46ad-9a8f-6667aab3b1f8
     ipAddress: ${control_plane_ip}
     controlPlane: true
 
