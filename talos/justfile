@@ -31,7 +31,8 @@ bootstrap:
 	fi
 	talhelper genconfig
 	talhelper gencommand apply --extra-flags=--insecure | bash
-	# TODO: Wait until read before etcd bootstrap after initial apply
+	echo "Waiting for nodes to install and reboot..."
+	sleep 120
 	talhelper gencommand bootstrap | bash
 	# TODO: Wait until k8s available
 	# 1. get kubeconfig
