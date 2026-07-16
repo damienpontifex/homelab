@@ -1,10 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":disableDependencyDashboard"
   ],
   "configMigration": true,
   "semanticCommits": "enabled",
+  "automerge": false,
+  "mode": "full",
   "enabledManagers": [
     "custom.regex"
   ],
@@ -12,11 +15,6 @@
     "managerFilePatterns": [
       "**/*-application.yaml",
       "**/application.yaml"
-    ]
-  },
-  "kustomize": {
-    "managerFilePatterns": [
-      "/(^|/)kustomization\\.ya?ml$/"
     ]
   },
   "customManagers": [
@@ -28,6 +26,31 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) registryUrl=(?<registryUrl>\\S+) depName=(?<depName>\\S+)\\s+version: (?<currentValue>.*)"
       ]
+    },
+    {
+      "customType": "regex",
+      "description": "Manage talos version in talhelper",
+      "managerFilePatterns": [
+        "/talconfig\\.yaml$/"
+      ],
+      "matchStrings": [
+        "talosVersion:\\s*[\"\\\"]?(?<currentValue>v[0-9.]+)[\"\\\"]?"
+      ],
+      "depNameTemplate": "siderolabs/talos",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Manage k8s version in talhelper",
+      "managerFilePatterns": [
+        "/talconfig\\.yaml$/"
+      ],
+      "matchStrings": [
+        "kubernetesVersion:\\s*[\"\\\"]?(?<currentValue>v[0-9.]+)[\"\\\"]?"
+      ],
+      "depNameTemplate": "kubernetes/kubernetes",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "kubernetes"
     }
   ]
 }
