@@ -7,7 +7,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/grafana-community/loki
   - repo: oci://ghcr.io/grafana-community/helm-charts
     name: loki
-    version: 18.5.0
+    version: 18.5.1
     releaseName: loki
     valuesFile: loki.values.yaml
     skipTests: true
