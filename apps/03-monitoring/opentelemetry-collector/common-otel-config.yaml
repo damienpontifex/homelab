@@ -14,6 +14,12 @@ exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/debugexporter/README.md
   debug:
     verbosity: detailed
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlp_http/prometheus:
+    endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlp_http/loki:
+    endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
 
 extensions:
   health_check:

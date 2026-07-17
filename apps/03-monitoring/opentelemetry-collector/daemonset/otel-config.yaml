@@ -8,18 +8,77 @@ receivers:
     root_path: /hostfs
     scrapers:
       cpu:
+      load:
+      network:
       memory:
+      disk:
+      filesystem:
+        exclude_mount_points:
+          mount_points:
+            - '^/dev($|/)'
+            - '^/proc($|/)'
+            - '^/sys($|/)'
+            - '^/run/k3s/containerd($|/)'
+            - '^/var/lib/docker($|/)'
+            - '^/var/lib/kubelet($|/)'
+            - '^/snap($|/)'
+          match_type: regexp
+        exclude_fs_types:
+          fs_types:
+            - autofs
+            - binfmt_misc
+            - bpf
+            - cgroup2
+            - configfs
+            - debugfs
+            - devpts
+            - devtmpfs
+            - fusectl
+            - hugetlbfs
+            - iso9660
+            - mqueue
+            - nsfs
+            - overlay
+            - proc
+            - procfs
+            - pstore
+            - rpc_pipefs
+            - securityfs
+            - selinuxfs
+            - squashfs
+            - sysfs
+            - tracefs
+          match_type: strict
 
-exporters:
-  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md
-  otlp_http/prometheus:
-    endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
-  
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/kubeletstatsreceiver/README.md
+  kubelet_stats:
+    collection_interval: 20s
+    auth_type: serviceAccount
+    endpoint: https://${env:OTEL_K8S_NODE_NAME}:10250
+    node: ${env:OTEL_K8S_NODE_NAME}
+    insecure_skip_verify: true
+    k8s_api_config:
+      auth_type: serviceAccount
+    metric_groups:
+    - node
+    - pod
+    - container
+    - volume
+    metrics:
+      k8s.container.cpu.node.utilization:
+        enabled: true
+      k8s.pod.cpu.node.utilization:
+        enabled: true
+      k8s.container.memory.node.utilization:
+        enabled: true
+      k8s.pod.memory.node.utilization:
+        enabled: true
+
 service:
   extensions: [health_check]
   pipelines:
     metrics:
-      receivers: [host_metrics]
+      receivers: [kubelet_stats]
       processors: [memory_limiter, resource_detection]
       exporters: [otlp_http/prometheus]
 
