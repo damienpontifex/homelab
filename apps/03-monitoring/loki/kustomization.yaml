@@ -4,10 +4,10 @@ kind: Kustomization
 namespace: monitoring
 
 helmCharts:
-  # https://artifacthub.io/packages/helm/grafana/loki
-  - repo: https://grafana.github.io/helm-charts
+  # https://artifacthub.io/packages/helm/grafana-community/loki
+  - repo: oci://ghcr.io/grafana-community/helm-charts
     name: loki
-    version: 6.52.0
+    version: 18.5.0
     releaseName: loki
     valuesFile: loki.values.yaml
     skipTests: true
