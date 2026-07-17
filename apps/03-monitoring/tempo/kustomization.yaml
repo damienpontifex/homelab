@@ -7,7 +7,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/grafana-community/tempo
   - repo: oci://ghcr.io/grafana-community/helm-charts
     name: tempo
-    version: 1.26.7
+    version: 2.2.3
     releaseName: tempo
     valuesFile: tempo.values.yaml
     skipTests: true
