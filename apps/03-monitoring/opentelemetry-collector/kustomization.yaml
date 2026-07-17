@@ -25,10 +25,10 @@ helmCharts:
     additionalValuesFiles:
       - deployment/values.yaml
 
-  # - <<: *otel-common
-  #   releaseName: opentelemetry-collector-deployment
-  #   additionalValuesFiles:
-  #   - deployment/values.yaml
+  - <<: *otel-common
+    releaseName: opentelemetry-collector-daemonset
+    additionalValuesFiles:
+    - daemonset/values.yaml
 
   # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
   # - repo: oci://ghcr.io/prometheus-community/charts

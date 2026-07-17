@@ -1,58 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prometheus-community/helm-charts/refs/heads/main/charts/prometheus/values.schema.json
 server:
   extraFlags:
-    - web.enable-remote-write-receiver
     - web.enable-otlp-receiver
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-    annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    paths:
-      - /
-    hosts:
-      - prometheus.home.pontifex.dev
-    tls:
-      - secretName: prometheus-home-pontifex-dev-tls
-        hosts:
-          - prometheus.home.pontifex.dev
-  route:
-    main:
-      enabled: true
-      hostnames:
-        - prometheus.home.pontifex.dev
-      # TODO: change to true
-      httpsRedirect: false
+    # - web.enable-remote-write-receiver
 
-# Both of these provided by the k8s-monitoring chart
+# Dependencies in Chart.yaml
+alertmanager:
+  enabled: true
 prometheus-node-exporter:
   enabled: false
 kube-state-metrics:
   enabled: false
-  # https://artifacthub.io/packages/helm/prometheus-community/kube-state-metrics
-  releaseLabel: true
-  prometheusScrape: false # Mutually exclusive with prometheus.monitor.enabled
-  prometheus:
-    monitor:
-      enabled: true
-      http:
-        honorLabels: true
-      metrics:
-        honorLabels: true
+prometheus-pushgateway:
+  enabled: false
 
+# All scraping done by opentelemetry collector so disable all below
 scrapeConfigs:
-  kubernetes-api-servers:
-    enabled: false
-  kubernetes-nodes:
-    enabled: false
-  kubernetes-pods:
-    enabled: true
-  kubernetes-cadvisor:
-    enabled: false
-  kubernetes-service-endpoints:
-    enabled: false
-  kubernetes-services:
-    enabled: false
-  kubernetes-ingress-endpoints:
-    enabled: false
-  kubernetes-ingresses:
-    enabled: false
+  prometheus: { enabled: false }
+  kubernetes-api-servers: { enabled: false }
+  kubernetes-nodes: { enabled: false }
+  kubernetes-nodes-cadvisor: { enabled: false }
+  kubernetes-service-endpoints: { enabled: false }
+  kubernetes-service-endpoints-slow: { enabled: false }
+  prometheus-pushgateway: { enabled: false }
+  kubernetes-services: { enabled: false }
+  kubernetes-pods: { enabled: false }
+  kubernetes-pods-slow: { enabled: false }
+

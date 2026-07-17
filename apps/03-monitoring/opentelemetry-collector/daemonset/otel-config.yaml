@@ -1,0 +1,25 @@
+###############################################################
+# Receivers configuration
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver
+###############################################################
+receivers:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/README.md
+  host_metrics:
+    root_path: /hostfs
+    scrapers:
+      cpu:
+      memory:
+
+exporters:
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter/README.md
+  otlp_http/prometheus:
+    endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
+  
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [host_metrics]
+      processors: [memory_limiter, resource_detection]
+      exporters: [otlp_http/prometheus]
+

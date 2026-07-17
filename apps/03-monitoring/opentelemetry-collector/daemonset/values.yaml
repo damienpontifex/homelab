@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
+mode: daemonset
+
+extraVolumes:
+  - name: otel-collector-config
+    configMap:
+      name: otel-collector-daemonset-config
+
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
+presets:
+  # Configures the volume mounts and things for us
+  hostMetrics:
+    enabled: true
+#   kubeletMetrics:
+#     enabled: true
+#   kubernetesAttributes:
+#     enabled: true
+#   logsCollection:
+#     enabled: true
+#     includeCollectorLogs: false
+#   # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
+
