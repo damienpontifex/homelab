@@ -9,7 +9,8 @@
   "automerge": false,
   "mode": "full",
   "enabledManagers": [
-    "custom.regex"
+    "custom.regex",
+    "kustomize"
   ],
   "argocd": {
     "managerFilePatterns": [
