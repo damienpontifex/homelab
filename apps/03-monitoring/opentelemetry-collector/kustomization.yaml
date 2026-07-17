@@ -18,7 +18,7 @@ helmCharts:
   - &otel-common
     name: opentelemetry-collector
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    version: 0.158.0
+    version: 0.165.0
     namespace: monitoring
     releaseName: opentelemetry-collector-deployment
     valuesFile: common-values.yaml
