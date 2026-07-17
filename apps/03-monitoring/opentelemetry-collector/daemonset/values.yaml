@@ -34,9 +34,7 @@ clusterRole:
 
 # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
 presets:
-  # Configures the volume mounts and things for us
-  hostMetrics:
-    enabled: true
+  # Configures some default things for us
   kubeletMetrics:
     enabled: true
 #   kubernetesAttributes:

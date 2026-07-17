@@ -3,53 +3,6 @@
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver
 ###############################################################
 receivers:
-  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/README.md
-  host_metrics:
-    root_path: /hostfs
-    scrapers:
-      cpu:
-      load:
-      network:
-      memory:
-      disk:
-      filesystem:
-        exclude_mount_points:
-          mount_points:
-            - '^/dev($|/)'
-            - '^/proc($|/)'
-            - '^/sys($|/)'
-            - '^/run/k3s/containerd($|/)'
-            - '^/var/lib/docker($|/)'
-            - '^/var/lib/kubelet($|/)'
-            - '^/snap($|/)'
-          match_type: regexp
-        exclude_fs_types:
-          fs_types:
-            - autofs
-            - binfmt_misc
-            - bpf
-            - cgroup2
-            - configfs
-            - debugfs
-            - devpts
-            - devtmpfs
-            - fusectl
-            - hugetlbfs
-            - iso9660
-            - mqueue
-            - nsfs
-            - overlay
-            - proc
-            - procfs
-            - pstore
-            - rpc_pipefs
-            - securityfs
-            - selinuxfs
-            - squashfs
-            - sysfs
-            - tracefs
-          match_type: strict
-
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/kubeletstatsreceiver/README.md
   kubelet_stats:
     collection_interval: 20s
