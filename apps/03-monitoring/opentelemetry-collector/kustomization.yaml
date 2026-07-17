@@ -3,28 +3,38 @@ kind: Kustomization
 
 namespace: monitoring
 
+configMapGenerator:
+  - files: 
+    - relay=daemonset/otel-config.yaml
+    - common=common-otel-config.yaml
+    name: otel-collector-daemonset-config
+  - files:
+    - relay=deployment/otel-config.yaml
+    - common=common-otel-config.yaml
+    name: otel-collector-deployment-config
+
 helmCharts:
+  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+  - &otel-common
+    name: opentelemetry-collector
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    version: 0.158.0
+    namespace: monitoring
+    releaseName: opentelemetry-collector-deployment
+    valuesFile: common-values.yaml
+    additionalValuesFiles:
+      - deployment/values.yaml
+
+  # - <<: *otel-common
+  #   releaseName: opentelemetry-collector-deployment
+  #   additionalValuesFiles:
+  #   - deployment/values.yaml
+
   # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
   # - repo: oci://ghcr.io/prometheus-community/charts
   #   name: prometheus-operator-crds
   #   version: 27.0.0
   #   releaseName: prometheus-operator-crds
-
-  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
-  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-  #   name: opentelemetry-collector
-  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
-  #   version: 0.143.1
-  #   releaseName: opentelemetry-collector-deployment
-  #   valuesFile: opentelemetry-collector-deployment-values.yaml
-  #
-  # # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
-  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-  #   name: opentelemetry-collector
-  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-collector
-  #   version: 0.143.1
-  #   releaseName: opentelemetry-collector-daemonset
-  #   valuesFile: opentelemetry-collector-daemonset-values.yaml
   #
   # # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
   # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -34,13 +44,12 @@ helmCharts:
   #   releaseName: opentelemetry-target-allocator
   #   valuesFile: opentelemetry-target-allocator-values.yaml
   #
-
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-kube-stack
-  - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    name: opentelemetry-kube-stack
-    # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-kube-stack
-    version: 0.17.1
-    releaseName: opentelemetry-kube-stack
-    valuesFile: opentelemetry-kube-stack-values.yaml
-    includeCRDs: true
-    namespace: monitoring
+  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+  #   name: opentelemetry-kube-stack
+  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-kube-stack
+  #   version: 0.17.1
+  #   releaseName: opentelemetry-kube-stack
+  #   valuesFile: opentelemetry-kube-stack-values.yaml
+  #   includeCRDs: true
+  #   namespace: monitoring

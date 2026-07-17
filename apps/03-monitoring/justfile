@@ -4,11 +4,21 @@ loki:
 prometheus:
   kustomize build --enable-helm prometheus | kubectl apply --server-side=true --filename -
 
-otel:
-  kustomize build --enable-helm opentelemetry-collector | kubectl apply --server-side=true --force-conflicts --filename -
+otel: validate-otel-config
+  kustomize build --enable-helm opentelemetry-collector | kubectl apply --server-side=true --filename -
 
 tempo:
   kustomize build --enable-helm tempo | kubectl apply --server-side=true --filename -
 
 provision-grafana:
   grafanactl resources push --path {{justfile_directory()}}/grafana/provisioning
+
+validate-otel-config:
+	@echo "Validating deployment config"
+	@$(git rev-parse --show-toplevel)/otelcol-contrib validate \
+		--config=file:opentelemetry-collector/common-otel-config.yaml \
+		--config=file:opentelemetry-collector/deployment/otel-config.yaml
+	# @echo "Validating daemonset config"
+	# @$(git rev-parse --show-toplevel)/otelcol-contrib validate \
+	# 	--config=file:opentelemetry-collector/common-otel-config.yaml \
+	# 	--config=file:opentelemetry-collector/daemonset/otel-config.yaml

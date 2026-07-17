@@ -1,0 +1,15 @@
+###############################################################
+# Receivers configuration
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver
+###############################################################
+receivers:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8seventsreceiver/README.md
+  k8s_events:
+
+service:
+  extensions: [health_check]
+  pipelines:
+    logs:
+      receivers: [k8s_events]
+      processors: [memory_limiter, resource_detection]
+      exporters: [debug]

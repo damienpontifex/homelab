@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
+
+image:
+  repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+command:
+  name: otelcol-k8s
+
+configMap:
+  create: false
+
+extraVolumeMounts:
+  - name: otel-collector-config
+    mountPath: /conf
+    readOnly: true
+
+command:
+  extraArgs:
+    - "--config=/conf/common"
+    - "--config=/conf/relay"
+
+# No receivers that use ports at this stage
+service:
+  enabled: false
+
+ports:
+  otlp:
+    enabled: false
+  otlp-http:
+    enabled: false
+  jaeger-compact:
+    enabled: false
+  jaeger-thrift:
+    enabled: false
+  jaeger-grpc:
+    enabled: false
+  zipkin:
+    enabled: false
+
+extraEnvs:
+  - name: K8S_NODE_REGION
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['topology.kubernetes.io/region']
+  - name: K8S_NODE_ZONE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['topology.kubernetes.io/zone']
+  - name: K8S_CLUSTER_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['app.kubernetes.io/cluster']
+  - name: OTEL_RESOURCE_ATTRIBUTES
+    value: deployment.environment.name=dev,cloud.provider=home,k8s.cluster.name=$(K8S_CLUSTER_NAME),cloud.availability_zone=$(K8S_NODE_ZONE),cloud.region=$(K8S_NODE_REGION)
+
