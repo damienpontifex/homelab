@@ -1,5 +1,7 @@
 global:
   domain: localhost
+  logging:
+    format: json
 
 controller:
   metrics:
