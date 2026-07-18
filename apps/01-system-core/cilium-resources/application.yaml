@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cilium
+  name: cilium-resources
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
