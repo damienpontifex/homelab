@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/damienpontifex/homelab.git
     targetRevision: HEAD
-    path: apps/monitoring/prometheus
+    path: apps/03-monitoring/prometheus
 
   destination:
     name: in-cluster
