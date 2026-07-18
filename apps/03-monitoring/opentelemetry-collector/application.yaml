@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/damienpontifex/homelab.git
     targetRevision: HEAD
-    path: apps/monitoring/opentelemetry-collector
+    path: apps/03-monitoring/opentelemetry-collector
 
   destination:
     name: in-cluster
