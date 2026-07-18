@@ -8,7 +8,7 @@ spec:
   project: default
   sources:
     - repoURL: https://github.com/damienpontifex/homelab.git
-      path: apps/homepage/resources
+      path: apps/04-homepage/resources
       targetRevision: HEAD
 
     # https://jameswynn.github.io/helm-charts/
