@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: monitoring
 
+resources:
+  - certificate.yaml
+
 helmCharts:
   # https://artifacthub.io/packages/helm/grafana-community/grafana
   - repo: oci://ghcr.io/grafana-community/helm-charts

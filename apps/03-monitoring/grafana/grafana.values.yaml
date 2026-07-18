@@ -96,3 +96,23 @@ sidecar:
   datasources:
     enabled: false
     searchNamespace: ALL
+
+# Mounting the certificate from cert-manager
+# 1. Mount the secret files into the pod container
+extraContainers: []
+extraVolumeMounts:
+  - name: tls-certs
+    mountPath: /etc/grafana/tls
+    readOnly: true
+
+extraVolumes:
+  - name: tls-certs
+    secret:
+      secretName: grafana-app-tls-secret
+
+# 2. Configure Grafana to use the mounted certificates
+grafana.ini:
+  server:
+    protocol: https
+    cert_file: /etc/grafana/tls/tls.crt
+    cert_key: /etc/grafana/tls/tls.key

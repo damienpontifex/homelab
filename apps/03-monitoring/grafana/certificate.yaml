@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-app-cert
+spec:
+  secretName: grafana-app-tls-secret # Your app will read TLS keys from here
+  issuerRef:
+    name: letsencrypt-dns
+    kind: ClusterIssuer
+  dnsNames:
+  - grafana.pontifex.dev
