@@ -12,6 +12,8 @@ server:
     enabled: true
     serviceMonitor:
       enabled: true
+  service:
+    type: LoadBalancer
 
   serviceAccount:
     annotations:

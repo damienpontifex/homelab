@@ -62,7 +62,7 @@ genconfig:
 # Add kubeconfig
 [group("ops")]
 kubeconfig:
-	talhelper gencommand kubeconfig --extra-flags . | sh
+	talhelper gencommand kubeconfig | sh
 
 reset:
 	talhelper gencommand reset --extra-flags --reboot | sh
@@ -103,6 +103,6 @@ apply-cloudflare-tunnel:
 		--namespace cloudflare-tunnel \
 		--from-literal=token=$(az keyvault secret show --name cloudflare-api-token --vault-name pontifex-homelab --query 'value' --output tsv) || true
 	# Apply the role and deployment to make this happen
-	kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/jwk-discovery.yaml
-	kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/cloudflare-tunnel.yaml
+	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/jwk-discovery.yaml
+	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/cloudflare-tunnel.yaml
 

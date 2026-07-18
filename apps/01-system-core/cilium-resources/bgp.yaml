@@ -45,7 +45,7 @@ metadata:
 spec:
   allowFirstLastIPs: "No"
   blocks:
-    - cidr: 10.200.10.1/24 # Hands out 10.200.10.0 through 10.10.10.7
+    - cidr: 10.200.10.1/24
 ---
 apiVersion: cilium.io/v2
 kind: CiliumBGPAdvertisement
