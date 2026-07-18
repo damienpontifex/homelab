@@ -9,6 +9,7 @@ spec:
   # Allow manifests to deploy from any Git repos under damienpontifex GitHub account
   sourceRepos:
     - https://github.com/damienpontifex/*
+    - https://kubernetes.github.io/autoscaler
   # Allow deployment to any namespace on the cluster
   destinations:
     - namespace: "*"
