@@ -4,21 +4,16 @@ kind: Application
 metadata:
   name: grafana
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
 spec:
   project: homelab
-  sources:
-    # https://artifacthub.io/packages/helm/grafana-community/grafana
-    - repoURL: https://grafana-community.github.io/helm-charts
-      chart: grafana
-      targetRevision: 11.2.3
-      helm:
-        releaseName: grafana
-        valueFiles:
-          - $homelab/apps/monitoring/grafana/grafana.values.yaml
 
-    - repoURL: https://github.com/damienpontifex/homelab.git
-      ref: homelab
-      targetRevision: HEAD
+  source:
+    repoURL: https://github.com/damienpontifex/homelab.git
+    targetRevision: HEAD
+    path: apps/03-monitoring/grafana
 
   destination:
     name: in-cluster

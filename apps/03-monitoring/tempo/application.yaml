@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/damienpontifex/homelab.git
     targetRevision: HEAD
-    path: apps/monitoring/tempo
+    path: apps/03-monitoring/tempo
 
   destination:
     name: in-cluster

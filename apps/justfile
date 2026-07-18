@@ -1,0 +1,17 @@
+[parallel]
+watch-all: watch-argocd watch-loki watch-prometheus watch-otel watch-grafana
+	
+watch path:
+	watchexec --watch {{path}} --ignore charts "kustomize build --enable-helm {{path}} | kubectl apply --server-side=true --filename -"
+
+watch-argocd: (watch "./01-system-core/argocd")
+
+watch-loki: (watch "./03-monitoring/loki")
+watch-prometheus: (watch "./03-monitoring/prometheus")
+watch-otel: (watch "./03-monitoring/opentelemetry-collector")
+watch-grafana: (watch "./03-monitoring/grafana")
+
+port-forward-all:
+	kubectl port-forward --namespace monitoring svc/grafana 3000:3000
+	kubectl port-forward --namespace argocd svc/argocd-server 8080:80
+

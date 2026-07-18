@@ -4,7 +4,8 @@ loki:
 prometheus:
   kustomize build --enable-helm prometheus | kubectl apply --server-side=true --filename -
 
-otel: validate-otel-config
+#otel: validate-otel-config
+otel:
   kustomize build --enable-helm opentelemetry-collector | kubectl apply --server-side=true --filename -
 
 tempo:
@@ -15,10 +16,16 @@ provision-grafana:
 
 validate-otel-config:
 	@echo "Validating deployment config"
+	docker run --rm \
+		--env GOOS=linux \
+		--volume ./opentelemetry-collector:/conf \
+		ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:0.153.0 validate \
+		--config=file:/conf/common-otel-config.yaml \
+		--config=file:/conf/deployment/otel-config.yaml
 	@$(git rev-parse --show-toplevel)/otelcol-contrib validate \
 		--config=file:opentelemetry-collector/common-otel-config.yaml \
 		--config=file:opentelemetry-collector/deployment/otel-config.yaml
-	# @echo "Validating daemonset config"
-	# @$(git rev-parse --show-toplevel)/otelcol-contrib validate \
-	# 	--config=file:opentelemetry-collector/common-otel-config.yaml \
-	# 	--config=file:opentelemetry-collector/daemonset/otel-config.yaml
+	@echo "Validating daemonset config"
+	@$(git rev-parse --show-toplevel)/otelcol-contrib validate \
+		--config=file:opentelemetry-collector/common-otel-config.yaml \
+		--config=file:opentelemetry-collector/daemonset/otel-config.yaml

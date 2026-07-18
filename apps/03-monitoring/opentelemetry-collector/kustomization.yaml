@@ -30,19 +30,18 @@ helmCharts:
     additionalValuesFiles:
     - daemonset/values.yaml
 
+  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
+  - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    name: opentelemetry-target-allocator
+    version: 0.156.0
+    releaseName: opentelemetry-target-allocator
+    namespace: monitoring
+
   # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
   # - repo: oci://ghcr.io/prometheus-community/charts
   #   name: prometheus-operator-crds
   #   version: 27.0.0
   #   releaseName: prometheus-operator-crds
-  #
-  # # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
-  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-  #   name: opentelemetry-target-allocator
-  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-target-allocator
-  #   version: 0.126.10
-  #   releaseName: opentelemetry-target-allocator
-  #   valuesFile: opentelemetry-target-allocator-values.yaml
   #
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-kube-stack
   # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts

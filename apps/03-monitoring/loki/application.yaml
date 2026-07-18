@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/damienpontifex/homelab.git
     targetRevision: HEAD
-    path: apps/monitoring/loki
+    path: apps/03-monitoring/loki
 
   destination:
     name: in-cluster

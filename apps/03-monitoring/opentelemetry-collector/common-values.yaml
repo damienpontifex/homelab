@@ -1,9 +1,11 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
 
 image:
-  repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+  repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
+  # repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
 command:
-  name: otelcol-k8s
+  name: otelcol-contrib
+  # name: otelcol-k8s
 
 configMap:
   create: false
@@ -21,6 +23,9 @@ command:
 # No receivers that use ports at this stage
 service:
   enabled: false
+
+serviceMonitor:
+  enabled: true
 
 ports:
   otlp:

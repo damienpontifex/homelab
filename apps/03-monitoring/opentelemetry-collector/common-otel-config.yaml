@@ -9,6 +9,19 @@ processors:
     spike_limit_percentage: 25
   resource_detection:
     detectors: [env, system]
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/k8sattributesprocessor/README.md
+  k8s_attributes:
+    auth_type: serviceAccount
+    extract:
+      metadata:
+        - k8s.namespace.name
+        - k8s.deployment.name
+        - k8s.statefulset.name
+        - k8s.daemonset.name
+        - k8s.cronjob.name
+        - k8s.job.name
+        - k8s.node.name
+        - k8s.pod.name
 
 exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/debugexporter/README.md
@@ -24,4 +37,8 @@ exporters:
 extensions:
   health_check:
     endpoint: ${env:MY_POD_IP}:13133
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/zpagesextension/README.md
+  zpages:
 
+service:
+  extensions: [health_check, zpages]

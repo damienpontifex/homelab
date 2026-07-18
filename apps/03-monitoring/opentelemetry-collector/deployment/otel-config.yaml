@@ -5,11 +5,20 @@
 receivers:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8seventsreceiver/README.md
   k8s_events:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md
+  prometheus:
+    target_allocator:
+      endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
+      interval: 30s
+      collector_id: ${OTEL_K8S_POD_NAME}
 
 service:
-  extensions: [health_check]
   pipelines:
+    metrics:
+      receivers: [prometheus]
+      processors: [memory_limiter, resource_detection]
+      exporters: [otlp_http/prometheus]
     logs:
       receivers: [k8s_events]
       processors: [memory_limiter, resource_detection]
-      exporters: [debug]
+      exporters: [otlp_http/loki]
