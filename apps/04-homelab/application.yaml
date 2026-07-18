@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/damienpontifex/homelab
-    path: apps/
+    path: apps/04-homelab
     targetRevision: main
     directory:
       recurse: true
