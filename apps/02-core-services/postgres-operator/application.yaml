@@ -5,7 +5,7 @@ metadata:
   name: postgres-operator
   namespace: argocd
 spec:
-  project: homelab
+  project: default
   sources:
     # https://access.crunchydata.com/documentation/postgres-operator/latest/installation/helm
     - repoURL: oci://registry.developers.crunchydata.com/crunchydata/pgo

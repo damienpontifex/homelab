@@ -5,7 +5,7 @@ metadata:
   name: external-secrets
   namespace: argocd
 spec:
-  project: homelab
+  project: default
   source:
     chart: external-secrets
     # https://artifacthub.io/packages/helm/external-secrets-operator/external-secrets

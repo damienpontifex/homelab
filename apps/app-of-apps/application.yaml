@@ -5,7 +5,7 @@ metadata:
   name: homelab
   namespace: argocd
 spec:
-  project: homelab
+  project: default
   source:
     repoURL: https://github.com/damienpontifex/homelab
     path: apps/

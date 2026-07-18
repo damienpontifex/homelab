@@ -5,7 +5,7 @@ metadata:
   name: rustfs
   namespace: argocd
 spec:
-  project: homelab
+  project: default
   sources:
     # https://artifacthub.io/packages/helm/rustfs/rustfs
     - repoURL: https://charts.rustfs.com

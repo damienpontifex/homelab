@@ -8,7 +8,7 @@ metadata:
     # Ensure this application is deployed before any other applications that depend on the webhook being available
     argocd.argoproj.io/sync-wave: "-1"
 spec:
-  project: homelab
+  project: default
   source:
     chart: workload-identity-webhook
     # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook
