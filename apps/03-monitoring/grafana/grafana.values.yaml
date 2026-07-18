@@ -63,6 +63,11 @@ grafana.ini:
   panels:
     enable_alpha: true
 
+service:
+  type: LoadBalancer
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: grafana.pontifex.dev
+    
 # kubectl create secret generic grafana-secrets --namespace monitoring --from-literal=STRAVA_CLIENT_SECRET=$(pbpaste)
 envFromSecret: grafana-secrets
 
