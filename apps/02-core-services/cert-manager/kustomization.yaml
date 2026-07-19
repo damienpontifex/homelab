@@ -9,12 +9,12 @@ helmCharts:
     name: cert-manager
     version: v1.21.0
     releaseName: cert-manager
-    valuesFile: cert-manager-values.yaml
+    valuesFile: cert-manager.values.yaml
+    namespace: cert-manager
     includeCRDs: true
 
 resources:
-  - secret-store.yaml
-  - letsencrypt-staging.yaml
-  - letsencrypt-prod.yaml
-  - vertical-pod-autoscaler.yaml
-  - wildcard-certificate.yaml
+  - cloudflare-api-token-external-secret.yaml
+  - cluster-issuer-letsencrypt-staging.yaml
+  - cluster-issuer-letsencrypt-prod.yaml
+  # - vertical-pod-autoscaler.yaml
