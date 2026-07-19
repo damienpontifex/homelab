@@ -1,5 +1,7 @@
 set shell := ["bash", "-c"]
 root_dir := justfile_dir()
+endpoints := "10.10.100.2"
+nodes := "10.10.100.2"
 
 # List all available commands
 list:
@@ -7,9 +9,9 @@ list:
 
 _talosctl command *FLAGS:
 	talosctl {{command}} \
-		--nodes 10.10.100.2 \
-		--endpoints 10.10.100.2 \
-		--talosconfig=./talosconfig \
+		--nodes {{nodes}} \
+		--endpoints {{endpoints}} \
+		--talosconfig=./clusterconfig/talosconfig \
 		{{FLAGS}}
 
 # Provide a text-based UI to navigate node overview, logs and real-time metrics.
@@ -32,27 +34,26 @@ health: (_talosctl "health")
 apply *FLAGS:
 	@for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
 		just genconfig $control; \
-		just _talosctl "apply-config" --file ./clusterconfig/$(basename "$control") {{FLAGS}}; \
+		just _talosctl "apply-config" --file ./clusterconfig/controlplane.yaml {{FLAGS}}; \
 	done
 
 # Generate Talos cluster config YAML files
 [group("dev")]
-genconfig node_patch cluster_name="homelab" ip="10.10.100.2":
+genconfig node_patch cluster_name="homelab":
 	@git clean -xf ./clusterconfig; \
-	talosctl gen config {{cluster_name}} https://{{ip}}:6443 \
+	talosctl gen config {{cluster_name}} https://{{endpoints}}:6443 \
 		--kubernetes-version 1.36.2 \
 		--talos-version 1.13.6 \
 		--with-secrets <(sops --decrypt secrets.sops.yaml) \
-		--config-patch-control-plane @patches/controlplane.yaml \
 		--config-patch @patches/global.yaml \
 		--config-patch @{{node_patch}} \
-		--output-types controlplane \
-		--output ./clusterconfig/$(basename {{node_patch}})
+		--output-types controlplane,talosconfig \
+		--output ./clusterconfig
 
 # Add kubeconfig
 [group("ops")]
 kubeconfig:
-	talhelper gencommand kubeconfig | sh
+	@just _talosctl "kubeconfig" --force
 
 reset:
 	talhelper gencommand reset --extra-flags --reboot | sh
@@ -75,24 +76,7 @@ apply-cilium:
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
 	kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-# k exec -it -n kube-system cilium-lhg9v -- cilium bgp peers
-
-apply-policies:
-	kustomize build --enable-helm ../apps/01-system-core/admission/ \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
 
 apply-argocd:
 	kustomize build --enable-helm ../apps/01-system-core/argocd \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-
-apply-cloudflare-tunnel:
-	# Need tunnel in place so that external secrets can validate the issuer
-	kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/namespace.yaml
-	# Get the secret manually to bootstrap and external secrets will manage afterwards
-	kubectl --kubeconfig=./kubeconfig create secret generic cloudflare-api-token \
-		--namespace cloudflare-tunnel \
-		--from-literal=token=$(az keyvault secret show --name cloudflare-api-token --vault-name pontifex-homelab --query 'value' --output tsv) || true
-	# Apply the role and deployment to make this happen
-	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/jwk-discovery.yaml
-	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/cloudflare-tunnel.yaml
-

@@ -1,3 +1,19 @@
+cluster:
+  proxy:
+    # Cilium will replace kube proxy
+    disabled: true
+  network:
+    cni:
+      # Use Cilium for CNI
+      name: none
+  clusterName: homelab
+  controlPlane:
+    endpoint: https://10.10.100.2:6443
+  allowSchedulingOnMasters: true
+  apiServer:
+    certSANs:
+      - "homelab.local"
+      - "home.pontifex.dev"
 machine:
   kubelet:
     defaultRuntimeSeccompProfileEnabled: true
