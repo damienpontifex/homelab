@@ -1,71 +1,61 @@
+set shell := ["bash", "-c"]
+root_dir := justfile_dir()
+endpoints := "10.10.100.2"
+nodes := "10.10.100.2"
+
 # List all available commands
 list:
 	just --list
 
-_talosctl command args="":
-	@talosctl {{command}} \
-		--nodes $(yq '.contexts.homelab.endpoints[0]' ./clusterconfig/talosconfig) \
+_talosctl command *FLAGS:
+	talosctl {{command}} \
+		--nodes {{nodes}} \
+		--endpoints {{endpoints}} \
 		--talosconfig=./clusterconfig/talosconfig \
-		{{args}}
+		{{FLAGS}}
 
 # Provide a text-based UI to navigate node overview, logs and real-time metrics.
 [group("monitoring")]
-dashboard:
-	@just _talosctl "dashboard"
+dashboard: (_talosctl "dashboard")
 
 [group("monitoring")]
-health:
-	talhelper gencommand health | sh
+health: (_talosctl "health")
 
-schema:
-  talhelper genschema --file talconfig.schema.json
-
-# Bootstrap a new cluster
-[group("ops")]
-bootstrap:
-	# Generate secrets if they don't already exist
-	if [[ ! -f talsecret.sops.yaml ]]; then \
-		echo "Generating secrets"; \
-		talhelper gensecret > talsecret.sops.yaml; \
-		sops --encrypt --in-place talsecret.sops.yaml; \
-	fi
-	talhelper genconfig
-	talhelper gencommand apply --extra-flags=--insecure | bash
-	echo "Waiting for nodes to install and reboot..."
-	sleep 120
-	talhelper gencommand bootstrap | bash
-	# TODO: Wait until k8s available
-	# 1. get kubeconfig
-	# 2. apply policies
-	# 3. apply cilium
-	# 4. apply argocd
-	# 5. apply cloudflare tunnel # may just need to bootstrap the secret so it can start up and setup access for external secrets
+# [group("dev")]
+# upgrade-k8s: genconfig
+# 	talhelper gencommand upgrade-k8s | sh
+#
+# [group("dev")]
+# upgrade: genconfig
+# 	talhelper gencommand upgrade | sh
 
 # Apply a new configuration to a node
 [group("dev")]
-apply: genconfig
-	talhelper gencommand apply | sh
-
-[group("dev")]
-upgrade-k8s: genconfig
-	talhelper gencommand upgrade-k8s | sh
-
-[group("dev")]
-upgrade: genconfig
-	talhelper gencommand upgrade | sh
+apply *FLAGS: genconfig
+	for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
+		just _talosctl "apply-config" --file ./clusterconfig/controlplane.yaml --config-patch $control {{FLAGS}}; \
+	done
 
 # Generate Talos cluster config YAML files
 [group("dev")]
-genconfig:
-	talhelper genconfig
+genconfig cluster_name="homelab":
+	@git clean -xf ./clusterconfig; \
+	talosctl gen config {{cluster_name}} https://{{endpoints}}:6443 \
+		--kubernetes-version 1.36.2 \
+		--talos-version 1.13.6 \
+		--with-secrets <(sops --decrypt secrets.sops.yaml) \
+		--config-patch @patches/global.yaml \
+		--config-patch-control-plane @patches/controlplane.yaml \
+		--config-patch-worker @patches/worker.yaml \
+		--output ./clusterconfig
 
 # Add kubeconfig
 [group("ops")]
 kubeconfig:
-	talhelper gencommand kubeconfig | sh
+	@just _talosctl "kubeconfig" --force
 
-reset:
-	talhelper gencommand reset --extra-flags --reboot | sh
+# reset:
+# 	@just _talosctl ""
 
 # See if a TCP connection to the node on port 50,000 is possible
 [group("monitoring")]
@@ -85,24 +75,7 @@ apply-cilium:
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
 	kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-# k exec -it -n kube-system cilium-lhg9v -- cilium bgp peers
-
-apply-policies:
-	kustomize build --enable-helm ../apps/01-system-core/admission/ \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
 
 apply-argocd:
 	kustomize build --enable-helm ../apps/01-system-core/argocd \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-
-apply-cloudflare-tunnel:
-	# Need tunnel in place so that external secrets can validate the issuer
-	kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/namespace.yaml
-	# Get the secret manually to bootstrap and external secrets will manage afterwards
-	kubectl --kubeconfig=./kubeconfig create secret generic cloudflare-api-token \
-		--namespace cloudflare-tunnel \
-		--from-literal=token=$(az keyvault secret show --name cloudflare-api-token --vault-name pontifex-homelab --query 'value' --output tsv) || true
-	# Apply the role and deployment to make this happen
-	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/jwk-discovery.yaml
-	# kubectl --kubeconfig=./kubeconfig apply --server-side=true --filename ../apps/02-core-services/cloudflare-tunnel/cloudflare-tunnel.yaml
-
