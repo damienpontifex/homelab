@@ -1,63 +1,53 @@
+set shell := ["bash", "-c"]
+root_dir := justfile_dir()
+
 # List all available commands
 list:
 	just --list
 
-_talosctl command args="":
-	@talosctl {{command}} \
-		--nodes $(yq '.contexts.homelab.endpoints[0]' ./clusterconfig/talosconfig) \
-		--talosconfig=./clusterconfig/talosconfig \
-		{{args}}
+_talosctl command *FLAGS:
+	talosctl {{command}} \
+		--nodes 10.10.100.2 \
+		--endpoints 10.10.100.2 \
+		--talosconfig=./talosconfig \
+		{{FLAGS}}
 
 # Provide a text-based UI to navigate node overview, logs and real-time metrics.
 [group("monitoring")]
-dashboard:
-	@just _talosctl "dashboard"
+dashboard: (_talosctl "dashboard")
 
 [group("monitoring")]
-health:
-	talhelper gencommand health | sh
+health: (_talosctl "health")
 
-schema:
-  talhelper genschema --file talconfig.schema.json
-
-# Bootstrap a new cluster
-[group("ops")]
-bootstrap:
-	# Generate secrets if they don't already exist
-	if [[ ! -f talsecret.sops.yaml ]]; then \
-		echo "Generating secrets"; \
-		talhelper gensecret > talsecret.sops.yaml; \
-		sops --encrypt --in-place talsecret.sops.yaml; \
-	fi
-	talhelper genconfig
-	talhelper gencommand apply --extra-flags=--insecure | bash
-	echo "Waiting for nodes to install and reboot..."
-	sleep 120
-	talhelper gencommand bootstrap | bash
-	# TODO: Wait until k8s available
-	# 1. get kubeconfig
-	# 2. apply policies
-	# 3. apply cilium
-	# 4. apply argocd
-	# 5. apply cloudflare tunnel # may just need to bootstrap the secret so it can start up and setup access for external secrets
+# [group("dev")]
+# upgrade-k8s: genconfig
+# 	talhelper gencommand upgrade-k8s | sh
+#
+# [group("dev")]
+# upgrade: genconfig
+# 	talhelper gencommand upgrade | sh
 
 # Apply a new configuration to a node
 [group("dev")]
-apply: genconfig
-	talhelper gencommand apply | sh
-
-[group("dev")]
-upgrade-k8s: genconfig
-	talhelper gencommand upgrade-k8s | sh
-
-[group("dev")]
-upgrade: genconfig
-	talhelper gencommand upgrade | sh
+apply *FLAGS:
+	@for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
+		just genconfig $control; \
+		just _talosctl "apply-config" --file ./clusterconfig/$(basename "$control") {{FLAGS}}; \
+	done
 
 # Generate Talos cluster config YAML files
 [group("dev")]
-genconfig:
-	talhelper genconfig
+genconfig node_patch cluster_name="homelab" ip="10.10.100.2":
+	@git clean -xf ./clusterconfig; \
+	talosctl gen config {{cluster_name}} https://{{ip}}:6443 \
+		--kubernetes-version 1.36.2 \
+		--talos-version 1.13.6 \
+		--with-secrets <(sops --decrypt secrets.sops.yaml) \
+		--config-patch-control-plane @patches/controlplane.yaml \
+		--config-patch @patches/global.yaml \
+		--config-patch @{{node_patch}} \
+		--output-types controlplane \
+		--output ./clusterconfig/$(basename {{node_patch}})
 
 # Add kubeconfig
 [group("ops")]

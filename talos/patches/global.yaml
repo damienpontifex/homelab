@@ -1,0 +1,8 @@
+machine:
+  kubelet:
+    defaultRuntimeSeccompProfileEnabled: true
+  # Add these so they can be used by k8s downward API
+  nodeLabels:
+    app.kubernetes.io/cluster: "homelab"
+    topology.kubernetes.io/region: home
+    topology.kubernetes.io/zone: home-a
