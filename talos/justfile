@@ -49,6 +49,9 @@ genconfig cluster_name="homelab":
 		--config-patch-worker @patches/worker.yaml \
 		--output ./clusterconfig
 
+bootstrap:
+	just _talosctl "bootstrap"
+
 # Add kubeconfig
 [group("ops")]
 kubeconfig:
@@ -70,11 +73,36 @@ reboot:
 shutdown:
 	@just _talosctl shutdown
 
+# Bootstrap Cilium CNI
 apply-cilium:
 	kustomize build --enable-helm ../apps/01-system-core/cilium/ \
 		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
-	kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
+	until kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
+		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig; do \
+		sleep 5; \
+	done
+
+# Bootstrap external secrets in the cluster
+apply-external-secrets:
+	#!/usr/bin/env bash
+	kubectl create namespace external-secrets || true
+
+	function kv-secret() {
+		local name=$1
+		az keyvault secret show --name $name --vault-name pontifex-homelab --query 'value' --output tsv
+	}
+	kubectl create secret generic azure-kv-sp \
+		--namespace external-secrets \
+		--from-literal ClientID=$(kv-secret external-secrets-client-id) \
+		--from-literal ClientSecret=$(kv-secret external-secrets-client-secret) || true
+
+	unset -f kv-secret
+
+	until kustomize build --enable-helm ../apps/01-system-core/external-secrets | kubectl apply --server-side=true --filename -; do
+		# n.b. cluster secret store resource will fail until pods have started
+		sleep 5
+	done
+
 
 apply-argocd:
 	kustomize build --enable-helm ../apps/01-system-core/argocd \
