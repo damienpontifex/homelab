@@ -4,15 +4,15 @@ kind: Application
 metadata:
   name: external-secrets
   namespace: argocd
+
 spec:
   project: default
+
   source:
-    chart: external-secrets
-    # https://artifacthub.io/packages/helm/external-secrets-operator/external-secrets
-    repoURL: https://charts.external-secrets.io
-    targetRevision: 1.2.0
-    helm:
-      releaseName: external-secrets
+    repoURL: https://github.com/damienpontifex/homelab.git
+    path: apps/01-system-core/external-secrets
+    targetRevision: HEAD
+
   destination:
     name: in-cluster
     namespace: external-secrets
