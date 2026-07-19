@@ -1,0 +1,15 @@
+- datetime:
+    text_size: xl
+    locale: en-AU
+    format:
+      timeStyle: short
+      hourCycle: h23
+      dateStyle: long
+- openmeteo:
+    label: Busselton
+    timezone: Australia/Perth
+    units: metric
+    cache: 5
+    latitude: 115.3466965
+    longitude: -33.6542999
+
