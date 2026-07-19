@@ -7,7 +7,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/external-dns/external-dns
   - repo: https://kubernetes-sigs.github.io/external-dns
     name: external-dns
-    version: 1.20.0
+    version: 1.21.1
     releaseName: external-dns
     valuesFile: external-dns.values.yaml
     namespace: external-dns
