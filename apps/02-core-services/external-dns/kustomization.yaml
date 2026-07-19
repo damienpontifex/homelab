@@ -3,6 +3,11 @@ kind: Kustomization
 metadata:
   name: kustomization-name
 
+namespace: external-dns
+
+resources:
+  - cloudflare-api-token-external-secret.yaml
+
 helmCharts:
   # https://artifacthub.io/packages/helm/external-dns/external-dns
   - repo: https://kubernetes-sigs.github.io/external-dns

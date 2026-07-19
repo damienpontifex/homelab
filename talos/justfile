@@ -76,9 +76,9 @@ shutdown:
 # Bootstrap Cilium CNI
 apply-cilium:
 	kustomize build --enable-helm ../apps/01-system-core/cilium/ \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
+		| kubectl apply --server-side=true --filename -
 	until kustomize build --enable-helm ../apps/01-system-core/cilium-resources/ \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig; do \
+		| kubectl apply --server-side=true --filename -; do \
 		sleep 5; \
 	done
 
@@ -103,7 +103,11 @@ apply-external-secrets:
 		sleep 5
 	done
 
+# Bootstrap prometheus types
+apply-prometheus-crds:
+	kustomize build --enable-helm ../apps/01-system-core/prometheus-crds/ \
+		| kubectl apply --server-side=true --filename -
 
 apply-argocd:
 	kustomize build --enable-helm ../apps/01-system-core/argocd \
-		| kubectl apply --server-side=true --filename - --kubeconfig=./kubeconfig
+		| kubectl apply --server-side=true --filename -

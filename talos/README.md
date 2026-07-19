@@ -19,6 +19,7 @@
 1. `just kubeconfig` to update local kubeconfig
 1. `just apply-cilium` to setup CNI
 1. `just apply-external-secrets` to setup external-secrets
+1. `just apply-prometheus-crds` to setup prometheus types
 
 ## Nuance on VM on macOS
 Need to have macOS be able to route/respond to the packet coming back on the bridge interface. Add the service IP route to send it to VM
