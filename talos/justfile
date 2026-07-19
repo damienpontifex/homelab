@@ -31,23 +31,22 @@ health: (_talosctl "health")
 
 # Apply a new configuration to a node
 [group("dev")]
-apply *FLAGS:
-	@for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
-		just genconfig $control; \
-		just _talosctl "apply-config" --file ./clusterconfig/controlplane.yaml {{FLAGS}}; \
+apply *FLAGS: genconfig
+	for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
+		just _talosctl "apply-config" --file ./clusterconfig/controlplane.yaml --config-patch $control {{FLAGS}}; \
 	done
 
 # Generate Talos cluster config YAML files
 [group("dev")]
-genconfig node_patch cluster_name="homelab":
+genconfig cluster_name="homelab":
 	@git clean -xf ./clusterconfig; \
 	talosctl gen config {{cluster_name}} https://{{endpoints}}:6443 \
 		--kubernetes-version 1.36.2 \
 		--talos-version 1.13.6 \
 		--with-secrets <(sops --decrypt secrets.sops.yaml) \
 		--config-patch @patches/global.yaml \
-		--config-patch @{{node_patch}} \
-		--output-types controlplane,talosconfig \
+		--config-patch-control-plane @patches/controlplane.yaml \
+		--config-patch-worker @patches/worker.yaml \
 		--output ./clusterconfig
 
 # Add kubeconfig
@@ -55,8 +54,8 @@ genconfig node_patch cluster_name="homelab":
 kubeconfig:
 	@just _talosctl "kubeconfig" --force
 
-reset:
-	talhelper gencommand reset --extra-flags --reboot | sh
+# reset:
+# 	@just _talosctl ""
 
 # See if a TCP connection to the node on port 50,000 is possible
 [group("monitoring")]

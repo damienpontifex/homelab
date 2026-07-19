@@ -1,5 +1,4 @@
 machine:
-  type: controlplane
   install:
     diskSelector:
       wwid: "naa.50014ee20d45f411"
@@ -10,3 +9,12 @@ apiVersion: v1alpha1
 kind: HostnameConfig
 hostname: homelab-control-01
 auto: off
+# ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/main/pkg/machinery/config/schemas/config.schema.json
+# apiVersion: v1alpha1
+# kind: UserVolumeConfig
+# name: local-volume
+# provisioning:
+#   diskSelector:
+#     match: disk.transport == 'sata'
+#   minSize: 100GB
