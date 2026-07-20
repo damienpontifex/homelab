@@ -1,3 +1,9 @@
 machine:
   type: controlplane
-
+  network:
+    interfaces:
+      # https://docs.siderolabs.com/talos/v1.13/networking/advanced/vip#virtual-shared-ip
+      - interface: enp1s0 # Match your primary network interface name
+        dhcp: true
+        vip:
+          ip: 10.10.100.100 # desired Control Plane VIP

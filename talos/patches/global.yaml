@@ -8,7 +8,8 @@ cluster:
       name: none
   clusterName: homelab
   controlPlane:
-    endpoint: https://10.10.100.2:6443
+    # Matches the VIP in ./controlplane.yaml 
+    endpoint: https://10.10.100.100:6443
   allowSchedulingOnMasters: true
   apiServer:
     certSANs:

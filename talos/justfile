@@ -54,7 +54,7 @@ bootstrap:
 
 # Add kubeconfig
 [group("ops")]
-kubeconfig:
+kubeconfig: genconfig
 	@just _talosctl "kubeconfig" --force
 
 # reset:
