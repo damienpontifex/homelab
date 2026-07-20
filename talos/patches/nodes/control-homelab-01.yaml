@@ -9,12 +9,22 @@ apiVersion: v1alpha1
 kind: HostnameConfig
 hostname: homelab-control-01
 auto: off
-# ---
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/main/pkg/machinery/config/schemas/config.schema.json
-# apiVersion: v1alpha1
-# kind: UserVolumeConfig
-# name: local-volume
-# provisioning:
-#   diskSelector:
-#     match: disk.transport == 'sata'
-#   minSize: 100GB
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL
+provisioning:
+  diskSelector:
+    match: system_disk
+  maxSize: 200GiB
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/main/pkg/machinery/config/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: data
+volumeType: partition
+provisioning:
+  diskSelector:
+    match: system_disk
+  minSize: 50GiB
