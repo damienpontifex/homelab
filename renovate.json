@@ -20,6 +20,18 @@
   },
   "customManagers": [
     {
+      "description": "GitHub inline links that use ?ref=<tag>",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "github\\.com/(?<depName>[^/]+/[^/]+)/.*\\?ref=(?<currentValue>v?[0-9.]+)"
+      ],
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Inline comment to track dependency",
       "customType": "regex",
       "managerFilePatterns": [
         "/\\.ya?ml$/"
@@ -29,8 +41,8 @@
       ]
     },
     {
+      "description": "Manage talos version in talhelper TODO: update to what we're using in talosctl",
       "customType": "regex",
-      "description": "Manage talos version in talhelper",
       "managerFilePatterns": [
         "/talconfig\\.yaml$/"
       ],
@@ -41,8 +53,8 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "description": "Manage k8s version in talhelper TODO: upate to what we're usiing in talosctl",
       "customType": "regex",
-      "description": "Manage k8s version in talhelper",
       "managerFilePatterns": [
         "/talconfig\\.yaml$/"
       ],
