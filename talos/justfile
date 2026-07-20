@@ -50,7 +50,21 @@ genconfig cluster_name="homelab":
 		--output ./clusterconfig
 
 bootstrap:
-	just _talosctl "bootstrap"
+	just apply --insecure; \
+	# Wait until fails to connect to talos API server indicating restarting
+	while nc -z -w 1 {{nodes}} 50000; do; sleep 1; done; \
+	# Wait until can connect again indicating back up
+	until nc -z -w 1 {{nodes}} 50000; do; sleep 1; done; \
+	# Bootstrap etcd
+	just _talosctl "bootstrap"; \
+	# Get kubeconfig
+	just kubeconfig; \
+	# Apply cilium
+	just apply-cilium; \
+	# Apply external-secrets
+	just apply-external-secrets; \
+	# Apply prometheus-crds
+	just apply-prometheus-crds;
 
 # Add kubeconfig
 [group("ops")]
