@@ -46,6 +46,7 @@ genconfig cluster_name="homelab":
 		--with-secrets <(sops --decrypt secrets.sops.yaml) \
 		--config-patch @patches/global.yaml \
 		--config-patch-control-plane @patches/controlplane.yaml \
+		--config-patch-control-plane @patches/controlplane-audit-logging.yaml \
 		--config-patch-worker @patches/worker.yaml \
 		--output ./clusterconfig
 

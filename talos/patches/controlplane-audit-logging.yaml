@@ -1,0 +1,83 @@
+# TODO: Review https://docs.siderolabs.com/talos/v1.13/learn-more/knowledge-base#logging-kubernetes-audit-logs-with-loki
+
+
+# TODO: Setup Otel Collector to scrape via /var/log/audit on control plane nodes only
+# nodeSelector:
+#   node-role.kubernetes.io/control-plane: ""
+# TODO: Consider Skip the RequestReceived stage (reduces entries by ~50%)
+# Need to see what we'd miss if did this
+# omitStages:
+#   - RequestReceived
+# https://oneuptime.com/blog/post/2026-03-03-enable-kubernetes-audit-logging-on-talos-linux/view
+# Enable Kubernetes audit logging on Talos Linux
+cluster:
+  apiServer:
+    extraArgs:
+      audit-log-path: /var/log/audit/kube-apiserver-audit.log
+      audit-log-maxage: "30"
+      audit-log-maxbackup: "10"
+      audit-log-maxsize: "100"
+      audit-policy-file: /etc/kubernetes/audit-policy/audit-policy.yaml
+    extraVolumes:
+      - hostPath: /var/log/audit
+        mountPath: /var/log/audit
+        name: audit-log
+      - hostPath: /etc/kubernetes/audit-policy
+        mountPath: /etc/kubernetes/audit-policy
+        name: audit-policy
+        readOnly: true
+machine:
+  files:
+    - permissions: 0644
+      path: /etc/kubernetes/audit-policy/audit-policy.yaml
+      op: create
+      content: |
+        apiVersion: audit.k8s.io/v1
+        kind: Policy
+        rules:
+          # Do not log requests to certain non-resource URLs
+          - level: None
+            nonResourceURLs:
+              - /healthz*
+              - /readyz*
+              - /livez*
+              - /metrics
+
+          # Do not log watch requests (too noisy)
+          - level: None
+            verbs: ["watch", "list"]
+            resources:
+              - group: ""
+                resources: ["events"]
+
+          # Log secret access at metadata level (never log the body)
+          - level: Metadata
+            resources:
+              - group: ""
+                resources: ["secrets", "configmaps"]
+
+          # Log authentication and authorization at request level
+            - level: Request
+              resources:
+                - group: "authentication.k8s.io"
+                - group: "authorization.k8s.io"
+
+            # Log changes to RBAC at request level
+            - level: Request
+              resources:
+                - group: "rbac.authorization.k8s.io"
+                  resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
+
+            # Log pod creation and deletion with request bodies
+            # TODO: Review custom resources we might want to include
+            - level: Request
+              verbs: ["create", "delete", "patch", "update"]
+              resources:
+                - group: ""
+                  resources: ["pods", "services", "deployments"]
+
+          # Log everything else at metadata level 
+            - level: Metadata
+              omitStages:
+                - RequestReceived
+
