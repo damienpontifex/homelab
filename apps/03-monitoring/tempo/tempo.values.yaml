@@ -1,9 +1,18 @@
 tempo:
   metricsGenerator:
     enabled: true
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true 
+    seccompProfile:
+      type: RuntimeDefault
 
 serviceMonitor:
   enabled: true
 
 persistence:
   enabled: true
+
