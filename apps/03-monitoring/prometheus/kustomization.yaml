@@ -11,8 +11,3 @@ helmCharts:
     releaseName: prometheus
     valuesFile: prometheus.values.yaml
 
-  # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
-  - repo: oci://ghcr.io/prometheus-community/charts
-    name: prometheus-operator-crds
-    version: 30.0.1
-    releaseName: prometheus-operator-crds

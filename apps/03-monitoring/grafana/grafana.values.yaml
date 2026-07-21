@@ -81,14 +81,6 @@ securityContext:
 initChownData:
   enabled: false # Disable the container causing the error
 
-serviceAccount:
-  annotations:
-    azure.workload.identity/client-id: ce700695-4e5c-4898-a6e9-4dc7bb00fbaa
-    azure.workload.identity/tenant-id: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
-
-podLabels:
-  azure.workload.identity/use: "true"
-
 sidecar:
   dashboards:
     enabled: true
