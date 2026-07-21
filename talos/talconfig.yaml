@@ -2,7 +2,7 @@
 
 clusterName: ${cluster_name}
 # https://github.com/siderolabs/talos/releases
-talosVersion: v1.13.6
+talosVersion: v1.13.7
 # https://kubernetes.io/releases/
 kubernetesVersion: v1.36.2
 endpoint: https://${control_plane_ip}:6443
