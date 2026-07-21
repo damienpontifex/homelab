@@ -1,5 +1,5 @@
 global:
-  domain: localhost
+  domain: argocd.pontifex.dev
   logging:
     format: json
 
@@ -18,14 +18,14 @@ server:
     type: LoadBalancer
     annotations:
       external-dns.alpha.kubernetes.io/hostname: argocd.pontifex.dev
-
-  serviceAccount:
-    annotations:
-      "azure.workload.identity/client-id": "ea227ff8-7b75-4f0f-83a9-7638e949faf3"
-      "azure.workload.identity/tenant-id": "ff2b9041-8733-4fbd-a4e6-23f30567c4a4"
-
-  podLabels:
-    "azure.workload.identity/use": "true"
+  certificate:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+  vpa:
+    enabled: true
 
 configs:
   params:
