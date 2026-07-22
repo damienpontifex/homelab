@@ -25,11 +25,11 @@ server:
       kind: ClusterIssuer
       name: letsencrypt-prod
   vpa:
-    enabled: true
+    enabled: false #TODO: re-enable after installing VPA
 
 configs:
   params:
-    "server.insecure": "true"
+    "server.insecure": "false"
 
   cm:
     "kustomize.buildOptions": "--enable-helm"
