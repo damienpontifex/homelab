@@ -7,7 +7,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/cluster-autoscaler/vertical-pod-autoscaler
   - repo: https://kubernetes.github.io/autoscaler
     name: vertical-pod-autoscaler
-    version: 0.8.0
+    version: 0.10.0
     releaseName: vertical-pod-autoscaler
     valuesInline:
       # Only one node so far, one replica (also avoids anti-affinity issues)
