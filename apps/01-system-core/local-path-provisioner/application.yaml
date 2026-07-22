@@ -2,25 +2,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-system-core
+  name: local-path-provisioner
   namespace: argocd
+
 spec:
   project: default
+
   source:
-    repoURL: https://github.com/damienpontifex/homelab
-    path: apps/01-system-core
-    targetRevision: main
-    directory:
-      recurse: true
-      include: "*/application.yaml"
+    repoURL: https://github.com/damienpontifex/homelab.git
+    path: apps/01-system-core/local-path-provisioner
+    targetRevision: HEAD
+
   destination:
     name: in-cluster
-    namespace: default
+    namespace: local-path-provisioner
   syncPolicy:
     automated:
       enabled: true
       prune: true
-      selfHeal: false
+      selfHeal: true
     syncOptions:
-      - ServerSideApply=true
       - CreateNamespace=true
+      - ServerSideApply=true
