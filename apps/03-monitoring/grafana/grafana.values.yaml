@@ -37,7 +37,10 @@ plugins:
 # Ref: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
 grafana.ini:
   server:
-    root_url: http://localhost
+    root_url: https://grafana.pontifex.dev
+    protocol: https
+    cert_file: /etc/grafana/tls/tls.crt
+    cert_key: /etc/grafana/tls/tls.key
   # ========================================================================
   # Logging
   # ========================================================================
@@ -45,7 +48,7 @@ grafana.ini:
     mode: console
     level: info
   log.console:
-  format: json
+    format: json
   # ========================================================================
   # Authentication
   # https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/entraid/
@@ -65,11 +68,20 @@ grafana.ini:
 
 service:
   type: LoadBalancer
+  port: 443
   annotations:
     external-dns.alpha.kubernetes.io/hostname: grafana.pontifex.dev
+
+readinessProbe:
+  httpGet:
+    scheme: HTTPS
+
+livenessProbe:
+  httpGet:
+    scheme: HTTPS
     
 # kubectl create secret generic grafana-secrets --namespace monitoring --from-literal=STRAVA_CLIENT_SECRET=$(pbpaste)
-envFromSecret: grafana-secrets
+# envFromSecret: grafana-secrets
 
 persistence:
   enabled: true
@@ -85,26 +97,15 @@ sidecar:
   dashboards:
     enabled: true
     searchNamespace: ALL
+    reloadURL: "https://localhost:3000/api/admin/provisioning/dashboards/reload"
   datasources:
     enabled: false
     searchNamespace: ALL
+    reloadURL: "https://localhost:3000/api/admin/provisioning/datasources/reload"
 
-# Mounting the certificate from cert-manager
-# 1. Mount the secret files into the pod container
-extraContainers: []
-extraVolumeMounts:
+extraSecretMounts:
   - name: tls-certs
     mountPath: /etc/grafana/tls
+    secretName: grafana-app-tls-secret
     readOnly: true
 
-extraVolumes:
-  - name: tls-certs
-    secret:
-      secretName: grafana-app-tls-secret
-
-# 2. Configure Grafana to use the mounted certificates
-grafana.ini:
-  server:
-    protocol: https
-    cert_file: /etc/grafana/tls/tls.crt
-    cert_key: /etc/grafana/tls/tls.key

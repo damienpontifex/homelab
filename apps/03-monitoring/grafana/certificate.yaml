@@ -5,7 +5,7 @@ metadata:
 spec:
   secretName: grafana-app-tls-secret # Your app will read TLS keys from here
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
   - grafana.pontifex.dev
