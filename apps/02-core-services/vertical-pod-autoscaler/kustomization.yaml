@@ -3,12 +3,15 @@ kind: Kustomization
 metadata:
   name: vertical-pod-autoscaler
 
+namespace: kube-system
+
 helmCharts:
   # https://artifacthub.io/packages/helm/cluster-autoscaler/vertical-pod-autoscaler
   - repo: https://kubernetes.github.io/autoscaler
     name: vertical-pod-autoscaler
     version: 0.8.0
     releaseName: vertical-pod-autoscaler
+    namespace: kube-system
     valuesInline:
       # Only one node so far, one replica (also avoids anti-affinity issues)
       admissionController:
