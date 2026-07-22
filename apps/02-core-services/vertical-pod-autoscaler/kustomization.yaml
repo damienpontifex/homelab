@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: vertical-pod-autoscaler
+
+helmCharts:
+  # https://artifacthub.io/packages/helm/cluster-autoscaler/vertical-pod-autoscaler
+  - repo: https://kubernetes.github.io/autoscaler
+    name: vertical-pod-autoscaler
+    version: 0.8.0
+    releaseName: vertical-pod-autoscaler
+    valuesInline:
+      # Only one node so far, one replica (also avoids anti-affinity issues)
+      admissionController:
+        replicas: 1
+      recommender:
+        replicas: 1
+        podAnnotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8942"
+          prometheus.io/path: /metrics
+          prometheus.io/scheme: http
+      updater:
+        replicas: 1
+

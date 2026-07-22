@@ -2,25 +2,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-core-services
+  name: vertical-pod-autoscaler
   namespace: argocd
+
 spec:
   project: default
+
   source:
-    repoURL: https://github.com/damienpontifex/homelab
-    path: apps/02-core-services
-    targetRevision: main
-    directory:
-      recurse: true
-      include: "*/application.yaml"
+    repoURL: https://github.com/damienpontifex/homelab.git
+    targetRevision: HEAD
+    path: apps/02-core-services/vertical-pod-autoscaler
+
   destination:
     name: in-cluster
-    namespace: default
+    namespace: kube-system
   syncPolicy:
     automated:
       enabled: true
       prune: true
-      selfHeal: false
+      selfHeal: true
     syncOptions:
-      - ServerSideApply=true
       - CreateNamespace=true
+      - ServerSideApply=true
