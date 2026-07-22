@@ -25,7 +25,7 @@ server:
       kind: ClusterIssuer
       name: letsencrypt-prod
   vpa:
-    enabled: false #TODO: re-enable after installing VPA
+    enabled: true
 
 configs:
   params:
