@@ -15,11 +15,11 @@ receivers:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sobjectsreceiver/README.md
   k8s_objects:
     auth_type: serviceAccount
+    include_initial_state: true
     objects:
       - name: verticalpodautoscalers
         mode: watch
         group: autoscaling.k8s.io
-        include_initial_state: true
 
 service:
   pipelines:
