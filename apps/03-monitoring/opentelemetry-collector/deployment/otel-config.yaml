@@ -12,6 +12,15 @@ receivers:
       interval: 30s
       collector_id: ${OTEL_K8S_POD_NAME}
 
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sobjectsreceiver/README.md
+  k8s_objects:
+    auth_type: serviceAccount
+    objects:
+      - name: verticalpodautoscalers
+        mode: watch
+        group: autoscaling.k8s.io
+        include_initial_state: true
+
 service:
   pipelines:
     metrics:
@@ -19,6 +28,6 @@ service:
       processors: [memory_limiter, resource_detection]
       exporters: [prometheus_remote_write]
     logs:
-      receivers: [k8s_events]
+      receivers: [k8s_events, k8s_objects]
       processors: [memory_limiter, resource_detection]
       exporters: [otlp_http/loki]

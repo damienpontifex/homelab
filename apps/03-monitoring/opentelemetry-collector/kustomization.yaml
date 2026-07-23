@@ -22,6 +22,7 @@ resources:
   # Deployment RBAC — aggregated ClusterRole for opentelemetry-collector-deployment
   - deployment/rbac/aggregated.yaml
   - deployment/rbac/k8s-events.yaml
+  - deployment/rbac/k8s-objects.yaml
 
 helmCharts:
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
