@@ -6,64 +6,7 @@ extraVolumes:
     configMap:
       name: otel-collector-deployment-config
 
+# RBAC is managed via Kustomize ClusterRole aggregation in deployment/rbac/
 clusterRole:
-  create: true
-  rules:
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["get", "list", "watch"]
+  create: false
 
-# # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/#presets
-# presets:
-#   kubernetesAttributes:
-#     enabled: true
-#   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sclusterreceiver
-#   clusterMetrics:
-#     enabled: true
-#   # TODO: which handles https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
-#
-# config:
-#   receivers:
-#     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md
-#     prometheus:
-#       target_allocator:
-#         endpoint: http://opentelemetry-target-allocator-ta.monitoring.svc.cluster.local
-#         interval: 30s
-#         collector_id: collector-1
-#
-#   processors:
-#     batch: {}
-#     # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
-#     resourcedetection:
-#       detectors: [env, system]
-#     logdedup:
-#       interval: 1s
-#       conditions:
-#         - severity_number >= SEVERITY_NUMBER_ERROR
-#         - attributes["log.type"] == "connection"
-#       exclude_fields:
-#         - attributes.request_id
-#         - attributes.timestamp
-#
-#   exporters:
-#     debug:
-#       verbosity: detailed
-#     otlphttp/loki:
-#       endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
-#     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md
-#     prometheusremotewrite:
-#       endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/write
-#       resource_to_telemetry_conversion:
-#         enabled: true
-#
-#   service:
-#     pipelines:
-#       logs:
-#         exporters:
-#           - otlphttp/loki
-#       metrics:
-#         # See recommended order https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/README.md#recommended-processors
-#         processors: [memory_limiter, resourcedetection, k8sattributes, batch]
-#         exporters: [prometheusremotewrite]
-#       traces: null # TODO: no destination for traces yet, need to setup tempo
-#

@@ -1,0 +1,32 @@
+# Aggregated ClusterRole for opentelemetry-collector (daemonset)
+# Rules are automatically populated from child ClusterRoles via aggregation.
+# Add a child: create a ClusterRole with label otel.pontifex.dev/aggregate-to-daemonset=true
+# Remove a child: delete the ClusterRole file and this role auto-updates.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otel-collector-daemonset
+  labels:
+    app.kubernetes.io/part-of: opentelemetry-collector
+    app.kubernetes.io/component: agent-collector
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        otel.pontifex.dev/aggregate-to-daemonset: "true"
+rules: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otel-collector-daemonset
+  labels:
+    app.kubernetes.io/part-of: opentelemetry-collector
+    app.kubernetes.io/component: agent-collector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: otel-collector-daemonset
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-collector-daemonset
+    namespace: monitoring

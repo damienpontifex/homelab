@@ -4,6 +4,7 @@
 ###############################################################
 receivers:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/kubeletstatsreceiver/README.md
+  # metrics produced -> https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/kubeletstatsreceiver/documentation.md
   kubelet_stats:
     collection_interval: 20s
     auth_type: serviceAccount
@@ -31,6 +32,6 @@ service:
   pipelines:
     metrics:
       receivers: [kubelet_stats]
-      processors: [memory_limiter, resource_detection]
+      processors: [memory_limiter, k8s_attributes, resource_detection]
       exporters: [otlp_http/prometheus]
 

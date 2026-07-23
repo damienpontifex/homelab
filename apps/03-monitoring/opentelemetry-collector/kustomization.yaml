@@ -13,8 +13,19 @@ configMapGenerator:
     - common=common-otel-config.yaml
     name: otel-collector-deployment-config
 
+resources:
+  # Daemonset RBAC — aggregated ClusterRole for opentelemetry-collector-daemonset
+  - daemonset/rbac/aggregated.yaml
+  - daemonset/rbac/kubelet-stats.yaml
+  - daemonset/rbac/k8s-attributes.yaml
+  - daemonset/rbac/persistent-volumes.yaml
+  # Deployment RBAC — aggregated ClusterRole for opentelemetry-collector-deployment
+  - deployment/rbac/aggregated.yaml
+  - deployment/rbac/k8s-events.yaml
+
 helmCharts:
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+  # https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-collector
   - &otel-common
     name: opentelemetry-collector
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
