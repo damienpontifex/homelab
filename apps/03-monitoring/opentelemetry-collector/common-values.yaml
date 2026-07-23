@@ -24,7 +24,7 @@ command:
 service:
   enabled: false
 
-serviceMonitor:
+podMonitor:
   enabled: true
 
 ports:
