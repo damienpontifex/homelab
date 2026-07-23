@@ -10,7 +10,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/argo-cd-oci/argo-cd
   - name: argo-cd
     repo: oci://ghcr.io/argoproj/argo-helm
-    version: 10.1.4
+    version: 10.2.1
     releaseName: argocd
     namespace: argocd
     # https://github.com/argoproj/argo-helm/tree/main#charts-use-helm-capabilities
