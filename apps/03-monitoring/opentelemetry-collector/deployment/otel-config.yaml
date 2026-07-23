@@ -35,6 +35,25 @@ processors:
           # Set severity number
           - set(severity_number, SEVERITY_NUMBER_INFO)
 
+  transform/k8s_vpa_objects:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        conditions:
+          - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
+        statements:
+          # 1. Pull the container name out of the JSON body and elevate it to an attribute
+          - set(attributes["k8s.container.name"], body["status"]["recommendation"]["containerRecommendations"][0]["containerName"])
+          
+          # 2. Extract the CPU string and clean it up (e.g., "25m" -> "25")
+          - set(attributes["vpa_cpu_raw"], body["status"]["recommendation"]["containerRecommendations"][0]["target"]["cpu"])
+          - replace_all(attributes["vpa_cpu_raw"], "m", "")
+          
+          # 3. Extract the Memory string and clean it up (e.g., "250Mi" -> "250")
+          - set(attributes["vpa_mem_raw"], body["status"]["recommendation"]["containerRecommendations"][0]["target"]["memory"])
+          - replace_all(attributes["vpa_mem_raw"], "Mi", "")
+
+
   transform/k8s_events:
     error_mode: ignore
     log_statements:
@@ -47,29 +66,26 @@ connectors:
   signaltometrics:
     logs:
       - name: k8s.vpa.target.cpu
+        conditions:
+          - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         description: "The VPA recommended target CPU in millicores"
         unit: "m"
         gauge:
-          # Convert string like "25m" to int 25. IsMillicores() strips the 'm' and converts.
-          value: IsMillicores(body["object"]["status"]["recommendation"]["containerRecommendations"][0]["target"]["cpu"])
+          # Convert the string attribute we created into an Integer
+          value: Int(attributes["vpa_cpu_raw"])
         attributes:
-          - key: k8s.vpa.name
-            path: body["metadata"]["name"]
+          # Simply map the key names. The connector automatically copies these to the metric.
           - key: k8s.container.name
-            path: body["object"]["status"]["recommendation"]["containerRecommendations"][0]["containerName"]
 
       - name: k8s.vpa.target.memory
+        conditions:
+          - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         description: "The VPA recommended target memory in Megabytes"
         unit: "Mi"
         gauge:
-          # Convert string like "250Mi" into raw Int value. 
-          # Note: If your backend needs bytes, use ParseSize() instead.
-          value: Int(ReplaceAll(body["object"]["status"]["recommendation"]["containerRecommendations"][0]["target"]["memory"], "Mi", ""))
+          value: Int(attributes["vpa_mem_raw"])
         attributes:
-          - key: k8s.vpa.name
-            path: body["metadata"]["name"]
           - key: k8s.container.name
-            path: body["object"]["status"]["recommendation"]["containerRecommendations"][0]["containerName"]
 
 service:
   pipelines:
@@ -83,7 +99,7 @@ service:
       exporters: [otlp_http/loki]
     logs/k8s_objects:
       receivers: [k8s_objects]
-      processors: [memory_limiter, resource_detection, transform/k8s_objects]
+      processors: [memory_limiter, resource_detection, transform/k8s_objects, transform/k8s_vpa_objects]
       exporters: [otlp_http/loki, signaltometrics]
 
     metrics/vpa:
