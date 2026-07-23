@@ -2,6 +2,7 @@
 server:
   extraFlags:
     - web.enable-otlp-receiver
+    - web.enable-remote-write-receiver
 
 # Dependencies in Chart.yaml
 alertmanager:
