@@ -97,7 +97,7 @@ service:
     logs/k8s_objects:
       receivers: [k8s_objects]
       processors: [memory_limiter, resource_detection, transform/k8s_objects, transform/k8s_vpa_objects]
-      exporters: [otlp_http/loki, signaltometrics]
+      exporters: [otlp_http/loki, signal_to_metrics]
 
     metrics/vpa:
       receivers: [signal_to_metrics]
