@@ -33,5 +33,5 @@ service:
     metrics:
       receivers: [kubelet_stats]
       processors: [memory_limiter, k8s_attributes, resource_detection]
-      exporters: [otlp_http/prometheus]
+      exporters: [prometheus_remote_write]
 
