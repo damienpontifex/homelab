@@ -37,6 +37,8 @@ exporters:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusremotewritereceiver/README.md
   prometheus_remote_write:
     endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/write
+    resource_to_telemetry_conversion:
+      enabled: true
 
 extensions:
   health_check:
