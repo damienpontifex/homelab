@@ -12,6 +12,7 @@ helmCharts:
     version: 0.8.0
     releaseName: vertical-pod-autoscaler
     namespace: kube-system
+    includeCRDs: true
     valuesInline:
       # Only one node so far, one replica (also avoids anti-affinity issues)
       admissionController:
