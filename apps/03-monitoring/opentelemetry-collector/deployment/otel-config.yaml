@@ -21,6 +21,18 @@ receivers:
         mode: watch
         group: autoscaling.k8s.io
 
+processors:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/transformprocessor/README.md
+  transform/k8s_objects:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        conditions:
+          - attributes["k8s.resource.name"] != nil and attributes["k8s.resource.name"] != "events"
+        statements:
+          - set(resource.attributes["service.name"], "k8s_objects")
+          - delete_key(body["metadata"], "managedFields") where IsMap(body)
+
 service:
   pipelines:
     metrics:
@@ -29,5 +41,5 @@ service:
       exporters: [prometheus_remote_write]
     logs:
       receivers: [k8s_events, k8s_objects]
-      processors: [memory_limiter, resource_detection]
-      exporters: [otlp_http/loki]
+      processors: [memory_limiter, resource_detection, transform/k8s_objects]
+      exporters: [loki]

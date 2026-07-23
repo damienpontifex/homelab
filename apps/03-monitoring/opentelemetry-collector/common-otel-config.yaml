@@ -39,6 +39,14 @@ exporters:
     endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/write
     resource_to_telemetry_conversion:
       enabled: true
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/lokireceiver/README.md
+  loki:
+    protocols:
+      http:
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local
+      grpc:
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local
+    use_incoming_timestamp: true
 
 extensions:
   health_check:
