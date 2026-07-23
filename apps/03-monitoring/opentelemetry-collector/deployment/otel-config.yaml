@@ -43,15 +43,17 @@ processors:
           - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         statements:
           # 1. Pull the container name out of the JSON body and elevate it to an attribute
-          - set(attributes["k8s.container.name"], body["status"]["recommendation"]["containerRecommendations"][0]["containerName"])
+          - set(attributes["k8s.container.name"], body["status"]["recommendation"]["containerRecommendations"]["containerName"])
           
           # 2. Extract the CPU string and clean it up (e.g., "25m" -> "25")
-          - set(attributes["vpa_cpu_raw"], body["status"]["recommendation"]["containerRecommendations"][0]["target"]["cpu"])
-          - replace_all(attributes["vpa_cpu_raw"], "m", "")
+          - set(attributes["vpa_cpu_raw"], body["status"]["recommendation"]["containerRecommendations"]["target"]["cpu"])
+          # replace_pattern replaces the regex match ("m") with an empty string ("")
+          - replace_pattern(attributes["vpa_cpu_raw"], "m", "")
           
           # 3. Extract the Memory string and clean it up (e.g., "250Mi" -> "250")
-          - set(attributes["vpa_mem_raw"], body["status"]["recommendation"]["containerRecommendations"][0]["target"]["memory"])
-          - replace_all(attributes["vpa_mem_raw"], "Mi", "")
+          - set(attributes["vpa_mem_raw"], body["status"]["recommendation"]["containerRecommendations"]["target"]["memory"])
+          # replace_pattern replaces the regex match ("Mi") with an empty string ("")
+          - replace_pattern(attributes["vpa_mem_raw"], "Mi", "")
 
 
   transform/k8s_events:
