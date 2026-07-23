@@ -85,7 +85,7 @@ service:
     metrics:
       receivers: [prometheus]
       processors: [memory_limiter, resource_detection]
-      exporters: [prometheus_remote_write]
+      exporters: [otlp_http/prometheus]
     logs:
       receivers: [k8s_events]
       processors: [memory_limiter, resource_detection, transform/k8s_events]
