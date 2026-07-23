@@ -29,7 +29,7 @@ processors:
       - context: log
         statements:
           - set(resource.attributes["service.name"], "k8s_objects")
-          - delete_key(body["object"]["metadata"], "managedFields") where IsMap(body)
+          - delete_key(log.body["object"]["metadata"], "managedFields") where IsMap(body)
           # Set severity text
           - set(severity_text, "INFO")
           # Set severity number
@@ -42,18 +42,13 @@ processors:
         conditions:
           - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         statements:
-          # 1. Pull the container name out of the JSON body and elevate it to an attribute
-          - set(attributes["k8s.container.name"], body["status"]["recommendation"]["containerRecommendations"]["containerName"])
+          - set(log.attributes["k8s.container.name"], log.body["status"]["recommendation"]["containerRecommendations"]["containerName"])
           
-          # 2. Extract the CPU string and clean it up (e.g., "25m" -> "25")
-          - set(attributes["vpa_cpu_raw"], body["status"]["recommendation"]["containerRecommendations"]["target"]["cpu"])
-          # replace_pattern replaces the regex match ("m") with an empty string ("")
-          - replace_pattern(attributes["vpa_cpu_raw"], "m", "")
+          - set(log.attributes["vpa_cpu_raw"], log.body["status"]["recommendation"]["containerRecommendations"]["target"]["cpu"])
+          - replace_pattern(log.attributes["vpa_cpu_raw"], "m", "")
           
-          # 3. Extract the Memory string and clean it up (e.g., "250Mi" -> "250")
-          - set(attributes["vpa_mem_raw"], body["status"]["recommendation"]["containerRecommendations"]["target"]["memory"])
-          # replace_pattern replaces the regex match ("Mi") with an empty string ("")
-          - replace_pattern(attributes["vpa_mem_raw"], "Mi", "")
+          - set(log.attributes["vpa_mem_raw"], log.body["status"]["recommendation"]["containerRecommendations"]["target"]["memory"])
+          - replace_pattern(log.attributes["vpa_mem_raw"], "Mi", "")
 
 
   transform/k8s_events:
@@ -65,7 +60,7 @@ processors:
 
 connectors:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/connector/signaltometricsconnector/README.md
-  signaltometrics:
+  signal_to_metrics:
     logs:
       - name: k8s.vpa.target.cpu
         conditions:
@@ -74,7 +69,7 @@ connectors:
         unit: "m"
         gauge:
           # Convert the string attribute we created into an Integer
-          value: Int(attributes["vpa_cpu_raw"])
+          value: Int(log.attributes["vpa_cpu_raw"])
         attributes:
           # Simply map the key names. The connector automatically copies these to the metric.
           - key: k8s.container.name
@@ -85,7 +80,7 @@ connectors:
         description: "The VPA recommended target memory in Megabytes"
         unit: "Mi"
         gauge:
-          value: Int(attributes["vpa_mem_raw"])
+          value: Int(log.attributes["vpa_mem_raw"])
         attributes:
           - key: k8s.container.name
 
@@ -105,6 +100,6 @@ service:
       exporters: [otlp_http/loki, signaltometrics]
 
     metrics/vpa:
-      receivers: [signaltometrics]
+      receivers: [signal_to_metrics]
       processors: [memory_limiter]
       exporters: [debug]
