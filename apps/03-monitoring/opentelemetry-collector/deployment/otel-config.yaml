@@ -42,4 +42,4 @@ service:
     logs:
       receivers: [k8s_events, k8s_objects]
       processors: [memory_limiter, resource_detection, transform/k8s_objects]
-      exporters: [loki]
+      exporters: [otlp_http/loki]
