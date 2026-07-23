@@ -63,8 +63,6 @@ connectors:
   signal_to_metrics:
     logs:
       - name: k8s.vpa.target.cpu
-        conditions:
-          - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         description: "The VPA recommended target CPU in millicores"
         unit: "m"
         gauge:
@@ -75,8 +73,6 @@ connectors:
           - key: k8s.container.name
 
       - name: k8s.vpa.target.memory
-        conditions:
-          - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         description: "The VPA recommended target memory in Megabytes"
         unit: "Mi"
         gauge:
