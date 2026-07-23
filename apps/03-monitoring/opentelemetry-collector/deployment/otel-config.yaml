@@ -42,6 +42,35 @@ processors:
         statements:
           - set(resource.attributes["service.name"], "k8s_events")
 
+connectors:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/connector/signaltometricsconnector/README.md
+  signaltometrics:
+    logs:
+      - name: k8s.vpa.target.cpu
+        description: "The VPA recommended target CPU in millicores"
+        unit: "m"
+        gauge:
+          # Convert string like "25m" to int 25. IsMillicores() strips the 'm' and converts.
+          value: IsMillicores(body["object"]["status"]["recommendation"]["containerRecommendations"][0]["target"]["cpu"])
+        attributes:
+          - key: k8s.vpa.name
+            path: body["metadata"]["name"]
+          - key: k8s.container.name
+            path: body["object"]["status"]["recommendation"]["containerRecommendations"][0]["containerName"]
+
+      - name: k8s.vpa.target.memory
+        description: "The VPA recommended target memory in Megabytes"
+        unit: "Mi"
+        gauge:
+          # Convert string like "250Mi" into raw Int value. 
+          # Note: If your backend needs bytes, use ParseSize() instead.
+          value: Int(ReplaceAll(body["object"]["status"]["recommendation"]["containerRecommendations"][0]["target"]["memory"], "Mi", ""))
+        attributes:
+          - key: k8s.vpa.name
+            path: body["metadata"]["name"]
+          - key: k8s.container.name
+            path: body["object"]["status"]["recommendation"]["containerRecommendations"][0]["containerName"]
+
 service:
   pipelines:
     metrics:
@@ -55,4 +84,9 @@ service:
     logs/k8s_objects:
       receivers: [k8s_objects]
       processors: [memory_limiter, resource_detection, transform/k8s_objects]
-      exporters: [otlp_http/loki]
+      exporters: [otlp_http/loki, signaltometrics]
+
+    metrics/vpa:
+      receivers: [signaltometrics]
+      processors: [memory_limiter]
+      exporters: [debug]
