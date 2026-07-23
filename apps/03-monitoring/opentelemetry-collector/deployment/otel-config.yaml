@@ -29,11 +29,11 @@ processors:
       - context: log
         statements:
           - set(resource.attributes["service.name"], "k8s_objects")
-          - delete_key(body["metadata"], "managedFields") where IsMap(body)
+          - delete_key(body["object"]["metadata"], "managedFields") where IsMap(body)
           # Set severity text
-          - set(severity_text, "INFO") where body["object"]["type"] == "Normal"
+          - set(severity_text, "INFO")
           # Set severity number
-          - set(severity_number, SEVERITY_NUMBER_INFO) where body["object"]["type"] == "Normal"
+          - set(severity_number, SEVERITY_NUMBER_INFO)
 
   transform/k8s_events:
     error_mode: ignore
