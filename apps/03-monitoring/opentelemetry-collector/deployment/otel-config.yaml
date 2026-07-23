@@ -27,11 +27,20 @@ processors:
     error_mode: ignore
     log_statements:
       - context: log
-        conditions:
-          - attributes["k8s.resource.name"] != nil and attributes["k8s.resource.name"] != "events"
         statements:
           - set(resource.attributes["service.name"], "k8s_objects")
           - delete_key(body["metadata"], "managedFields") where IsMap(body)
+          # Set severity text
+          - set(severity_text, "INFO") where body["object"]["type"] == "Normal"
+          # Set severity number
+          - set(severity_number, SEVERITY_NUMBER_INFO) where body["object"]["type"] == "Normal"
+
+  transform/k8s_events:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+          - set(resource.attributes["service.name"], "k8s_events")
 
 service:
   pipelines:
@@ -40,6 +49,10 @@ service:
       processors: [memory_limiter, resource_detection]
       exporters: [prometheus_remote_write]
     logs:
-      receivers: [k8s_events, k8s_objects]
+      receivers: [k8s_events]
+      processors: [memory_limiter, resource_detection, transform/k8s_events]
+      exporters: [otlp_http/loki]
+    logs/k8s_objects:
+      receivers: [k8s_objects]
       processors: [memory_limiter, resource_detection, transform/k8s_objects]
       exporters: [otlp_http/loki]
