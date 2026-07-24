@@ -7,7 +7,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/prometheus-community/prometheus
   - repo: oci://ghcr.io/prometheus-community/charts
     name: prometheus
-    version: 29.18.0
+    version: 29.19.0
     releaseName: prometheus
     valuesFile: prometheus.values.yaml
 
