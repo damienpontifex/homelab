@@ -5,6 +5,12 @@ metadata:
 
 namespace: cloudflare-tunnel
 
+labels:
+  - pairs:
+      app.kubernetes.io/name: cloudflared
+    includeSelectors: true
+    includeTemplates: true
+
 resources:
 - namespace.yaml
 - jwk-discovery.yaml

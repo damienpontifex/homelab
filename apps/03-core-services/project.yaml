@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: core-infra
+  namespace: argocd
+spec:
+  description: Homelab Core Infrastructure
+  sourceRepos:
+    - https://github.com/damienpontifex/*
+    - https://azure.github.io/azure-workload-identity/charts
+    - https://charts.rustfs.com
+    - oci://registry.developers.crunchydata.com/crunchydata/pgo
+  destinations:
+    - name: in-cluster
+      namespace: kube-system
+    - name: in-cluster
+      namespace: azure-workload-identity-system
+    - name: in-cluster
+      namespace: cloudflare-tunnel
+    - name: in-cluster
+      namespace: rustfs
+    - name: in-cluster
+      namespace: postgres-operator
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
