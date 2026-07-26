@@ -37,7 +37,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: cloudflare-api-token
-                  key: token
+                  key: api-token
             - name: TUNNEL_TRANSPORT_PROTOCOL
               value: http2
             - name: TUNNEL_LOGLEVEL
