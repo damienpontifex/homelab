@@ -7,11 +7,11 @@ configMapGenerator:
   - files: 
     - relay=daemonset/otel-config.yaml
     - common=common-otel-config.yaml
-    name: otel-collector-daemonset-config
+    name: otel-collector-agent-config
   - files:
     - relay=deployment/otel-config.yaml
     - common=common-otel-config.yaml
-    name: otel-collector-deployment-config
+    name: otel-collector-singleton-config
 
 resources:
   # Daemonset RBAC — aggregated ClusterRole for opentelemetry-collector-daemonset

@@ -28,5 +28,5 @@ roleRef:
   name: otel-collector-deployment
 subjects:
   - kind: ServiceAccount
-    name: opentelemetry-collector-deployment
+    name: opentelemetry-collector-singleton
     namespace: monitoring

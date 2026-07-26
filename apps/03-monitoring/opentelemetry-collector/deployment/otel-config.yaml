@@ -43,10 +43,10 @@ processors:
           - resource.attributes["k8s.resource.name"] == "verticalpodautoscalers"
         statements:
           - set(log.attributes["k8s.container.name"], log.body["status"]["recommendation"]["containerRecommendations"]["containerName"])
-          
+
           - set(log.attributes["vpa_cpu_raw"], log.body["status"]["recommendation"]["containerRecommendations"]["target"]["cpu"])
           - replace_pattern(log.attributes["vpa_cpu_raw"], "m", "")
-          
+
           - set(log.attributes["vpa_mem_raw"], log.body["status"]["recommendation"]["containerRecommendations"]["target"]["memory"])
           - replace_pattern(log.attributes["vpa_mem_raw"], "Mi", "")
 
@@ -98,4 +98,4 @@ service:
     metrics/vpa:
       receivers: [signal_to_metrics]
       processors: [memory_limiter]
-      exporters: [debug]
+      exporters: [debug, otlp_http/otel_tui]

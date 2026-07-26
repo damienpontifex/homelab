@@ -28,5 +28,5 @@ roleRef:
   name: otel-collector-daemonset
 subjects:
   - kind: ServiceAccount
-    name: opentelemetry-collector-daemonset
+    name: opentelemetry-collector-agent
     namespace: monitoring

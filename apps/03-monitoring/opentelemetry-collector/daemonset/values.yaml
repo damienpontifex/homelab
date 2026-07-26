@@ -4,9 +4,18 @@ mode: daemonset
 extraVolumes:
   - name: otel-collector-config
     configMap:
-      name: otel-collector-daemonset-config
+      name: otel-collector-agent-config
 
 # RBAC is managed via Kustomize ClusterRole aggregation in daemonset/rbac/
 clusterRole:
   create: false
 
+ports:
+  otlp:
+    enabled: false
+  otlp-http:
+    enabled: false
+
+service:
+  enabled: true
+  trafficDistribution: PreferSameNode
