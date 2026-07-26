@@ -1,22 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: system-core
+  name: homelab-apps
   namespace: argocd
 spec:
-  description: Homelab System Core (Cilium, External Secrets, Storage)
+  description: Homelab User-Facing Applications
   sourceRepos:
     - https://github.com/damienpontifex/homelab
     - https://github.com/damienpontifex/homelab.git
   destinations:
     - name: in-cluster
-      namespace: argocd
-    - name: in-cluster
-      namespace: kube-system
-    - name: in-cluster
-      namespace: local-path-provisioner
-    - name: in-cluster
-      namespace: external-secrets
+      namespace: homepage
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

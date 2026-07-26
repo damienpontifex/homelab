@@ -2,25 +2,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-monitoring
+  name: homepage
   namespace: argocd
 spec:
-  project: monitoring
+  project: homelab-apps
+
   source:
-    repoURL: https://github.com/damienpontifex/homelab
-    path: apps/03-monitoring
-    targetRevision: main
-    directory:
-      recurse: true
-      include: "*/application.yaml"
+    repoURL: https://github.com/damienpontifex/homelab.git
+    path: apps/04-homepage/homepage
+    targetRevision: HEAD
+
   destination:
     name: in-cluster
-    namespace: argocd
+    namespace: homepage
   syncPolicy:
     automated:
       enabled: true
       prune: true
-      selfHeal: false
+      selfHeal: true
     syncOptions:
-      - ServerSideApply=true
       - CreateNamespace=true
+      - ServerSideApply=true

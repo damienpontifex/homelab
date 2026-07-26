@@ -5,11 +5,12 @@ metadata:
   name: core-services
   namespace: argocd
 spec:
-  description: Homelab Core Services (ArgoCD, Cert Manager, External DNS, VPA)
+  description: Homelab Core Services
   sourceRepos:
-    - https://github.com/damienpontifex/homelab
-    - https://github.com/damienpontifex/homelab.git
+    - https://github.com/damienpontifex/*
   destinations:
+    - name: in-cluster
+      namespace: argocd
     - name: in-cluster
       namespace: kube-system
     - name: in-cluster

@@ -2,14 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-core-infra
+  name: homelab-app-of-apps
   namespace: argocd
 spec:
-  project: core-infra
+  project: system-core
 
   source:
     repoURL: https://github.com/damienpontifex/homelab
-    path: apps/03-core-services
+    path: apps/
     targetRevision: main
     directory:
       recurse: true
