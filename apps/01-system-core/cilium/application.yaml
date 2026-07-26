@@ -10,7 +10,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 
 spec:
-  project: default
+  project: system-core
 
   source:
     repoURL: https://github.com/damienpontifex/homelab.git

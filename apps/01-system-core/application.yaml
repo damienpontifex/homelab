@@ -5,7 +5,7 @@ metadata:
   name: homelab-system-core
   namespace: argocd
 spec:
-  project: default
+  project: system-core
   source:
     repoURL: https://github.com/damienpontifex/homelab
     path: apps/01-system-core

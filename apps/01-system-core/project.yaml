@@ -1,11 +1,10 @@
-# yaml-language-server: $schema=https://github.com/adobe-platform/kubernetes-json-schema/raw/refs/heads/master/master-standalone/appproject-argoproj-v1alpha1.json
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: core-services
+  name: system-core
   namespace: argocd
 spec:
-  description: Homelab Core Services (ArgoCD, Cert Manager, External DNS, VPA)
+  description: Homelab System Core (Cilium, External Secrets, Storage)
   sourceRepos:
     - https://github.com/damienpontifex/homelab
     - https://github.com/damienpontifex/homelab.git
@@ -13,12 +12,9 @@ spec:
     - name: in-cluster
       namespace: kube-system
     - name: in-cluster
-      namespace: argocd
+      namespace: local-path-provisioner
     - name: in-cluster
-      namespace: external-dns
-    - name: in-cluster
-      namespace: cert-manager
+      namespace: external-secrets
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
-

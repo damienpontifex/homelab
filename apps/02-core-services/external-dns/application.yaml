@@ -8,7 +8,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 
 spec:
-  project: default
+  project: core-services
 
   source:
     repoURL: https://github.com/damienpontifex/homelab.git

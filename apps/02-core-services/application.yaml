@@ -5,7 +5,7 @@ metadata:
   name: homelab-core-services
   namespace: argocd
 spec:
-  project: default
+  project: core-services
   source:
     repoURL: https://github.com/damienpontifex/homelab
     path: apps/02-core-services
