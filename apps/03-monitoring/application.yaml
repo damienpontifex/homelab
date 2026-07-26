@@ -5,7 +5,7 @@ metadata:
   name: homelab-monitoring
   namespace: argocd
 spec:
-  project: default
+  project: monitoring
   source:
     repoURL: https://github.com/damienpontifex/homelab
     path: apps/03-monitoring
@@ -15,7 +15,7 @@ spec:
       include: "application.yaml"
   destination:
     name: in-cluster
-    namespace: default
+    namespace: argocd
   syncPolicy:
     automated:
       enabled: true

@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  description: Homelab Monitoring Stack
+  sourceRepos:
+    - https://github.com/damienpontifex/*
+  destinations:
+    - name: in-cluster
+      namespace: argocd
+    - name: in-cluster
+      namespace: monitoring
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

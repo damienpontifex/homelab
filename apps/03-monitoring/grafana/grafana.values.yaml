@@ -32,9 +32,10 @@ datasources:
 plugins:
   # https://grafana.com/grafana/plugins/grafana-strava-datasource/
   - grafana-strava-datasource
-        
 
 # Ref: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
+# Defaults: https://github.com/grafana/grafana/blob/main/conf/defaults.ini
+# Sample: https://github.com/grafana/grafana/blob/main/conf/sample.ini
 grafana.ini:
   server:
     root_url: https://grafana.pontifex.dev
@@ -65,6 +66,11 @@ grafana.ini:
 
   panels:
     enable_alpha: true
+
+  security:
+    cookie_secure: true
+    cookie_samesite: strict
+    disable_initial_admin_creation: false # TODO: toggle once setup SSO
 
 service:
   type: LoadBalancer
