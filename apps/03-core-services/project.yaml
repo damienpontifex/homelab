@@ -12,6 +12,8 @@ spec:
     - oci://registry.developers.crunchydata.com/crunchydata/pgo
   destinations:
     - name: in-cluster
+      namespace: argocd
+    - name: in-cluster
       namespace: kube-system
     - name: in-cluster
       namespace: azure-workload-identity-system
