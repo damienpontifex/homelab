@@ -1,0 +1,9 @@
+cluster:
+  apiServer:
+    extraArgs:
+      # Sets the issuer claim (iss) in projected SA tokens
+      service-account-issuer: "https://pontifexhomelaboidc.blob.core.windows.net/oidc"
+      # Points local cluster components to the external URL for JWKS
+      service-account-jwks-uri: "https://pontifexhomelaboidc.blob.core.windows.net/oidc/openid/v1/jwks"
+      # Required for Entra ID validation
+      service-account-api-audiences: "https://pontifexhomelaboidc.default.svc,api://AzureADTokenExchange" 

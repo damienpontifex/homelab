@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: azure-workload-identity
+
+namespace: azure-workload-identity-system
+
+helmCharts:
+  # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook
+  - repo: https://azure.github.io/azure-workload-identity/charts
+    name: workload-identity-webhook
+    version: 1.5.1
+    releaseName: workload-identity-webhook
+    includeCRDs: true
+    namespace: azure-workload-identity-system
+    valuesInline:
+      azureTenantID: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+

@@ -46,6 +46,7 @@ genconfig cluster_name="homelab":
 		--with-secrets <(sops --decrypt secrets.sops.yaml) \
 		--config-patch @patches/global.yaml \
 		--config-patch-control-plane @patches/controlplane.yaml \
+		--config-patch-control-plane @patches/oidc.yaml \
 		--config-patch-worker @patches/worker.yaml \
 		--output ./clusterconfig
 
@@ -70,6 +71,26 @@ bootstrap:
 [group("ops")]
 kubeconfig: genconfig
 	@just _talosctl "kubeconfig" --force
+
+[group("ops")]
+upload-jwk:
+	kubectl get --raw /.well-known/openid-configuration | az storage blob upload \
+		--account-name pontifexhomelaboidc \
+		--container-name oidc \
+		--auth-mode key \
+		--name ".well-known/openid-configuration" \
+		--data @- \
+		--content-type "application/json" \
+		--overwrite
+
+	kubectl get --raw /openid/v1/jwks | az storage blob upload \
+		--account-name pontifexhomelaboidc \
+		--container-name oidc \
+		--auth-mode key \
+		--name "openid/v1/jwks" \
+		--data @- \
+		--content-type "application/json" \
+		--overwrite
 
 # reset:
 # 	@just _talosctl ""
