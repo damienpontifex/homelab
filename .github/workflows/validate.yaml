@@ -17,7 +17,7 @@ jobs:
           cd $(mktemp -d)
           curl --location \
             https://github.com/kubernetes-sigs/kubectl-validate/releases/latest/download/kubectl-validate_linux_amd64.tar.gz \
-            | tar --extract --gzip - kubectl-validate
+            | tar --extract --gzip kubectl-validate
           echo "$PWD" >> $GITHUB_PATH
 
       - name: Validate kustomizations
