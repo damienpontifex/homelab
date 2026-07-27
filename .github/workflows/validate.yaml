@@ -13,7 +13,12 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Install kubect-validate
-        run: go install sigs.k8s.io/kubectl-validate@latest
+        run: |
+          cd $(mktemp -d)
+          curl --location \
+            https://github.com/kubernetes-sigs/kubectl-validate/releases/latest/download/kubectl-validate_linux_amd64.tar.gz \
+            | tar --extract - kubectl-validate
+          echo "$PWD" >> $GITHUB_PATH
 
       - name: Validate kustomizations
         run: scripts/validate-resources.sh
