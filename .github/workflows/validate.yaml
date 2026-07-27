@@ -1,0 +1,15 @@
+name: Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate kustomizations
+        run: scripts/validate-resources.sh
