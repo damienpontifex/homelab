@@ -20,5 +20,8 @@ jobs:
             | tar --extract --gzip kubectl-validate
           echo "$PWD" >> $GITHUB_PATH
 
+      - name: Install Task
+        uses: go-task/setup-task@v1
+
       - name: Validate kustomizations
-        run: scripts/validate-resources.sh
+        run: task validate

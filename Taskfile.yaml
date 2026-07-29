@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  default:
+    desc: Print a greeting message
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+  list:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  validate:
+    desc: Validate resource files
+    vars:
+      MANIFEST_DIR:
+        sh: mktemp -d
+      CRD_DIR:
+        sh: mktemp -d
+      KUSTOMIZATINOS:
+        sh: find apps -name kustomization.yaml
+    cmds:
+      - defer: rm -rf {{.MANIFEST_DIR}} {{.CRD_DIR}}
+
+      - for: { var: KUSTOMIZATINOS }
+        cmd: kubectl kustomize --enable-helm "{{dir .ITEM}}" > "{{.MANIFEST_DIR}}/{{.ITEM | dir | base}}.yaml"
+
+      - for: { var: KUSTOMIZATINOS }
+        cmd: yq 'select(.kind == "CustomResourceDefinition")' "{{.MANIFEST_DIR}}/{{.ITEM | dir | base}}.yaml" > "{{.CRD_DIR}}/{{.ITEM | dir | base}}.yaml"
+
+      - cmd: kubectl validate --local-crds "{{.CRD_DIR}}" "{{.MANIFEST_DIR}}"
+
