@@ -38,17 +38,6 @@ volumes:
     nodeFilters:
       - "server:*"
       - "agent:*"
-files:
-  - source: |
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: cloudflare-tunnel-token
-        namespace: cloudflare-tunnel
-      type: Opaque
-      stringData:
-        token: "${CLOUDFLARE_TUNNEL_TOKEN}"
-    destination: /var/lib/rancher/k3s/server/manifests/homelab-config/cloudflare-tunnel/secret.yaml
 ports:
   - port: 8081:80 # same as `--port '8080:80@loadbalancer'`
     nodeFilters:

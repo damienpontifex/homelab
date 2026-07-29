@@ -6,6 +6,12 @@ includes:
   talos:
     taskfile: ./talos/Taskfile.yaml
     dir: ./talos
+  apps:
+    taskfile: ./apps/Taskfile.yaml
+    dir: ./apps
+  k3d:
+    taskfile: ./k3d/Taskfile.yaml
+    dir: ./k3d
 
 vars:
   GREETING: Hello, world!

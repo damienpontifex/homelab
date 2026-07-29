@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  local:
+    desc: Start k3d for local dev
+    cmds:
+      - task: clean
+      - k3d cluster create --config k3dcuster.yaml
+      # TODO: upload jwks and openid-configuration to other storage location
+
+  clean:
+    cmds:
+      - k3d cluster delete --config k3dcuster.yaml
+      
