@@ -12,6 +12,20 @@
     "custom.regex",
     "kustomize"
   ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "kustomize"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin"
+      ],
+      "automerge": true,
+      "platformAutomerge": true
+    }
+  ],
   "argocd": {
     "managerFilePatterns": [
       "**/*-application.yaml",
