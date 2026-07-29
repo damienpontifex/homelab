@@ -12,14 +12,7 @@
 
 ## Bootstrap with talosctl
 1. `brew install talosctl`
-1. Validate nodes and endpoints in [justfile](./justfile)
-1. `just apply --insecure`
-1. Wait until machine rebooted. Can observe with `just dashboard` (or `just dashboard --insecure` if before apply)
-1. `just bootstrap` to setup etcd
-1. `just kubeconfig` to update local kubeconfig
-1. `just apply-cilium` to setup CNI
-1. `just apply-external-secrets` to setup external-secrets
-1. `just apply-prometheus-crds` to setup prometheus types
+1. `task talos:bootstrap`
 
 ## Nuance on VM on macOS
 Need to have macOS be able to route/respond to the packet coming back on the bridge interface. Add the service IP route to send it to VM
