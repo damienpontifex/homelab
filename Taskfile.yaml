@@ -2,6 +2,11 @@
 
 version: '3'
 
+includes:
+  talos:
+    taskfile: ./talos/Taskfile.yaml
+    dir: ./talos
+
 vars:
   GREETING: Hello, world!
 

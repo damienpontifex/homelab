@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  # e.g. APP_PATH=apps/03-monitoring/grafana task dev
+  dev:
+    desc: Local dev and iteration on an app
+    requires:
+      vars:
+        - APP_PATH
+    vars:
+      ARGOCD_APP:
+        sh: yq '.metadata.name' {{.APP_PATH}}/application.yaml
+    cmds:
+      # Resume self heal and sync git state again
+      - defer: |
+          argcd app set {{.ARGOCD_APP}} --self-heal --app-namespace argocd
+          && argocd app sync {{.ARGOCD_APP}} --app-namespace argocd --async
+
+      # Disable self heal so local tweaks will persist
+      - argocd app set {{.APP_NAME}} --no-self-heal --app-namespace argocd
+
+      - watchexec --watch "{{.APP_PATH}}" --ignore charts
+        "kubectl kustomize --enable-helm {{.APP_PATH}} 
+        | kubectl apply --server-side=true --filename -"
+

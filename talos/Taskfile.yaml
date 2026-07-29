@@ -1,0 +1,124 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+vars:
+  TALOS_CONFIG: --talosconfig ./clusterconfig/talosconfig
+  NODES: 10.10.100.2
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  genconfig:
+    desc: Generate cluster config
+    sources:
+      - 'patches/*.yaml'
+      - secrets.sops.yaml
+    generates:
+      - clusterconfig/*.yaml
+      - clusterconfig/talosconfig
+    cmds:
+      - git clean -xf ./clusterconfig
+      - talosctl gen config homelab https://10.10.100.2:6443
+          --kubernetes-version 1.36.2
+          --talos-version 1.13.6
+          --with-secrets <(sops --decrypt secrets.sops.yaml)
+          --config-patch @patches/global.yaml
+          --config-patch-control-plane @patches/controlplane.yaml
+          --config-patch-control-plane @patches/oidc.yaml
+          --config-patch-worker @patches/worker.yaml
+          --output ./clusterconfig
+      - talosctl config endpoints 10.10.100.2 {{.TALOS_CONFIG}}
+      - talosctl config nodes 10.10.100.2 {{.TALOS_CONFIG}}
+
+  apply:
+    desc: Apply new configuration to a node
+    sources: ['patches/nodes/control-*.yaml']
+    deps: [genconfig]
+    vars:
+      INSECURE: false
+    cmds:
+      - for: sources
+        cmd: talosctl apply-config
+          --file ./clusterconfig/controlplane.yaml
+          --config-patch "{{.ITEM}}"
+          {{.TALOS_CONFIG}}
+          {{if .INSECURE}}--insecure{{end}}
+
+  kubeconfig:
+    desc: Add kubeconfig
+    deps: [genconfig]
+    cmds:
+      - talosctl kubeconfig --force {{.TALOS_CONFIG}}
+
+  dashboard:
+    desc: Show talos dashboard
+    deps: [genconfig]
+    cmds:
+      - talosctl dashboard {{.TALOS_CONFIG}}
+
+  reboot:
+    desc: Reboot homelab
+    deps: [genconfig]
+    cmds:
+      - talosctl reboot {{.TALOS_CONFIG}}
+
+  shutdown:
+    desc: Shutdown homelab
+    deps: [genconfig]
+    cmds:
+      - talosctl shutdown {{.TALOS_CONFIG}}
+
+  health:
+    desc: Show talos health
+    deps: [genconfig]
+    cmds:
+      - talosctl health {{.TALOS_CONFIG}}
+
+  bootstrap:
+    desc: Bootstrap cluster
+    deps: [genconfig]
+    cmds:
+      - task: apply
+        vars:
+          INSECURE: true
+      # Wait until fails to connect to talos API server indicating restarting
+      - while nc -z -w 1 {{.NODES}} 50000; do; sleep 1; done;
+      # Wait until can connect again indicating back up
+      - until nc -z -w 1 {{.NODES}} 50000; do; sleep 1; done;
+      # Bootstrap etcd
+      - talosctl bootstrap {{.TALOS_CONFIG}}
+      # # Get kubeconfig
+      - task: kubeconfig
+      # Apply cilium
+      - kustomize build --enable-helm ../apps/01-system-core/cilium/
+        | kubectl apply --server-side=true --filename -
+      - until kustomize build --enable-helm ../apps/01-system-core/cilium-resources/
+          | kubectl apply --server-side=true --filename -; do;
+          sleep 5;
+        done
+      # Upload openid-configuration
+      - kubectl get --raw /.well-known/openid-configuration | az storage blob upload
+        --account-name pontifexhomelaboidc
+        --container-name oidc
+        --auth-mode key
+        --name ".well-known/openid-configuration"
+        --data @-
+        --content-type "application/json"
+        --overwrite
+      # Upload jwks
+      - kubectl get --raw /openid/v1/jwks | az storage blob upload
+        --account-name pontifexhomelaboidc
+        --container-name oidc
+        --auth-mode key
+        --name "openid/v1/jwks"
+        --data @-
+        --content-type "application/json"
+        --overwrite
+      # Apply prometheus-crds
+      - kustomize build --enable-helm ../apps/01-system-core/prometheus-crds/
+        | kubectl apply --server-side=true --filename -
