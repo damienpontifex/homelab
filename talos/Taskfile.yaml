@@ -158,9 +158,7 @@ tasks:
       # Apply external secrets
       - kustomize build --enable-helm ../apps/01-system-core/external-secrets/
         | kubectl apply --server-side=true --filename -
-      # Apply external secrets
-      - kustomize build --enable-helm ../apps/01-system-core/external-secrets/
-        | kubectl apply --server-side=true --filename -
+      # TODO: Wait for external secrets to be ready so other things can pull their secrets
       # Apply external dns
       - kustomize build --enable-helm ../apps/02-core-services/external-dns/
         | kubectl apply --server-side=true --filename -

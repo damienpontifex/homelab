@@ -9,6 +9,14 @@ tasks:
     cmds:
       - task --list
 
+  apply-azure-resources:
+    cmds:
+    - az deployment group create --name homelab --resource-group homelab --template-file homelab.bicep
+
+  plan-azure-resources:
+    cmds:
+    - az deployment group what-if --resource-group homelab --template-file homelab.bicep
+
   # e.g. APP_PATH=apps/03-monitoring/grafana task dev
   dev:
     desc: Local dev and iteration on an app
@@ -28,6 +36,6 @@ tasks:
       - argocd app set {{.APP_NAME}} --no-self-heal --app-namespace argocd
 
       - watchexec --watch "{{.APP_PATH}}" --ignore charts
-        "kubectl kustomize --enable-helm {{.APP_PATH}} 
+        "kubectl kustomize --enable-helm {{.APP_PATH}}
         | kubectl apply --server-side=true --filename -"
 
