@@ -45,7 +45,9 @@ tasks:
 
   apply:
     desc: Apply new configuration to a node
-    sources: ['patches/nodes/control-*.yaml', './clusterconfig/controlplane.yaml']
+    sources: ['patches/nodes/control-*.yaml']
+    status:
+      - exit 1
     deps: [genconfig]
     cmds:
       - for: sources
@@ -68,6 +70,12 @@ tasks:
     deps: [genconfig]
     cmds:
       - talosctl dashboard {{.TALOS_CONFIG}} --nodes 10.10.100.2 --endpoints 10.10.100.2
+
+  reset:
+    desc: Reset homelab
+    deps: [genconfig]
+    cmds:
+      - talosctl reset --wipe-mode all --graceful=false --reboot {{.TALOS_CONFIG}}
 
   reboot:
     desc: Reboot homelab
@@ -103,26 +111,28 @@ tasks:
   bootstrap:
     desc: Bootstrap cluster
     cmds:
-      # - task: apply
-      #   vars:
-      #     EXTRA_FLAGS: --insecure
-      # Wait until fails to connect to talos API server indicating restarting
-      # - while nc -z -w 1 {{.NODES}} 50000; do sleep 1; done;
-      # Wait until can connect again indicating back up
-      # - until nc -z -w 1 {{.NODES}} 50000; do sleep 1; done;
-      # Bootstrap etcd
-      # - talosctl bootstrap {{.TALOS_CONFIG}}
-      # # Get kubeconfig
+      - task: apply
+        vars:
+          EXTRA_FLAGS: --insecure
+      # Wait until etcd service is Preparing
+      - until talosctl {{.TALOS_CONFIG}} service etcd 2>/dev/null | grep -q "Preparing"; do sleep 5; done
+      - talosctl bootstrap {{.TALOS_CONFIG}}
+      # Get kubeconfig and wait for cluster to be ready
       - task: kubeconfig
+      # Wait for API server to be connectable
+      - until kubectl cluster-info &> /dev/null; do sleep 1; done
+      # Wait for nodes to be visible in API server
+      - until [ "$(kubectl get nodes -o name | wc -l)" -ge 1 ]; do sleep 1; done
+      # Wait for nodes to be ready
+      # - kubectl wait --for=condition=Ready nodes --all --timeout=5m
       # Apply cilium
       - kustomize build --enable-helm ../apps/01-system-core/cilium/
-        | kubectl --server https://{{.NODES}}:6443 apply --server-side=true --filename -
+        | kubectl apply --server-side=true --filename -
+      - kubectl wait deployment/cilium-operator --for condition=Available --timeout=5m --namespace kube-system
       - until kustomize build --enable-helm ../apps/01-system-core/cilium-resources/
-          | kubectl apply --server https://{{.NODES}}:6443 --server-side=true --filename -; do
-          sleep 5;
-        done
+          | kubectl apply --server-side=true --filename -; do sleep 3; done
       # Upload openid-configuration
-      - kubectl get  --server https://{{.NODES}}:6443 --raw /.well-known/openid-configuration | az storage blob upload
+      - kubectl get  --raw /.well-known/openid-configuration | az storage blob upload
         --account-name pontifexhomelaboidc
         --container-name oidc
         --auth-mode key
@@ -131,7 +141,7 @@ tasks:
         --content-type "application/json"
         --overwrite
       # Upload jwks
-      - kubectl get --server https://{{.NODES}}:6443 --raw /openid/v1/jwks | az storage blob upload
+      - kubectl get --raw /openid/v1/jwks | az storage blob upload
         --account-name pontifexhomelaboidc
         --container-name oidc
         --auth-mode key
@@ -141,4 +151,4 @@ tasks:
         --overwrite
       # Apply prometheus-crds
       - kustomize build --enable-helm ../apps/01-system-core/prometheus-crds/
-        | kubectl apply --server https://{{.NODES}}:6443 --server-side=true --filename -
+        | kubectl apply --server-side=true --filename -
