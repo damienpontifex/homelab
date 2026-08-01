@@ -6,6 +6,7 @@ metadata:
 namespace: external-dns
 
 resources:
+  - namespace.yaml
   - cloudflare-api-token-external-secret.yaml
 
 helmCharts:

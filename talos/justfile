@@ -33,7 +33,7 @@ health: (_talosctl "health")
 [group("dev")]
 apply *FLAGS: genconfig
 	for control in "{{root_dir}}/patches/nodes/control-*.yaml"; do \
-		just _talosctl "apply-config" --file ./clusterconfig/controlplane.yaml --config-patch $control {{FLAGS}}; \
+		just _talosctl apply-config --file ./clusterconfig/controlplane.yaml --config-patch $control {{FLAGS}}; \
 	done
 
 # Generate Talos cluster config YAML files

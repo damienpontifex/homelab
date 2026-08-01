@@ -26,6 +26,27 @@ server:
       name: letsencrypt-prod
   vpa:
     enabled: true
+  env:
+    - name: AZURE_CLIENT_ID
+      value: ea227ff8-7b75-4f0f-83a9-7638e949faf3
+    - name: AZURE_TENANT_ID
+      value: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+    - name: AZURE_FEDERATED_TOKEN_FILE
+      value: /var/run/secrets/azure/tokens/token
+    - name: AZURE_AUTHORITY_HOST
+      value: https://microsoftonline.com
+  volumes:
+    - name: azure-identity-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              audience: api://AzureADTokenExchange
+              expirationSeconds: 3600
+              path: token
+  volumeMounts:
+    - name: azure-identity-token
+      mountPath: /var/run/secrets/azure/tokens
+      readOnly: true
 
 configs:
   params:
@@ -36,6 +57,21 @@ configs:
     "users.anonymous.enabled": "true"
     "resource.compareoptions": |
       ignoreAggregatedRoles: true
+    "url": "https://argocd.pontifex.dev"
+    "oidc.config": |
+       name: Azure
+       issuer: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/v2.0
+       clientID: ea227ff8-7b75-4f0f-83a9-7638e949faf3
+       azure:
+         useWorkloadIdentity: true
+       requestedIDTokenClaims:
+          groups:
+             essential: true
+             value: "ApplicationGroup"
+       requestedScopes:
+          - openid
+          - profile
+          - email
   rbac:
     "policy.default": "role:org-admin"
     "policy.csv": |
