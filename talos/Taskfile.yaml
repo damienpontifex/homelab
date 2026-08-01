@@ -13,6 +13,13 @@ tasks:
     cmds:
       - task --list
 
+  gensecrets:
+    status:
+      - test -f secrets.sops.yaml
+    cmds:
+    - talosctl gen secrets --output-file secrets.sops.yaml 
+    - sops --encrypt --in-place secrets.sops.yaml
+
   genconfig:
     desc: Generate cluster config
     sources:
@@ -21,6 +28,7 @@ tasks:
     generates:
       - clusterconfig/*.yaml
       - clusterconfig/talosconfig
+    deps: [gensecrets]
     cmds:
       - git clean -xf ./clusterconfig
       - talosctl gen config homelab https://10.10.100.2:6443
@@ -37,17 +45,17 @@ tasks:
 
   apply:
     desc: Apply new configuration to a node
-    sources: ['patches/nodes/control-*.yaml']
+    sources: ['patches/nodes/control-*.yaml', './clusterconfig/controlplane.yaml']
     deps: [genconfig]
-    vars:
-      INSECURE: false
     cmds:
       - for: sources
         cmd: talosctl apply-config
           --file ./clusterconfig/controlplane.yaml
           --config-patch "{{.ITEM}}"
           {{.TALOS_CONFIG}}
-          {{if .INSECURE}}--insecure{{end}}
+          --endpoints {{.NODES}}
+          --nodes {{.NODES}}
+          {{.EXTRA_FLAGS}}
 
   kubeconfig:
     desc: Add kubeconfig
@@ -59,7 +67,7 @@ tasks:
     desc: Show talos dashboard
     deps: [genconfig]
     cmds:
-      - talosctl dashboard {{.TALOS_CONFIG}}
+      - talosctl dashboard {{.TALOS_CONFIG}} --nodes 10.10.100.2 --endpoints 10.10.100.2
 
   reboot:
     desc: Reboot homelab
@@ -79,30 +87,42 @@ tasks:
     cmds:
       - talosctl health {{.TALOS_CONFIG}}
 
+  check-connection:
+    cmds:
+      - while nc -z -w 1 {{.NODES}} 50000; do sleep 1; done;
+
+  resource:
+    cmds:
+      - talosctl get rd --nodes {{.NODES}} --endpoints {{.NODES}}  --talosconfig ./clusterconfig/talosconfig 
+        | awk '{print $4}' 
+        | tail -n +2 
+        | fzf 
+        | xargs -n1 talosctl get --nodes {{.NODES}} --endpoints {{.NODES}}  --talosconfig ./clusterconfig/talosconfig
+
+
   bootstrap:
     desc: Bootstrap cluster
-    deps: [genconfig]
     cmds:
-      - task: apply
-        vars:
-          INSECURE: true
+      # - task: apply
+      #   vars:
+      #     EXTRA_FLAGS: --insecure
       # Wait until fails to connect to talos API server indicating restarting
-      - while nc -z -w 1 {{.NODES}} 50000; do; sleep 1; done;
+      # - while nc -z -w 1 {{.NODES}} 50000; do sleep 1; done;
       # Wait until can connect again indicating back up
-      - until nc -z -w 1 {{.NODES}} 50000; do; sleep 1; done;
+      # - until nc -z -w 1 {{.NODES}} 50000; do sleep 1; done;
       # Bootstrap etcd
-      - talosctl bootstrap {{.TALOS_CONFIG}}
+      # - talosctl bootstrap {{.TALOS_CONFIG}}
       # # Get kubeconfig
       - task: kubeconfig
       # Apply cilium
       - kustomize build --enable-helm ../apps/01-system-core/cilium/
-        | kubectl apply --server-side=true --filename -
+        | kubectl --server https://{{.NODES}}:6443 apply --server-side=true --filename -
       - until kustomize build --enable-helm ../apps/01-system-core/cilium-resources/
-          | kubectl apply --server-side=true --filename -; do;
+          | kubectl apply --server https://{{.NODES}}:6443 --server-side=true --filename -; do
           sleep 5;
         done
       # Upload openid-configuration
-      - kubectl get --raw /.well-known/openid-configuration | az storage blob upload
+      - kubectl get  --server https://{{.NODES}}:6443 --raw /.well-known/openid-configuration | az storage blob upload
         --account-name pontifexhomelaboidc
         --container-name oidc
         --auth-mode key
@@ -111,7 +131,7 @@ tasks:
         --content-type "application/json"
         --overwrite
       # Upload jwks
-      - kubectl get --raw /openid/v1/jwks | az storage blob upload
+      - kubectl get --server https://{{.NODES}}:6443 --raw /openid/v1/jwks | az storage blob upload
         --account-name pontifexhomelaboidc
         --container-name oidc
         --auth-mode key
@@ -121,4 +141,4 @@ tasks:
         --overwrite
       # Apply prometheus-crds
       - kustomize build --enable-helm ../apps/01-system-core/prometheus-crds/
-        | kubectl apply --server-side=true --filename -
+        | kubectl apply --server https://{{.NODES}}:6443 --server-side=true --filename -
