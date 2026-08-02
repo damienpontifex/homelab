@@ -149,6 +149,8 @@ tasks:
         --data @-
         --content-type "application/json"
         --overwrite
+      # TODO: review - maybe just install ArgoCD (even with errors of missing resources) and add  app-of-apps app and let everything else sync that way
+      # Would also need to install the argo projects
       # Apply prometheus-crds
       - kustomize build --enable-helm ../apps/01-system-core/prometheus-crds/
         | kubectl apply --server-side=true --filename -

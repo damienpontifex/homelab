@@ -13,6 +13,20 @@ resource msGraphSP 'Microsoft.Graph/servicePrincipals@v1.0' existing = { appId: 
 // ============ //
 //   ArgoCD    //
 // =========== //
+var argocdAppRoles = [
+  {
+    description: 'ArgoCD Org admin Users'
+    displayName: 'ArgoCD Org Admin'
+    id: '334b95a7-9cae-4a75-9995-4d5fce372074'
+    value: 'org-admin'
+  }
+  {
+    description: 'ArgoCD admin Users'
+    displayName: 'ArgoCD Admin'
+    id: '59c8d605-2c11-44ec-8edf-6ca397853a19'
+    value: 'admin'
+  }
+]
 resource argocdApp 'Microsoft.Graph/applications@v1.0' = {
   displayName: 'ArgoCD Homelab'
   uniqueName: '8a8bca40-1d25-4a08-9972-8fbb39614168'
@@ -42,6 +56,18 @@ resource argocdApp 'Microsoft.Graph/applications@v1.0' = {
       ]
     }
   ]
+
+  appRoles: [
+    for role in argocdAppRoles: {
+      id: role.id
+      displayName: role.displayName
+      description: role.description
+      value: role.value
+      allowedMemberTypes: ['User']
+      isEnabled: true
+    }
+  ]
+
 
   owners: { relationships: [for i in range(0, length(ownerEmails)): owners[i].id] }
 
@@ -128,7 +154,7 @@ resource grafanaApp 'Microsoft.Graph/applications@v1.0' = {
   owners: { relationships: [for i in range(0, length(ownerEmails)): owners[i].id] }
 
   resource federatedIdentityCredentials 'federatedIdentityCredentials@v1.0' = {
-    name: '${argocdApp.uniqueName}/homelab'
+    name: '${grafanaApp.uniqueName}/homelab'
     audiences: ['api://AzureADTokenExchange']
     issuer: oidcIssuerUrl
     subject: 'system:serviceaccount:monitoring:grafana'

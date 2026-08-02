@@ -6,11 +6,10 @@ metadata:
 spec:
   description: Homelab User-Facing Applications
   sourceRepos:
-    - https://github.com/damienpontifex/homelab
-    - https://github.com/damienpontifex/homelab.git
+    - https://github.com/damienpontifex/*
   destinations:
     - name: in-cluster
-      namespace: homepage
+      namespace: argocd
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

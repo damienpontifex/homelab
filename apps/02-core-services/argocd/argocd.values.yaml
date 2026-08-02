@@ -53,29 +53,32 @@ configs:
     "server.insecure": "false"
 
   cm:
-    "kustomize.buildOptions": "--enable-helm"
+    "admin.enabled": "false"
     "users.anonymous.enabled": "true"
+    "kustomize.buildOptions": "--enable-helm"
     "resource.compareoptions": |
       ignoreAggregatedRoles: true
     "url": "https://argocd.pontifex.dev"
     "oidc.config": |
-       name: Azure
-       issuer: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/v2.0
-       clientID: ea227ff8-7b75-4f0f-83a9-7638e949faf3
-       azure:
-         useWorkloadIdentity: true
-       requestedIDTokenClaims:
-          groups:
-             essential: true
-             value: "ApplicationGroup"
-       requestedScopes:
-          - openid
-          - profile
-          - email
+      name: Azure
+      issuer: https://login.microsoftonline.com/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/v2.0
+      clientID: ea227ff8-7b75-4f0f-83a9-7638e949faf3
+      azure:
+       useWorkloadIdentity: true
+      requestedIDTokenClaims:
+        roles:
+           essential: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+      usernameClaim: email
   rbac:
     "policy.default": "role:org-admin"
     "policy.csv": |
-      p, gethomepage, applications, *, */*, role:readonly
+      g, role:unauthenticated, role:readonly
+      g, damien@pontifex.dev, role:org-admin
+      g, org-admin, role:org-admin
       p, role:org-admin, *, *, *, allow
-    scopes: "[groups, email]"
+    scopes: "[openid, email, groups, profile]"
 
