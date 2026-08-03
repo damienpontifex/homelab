@@ -36,6 +36,58 @@ resource kv 'Microsoft.KeyVault/vaults@2026-02-01' = {
   }
 }
 
+resource certManagerIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'cert-manager'
+  location: location
+  properties: {
+    isolationScope: 'None'
+  }
+
+  resource federation 'federatedIdentityCredentials' = {
+    name: 'cert-manager-federation'
+    properties: {
+      audiences: ['api://AzureADTokenExchange']
+      issuer: '${oidcStorageAccount.properties.primaryEndpoints.blob}${oidcStorageAccount::blobServices::oidcContainer.name}'
+      subject: 'system:serviceaccount:cert-manager:cert-manager'
+    }
+  }
+}
+
+module certManagerDnsWrite 'homelab-dns-contributor.bicep' = {
+  name: '${deployment().name}-cert-manager-dns-contributor'
+  scope: resourceGroup('pontifex.dev')
+  params: {
+    description: 'Homelab cert-manager DNS Zone Contributor'
+    principalId: certManagerIdentity.properties.principalId
+  }
+}
+
+resource externalDnsIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'external-dns'
+  location: location
+  properties: {
+    isolationScope: 'None'
+  }
+
+  resource federation 'federatedIdentityCredentials' = {
+    name: 'external-dns-federation'
+    properties: {
+      audiences: ['api://AzureADTokenExchange']
+      issuer: '${oidcStorageAccount.properties.primaryEndpoints.blob}${oidcStorageAccount::blobServices::oidcContainer.name}'
+      subject: 'system:serviceaccount:external-dns:external-dns'
+    }
+  }
+}
+
+module externalDnsDnsWrite 'homelab-dns-contributor.bicep' = {
+  name: '${deployment().name}-external-dns-dns-contributor'
+  scope: resourceGroup('pontifex.dev')
+  params: {
+    description: 'Homelab external-dns DNS Zone Contributor'
+    principalId: externalDnsIdentity.properties.principalId
+  }
+}
+
 resource externalSecretsIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'external-secrets'
   location: location
@@ -117,3 +169,7 @@ module entraApplications 'homelab-entra-apps.bicep' = {
     oidcIssuerUrl: '${oidcStorageAccount.properties.primaryEndpoints.blob}${oidcStorageAccount::blobServices::oidcContainer.name}'
   }
 }
+
+output externalDnsClientId string = externalDnsIdentity.properties.clientId
+output certManagerClientId string = certManagerIdentity.properties.clientId
+output tenantId string = tenant().tenantId

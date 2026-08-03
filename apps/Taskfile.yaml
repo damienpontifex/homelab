@@ -11,11 +11,18 @@ tasks:
 
   apply-azure-resources:
     cmds:
-    - az deployment group create --name homelab --resource-group homelab --template-file homelab.bicep
+    - az deployment group create
+      --name homelab
+      --resource-group homelab
+      --template-file homelab.bicep
+      --query 'properties.outputs'
+      | jq 'map_values(.value)'
 
   plan-azure-resources:
     cmds:
-    - az deployment group what-if --resource-group homelab --template-file homelab.bicep
+    - az deployment group what-if
+      --resource-group homelab
+      --template-file homelab.bicep
 
   # e.g. APP_PATH=apps/03-monitoring/grafana task dev
   dev:
