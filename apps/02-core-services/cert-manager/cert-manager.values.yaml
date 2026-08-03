@@ -13,3 +13,25 @@ config:
 prometheus:
   servicemonitor:
     enabled: true
+
+extraEnv:
+  - name: AZURE_CLIENT_ID
+    value: 2c2385d2-977a-4e0d-98ea-8d7a1822b90d
+  - name: AZURE_TENANT_ID
+    value: ff2b9041-8733-4fbd-a4e6-23f30567c4a4
+  - name: AZURE_FEDERATED_TOKEN_FILE
+    value: /var/run/secrets/azure/tokens/token
+  - name: AZURE_AUTHORITY_HOST
+    value: https://microsoftonline.com
+extraVolumes:
+  - name: azure-identity-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            audience: api://AzureADTokenExchange
+            expirationSeconds: 3600
+            path: token
+extraVolumeMounts:
+  - name: azure-identity-token
+    mountPath: /var/run/secrets/azure/tokens
+    readOnly: true

@@ -9,6 +9,11 @@ resources:
   - namespace.yaml
   - cloudflare-api-token-external-secret.yaml
 
+configMapGenerator:
+  - name: azure-config-file
+    files:
+      - azure.json
+
 helmCharts:
   # https://artifacthub.io/packages/helm/external-dns/external-dns
   - repo: https://kubernetes-sigs.github.io/external-dns

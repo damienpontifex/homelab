@@ -11,8 +11,8 @@ spec:
       name: letsencrypt-staging
     solvers:
       - dns01:
-          cloudflare:
-            email: damien@pontifex.dev
-            apiTokenSecretRef:
-              name: cloudflare-api-token
-              key: api-token
+          azureDNS:
+            hostedZoneName: pontifex.dev
+            resourceGroupName: pontifex.dev
+            subscriptionID: fa2cbf67-1293-4f9c-8884-a0379a9e0c64
+            environment: AzurePublicCloud
