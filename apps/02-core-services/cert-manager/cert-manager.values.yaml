@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/deploy/charts/cert-manager/values.schema.json
 resources:
   requests:
     cpu: 25m
@@ -23,7 +24,7 @@ extraEnv:
     value: /var/run/secrets/azure/tokens/token
   - name: AZURE_AUTHORITY_HOST
     value: https://microsoftonline.com
-extraVolumes:
+volumes:
   - name: azure-identity-token
     projected:
       sources:
@@ -31,7 +32,7 @@ extraVolumes:
             audience: api://AzureADTokenExchange
             expirationSeconds: 3600
             path: token
-extraVolumeMounts:
+volumeMounts:
   - name: azure-identity-token
     mountPath: /var/run/secrets/azure/tokens
     readOnly: true
