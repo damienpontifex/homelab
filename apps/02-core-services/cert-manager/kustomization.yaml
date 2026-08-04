@@ -15,7 +15,7 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  - cloudflare-api-token-external-secret.yaml
+  # - cloudflare-api-token-external-secret.yaml
   - cluster-issuer-letsencrypt-staging.yaml
   - cluster-issuer-letsencrypt-prod.yaml
   # - vertical-pod-autoscaler.yaml
