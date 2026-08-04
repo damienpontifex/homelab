@@ -10,7 +10,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/grafana-community/grafana
   - repo: oci://ghcr.io/grafana-community/helm-charts
     name: grafana
-    version: 12.10.1
+    version: 12.10.2
     releaseName: grafana
     valuesFile: grafana.values.yaml
     skipTests: true
