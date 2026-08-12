@@ -34,7 +34,7 @@ extraVolumes:
   - name: azure-config-file
     configMap:
       name: azure-config-file
-    
+
 extraVolumeMounts:
   - name: azure-identity-token
     mountPath: /var/run/secrets/azure/tokens

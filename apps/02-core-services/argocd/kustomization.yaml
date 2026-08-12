@@ -4,7 +4,7 @@ metadata:
   name: argocd
 
 resources:
-- namespace.yaml
+  - namespace.yaml
 
 helmCharts:
   # https://artifacthub.io/packages/helm/argo-cd-oci/argo-cd

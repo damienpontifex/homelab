@@ -85,7 +85,7 @@ readinessProbe:
 livenessProbe:
   httpGet:
     scheme: HTTPS
-    
+
 # kubectl create secret generic grafana-secrets --namespace monitoring --from-literal=STRAVA_CLIENT_SECRET=$(pbpaste)
 # envFromSecret: grafana-secrets
 

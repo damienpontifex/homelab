@@ -4,16 +4,17 @@ kind: Kustomization
 namespace: monitoring
 
 configMapGenerator:
-  - files: 
-    - relay=daemonset/otel-config.yaml
-    - common=common-otel-config.yaml
+  - files:
+      - relay=daemonset/otel-config.yaml
+      - common=common-otel-config.yaml
     name: otel-collector-agent-config
   - files:
-    - relay=deployment/otel-config.yaml
-    - common=common-otel-config.yaml
+      - relay=deployment/otel-config.yaml
+      - common=common-otel-config.yaml
     name: otel-collector-singleton-config
 
 resources:
+  - daemonset/mutating-admission.yaml
   # Daemonset RBAC — aggregated ClusterRole for opentelemetry-collector-daemonset
   - daemonset/rbac/aggregated.yaml
   - daemonset/rbac/kubelet-stats.yaml
@@ -25,9 +26,9 @@ resources:
   - deployment/rbac/k8s-objects.yaml
 
 helmCharts:
-  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
-  # https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-collector
   - &otel-common
+    # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-collector
+    # https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-collector
     name: opentelemetry-collector
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     version: 0.169.0
@@ -41,7 +42,7 @@ helmCharts:
     # Daemonset name automatically has -agent suffix
     releaseName: opentelemetry-collector
     additionalValuesFiles:
-    - daemonset/values.yaml
+      - daemonset/values.yaml
 
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -50,18 +51,9 @@ helmCharts:
     releaseName: opentelemetry-target-allocator
     namespace: monitoring
 
-  # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
-  # - repo: oci://ghcr.io/prometheus-community/charts
-  #   name: prometheus-operator-crds
-  #   version: 27.0.0
-  #   releaseName: prometheus-operator-crds
-  #
-  # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-kube-stack
-  # - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-  #   name: opentelemetry-kube-stack
-  #   # renovate: datasource=helm registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts depName=opentelemetry-kube-stack
-  #   version: 0.17.1
-  #   releaseName: opentelemetry-kube-stack
-  #   valuesFile: opentelemetry-kube-stack-values.yaml
-  #   includeCRDs: true
-  #   namespace: monitoring
+  - name: opentelemetry-ebpf-instrumentation
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    version: 0.11.0
+    namespace: monitoring
+    releaseName: opentelemetry-ebpf-instrumentation
+    valuesFile: opentelemetry-ebpf-instrumentation.values.yaml

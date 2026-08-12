@@ -19,4 +19,4 @@ tasks:
   clean:
     cmds:
       - k3d cluster delete --config k3dcuster.yaml
-      
+

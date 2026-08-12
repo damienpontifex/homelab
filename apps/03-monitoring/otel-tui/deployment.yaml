@@ -10,30 +10,30 @@ spec:
   template:
     spec:
       containers:
-      - name: otel-tui
-        image: ymtdzzz/otel-tui:latest
-        ports:
-        - containerPort: 4317
-          name: otlp-grpc
-        - containerPort: 4318
-          name: otlp-http
-        env:
-        - name: TERM
-          value: xterm-256color
-        stdin: true
-        tty: true
-        securityContext:
-          privileged: false
-          runAsNonRoot: true
-          runAsUser: 65532
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          seccompProfile:
-            type: RuntimeDefault
-          capabilities:
-            drop:
-              - ALL
-        
-      restartPolicy: Always
----
+        - name: otel-tui
+          image: ymtdzzz/otel-tui:latest
+          ports:
+            - containerPort: 4317
+              name: otlp-grpc
+            - containerPort: 4318
+              name: otlp-http
+          env:
+            - name: TERM
+              value: xterm-256color
+          stdin: true
+          tty: true
+          securityContext:
+            privileged: false
+            runAsNonRoot: true
+            runAsUser: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
 
+      restartPolicy: Always
+
+---

@@ -14,10 +14,10 @@ receivers:
     k8s_api_config:
       auth_type: serviceAccount
     metric_groups:
-    - node
-    - pod
-    - container
-    - volume
+      - node
+      - pod
+      - container
+      - volume
     metrics:
       k8s.container.cpu.node.utilization:
         enabled: true

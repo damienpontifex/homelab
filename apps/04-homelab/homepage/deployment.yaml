@@ -64,11 +64,11 @@ spec:
             - mountPath: /app/config/widgets.yaml
               name: homepage-config
               subPath: widgets.yaml
-            # - mountPath: /app/config/logs
-            #   name: logs
+              # - mountPath: /app/config/logs
+              #   name: logs
       volumes:
         - name: homepage-config
           configMap:
             name: homepage
-        # - name: logs
-        #   emptyDir: {}
+      # - name: logs
+      #   emptyDir: {}

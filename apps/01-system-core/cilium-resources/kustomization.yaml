@@ -3,4 +3,4 @@ kind: Kustomization
 metadata:
   name: cilium-resources
 resources:
-- bgp.yaml
+  - bgp.yaml

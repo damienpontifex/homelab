@@ -8,5 +8,5 @@ spec:
     name: letsencrypt-staging
     kind: ClusterIssuer
   dnsNames:
-  - home.pontifex.dev
+    - home.pontifex.dev
 

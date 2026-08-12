@@ -60,4 +60,4 @@ spec:
         addresses:
           - LoadBalancerIP
       selector: {} # All load balancer services
-        
+
