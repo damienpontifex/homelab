@@ -14,7 +14,7 @@ configMapGenerator:
     name: otel-collector-singleton-config
 
 resources:
-  - daemonset/mutating-admission.yaml
+  # - daemonset/mutating-admission.yaml
   # Daemonset RBAC — aggregated ClusterRole for opentelemetry-collector-daemonset
   - daemonset/rbac/aggregated.yaml
   - daemonset/rbac/kubelet-stats.yaml
@@ -51,9 +51,9 @@ helmCharts:
     releaseName: opentelemetry-target-allocator
     namespace: monitoring
 
-  - name: opentelemetry-ebpf-instrumentation
-    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-    version: 0.11.0
-    namespace: monitoring
-    releaseName: opentelemetry-ebpf-instrumentation
-    valuesFile: opentelemetry-ebpf-instrumentation.values.yaml
+# - name: opentelemetry-ebpf-instrumentation
+#   repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+#   version: 0.11.0
+#   namespace: monitoring
+#   releaseName: opentelemetry-ebpf-instrumentation
+#   valuesFile: opentelemetry-ebpf-instrumentation.values.yaml
