@@ -2,6 +2,7 @@ match_type: doublestar
 exclude:
   - "**/tempmlates/**"
   - "**/charts/**"
+  - "**/vendor/**"
 formatter:
   type: basic
   line_ending: lf
@@ -11,3 +12,4 @@ formatter:
   indent: 2
   drop_merge_tag: true
   eof_newline: true
+  retain_line_breaks_single: true

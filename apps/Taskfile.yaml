@@ -11,18 +11,20 @@ tasks:
 
   apply-azure-resources:
     cmds:
-    - az deployment group create
-      --name homelab
-      --resource-group homelab
-      --template-file homelab.bicep
-      --query 'properties.outputs'
-      | jq 'map_values(.value)'
+      - |
+        az deployment group create
+          --name homelab
+          --resource-group homelab
+          --template-file homelab.bicep
+          --query 'properties.outputs'
+          | jq 'map_values(.value)'
 
   plan-azure-resources:
     cmds:
-    - az deployment group what-if
-      --resource-group homelab
-      --template-file homelab.bicep
+      - |
+        az deployment group what-if
+          --resource-group homelab
+          --template-file homelab.bicep
 
   # e.g. APP_PATH=apps/03-monitoring/grafana task dev
   dev:
@@ -42,7 +44,8 @@ tasks:
       # Disable self heal so local tweaks will persist
       - argocd app set {{.APP_NAME}} --no-self-heal --app-namespace argocd
 
-      - watchexec --watch "{{.APP_PATH}}" --ignore charts
-        "kubectl kustomize --enable-helm {{.APP_PATH}}
-        | kubectl apply --server-side=true --filename -"
+      - |
+        watchexec --watch "{{.APP_PATH}}" --ignore charts
+          "kubectl kustomize --enable-helm {{.APP_PATH}}
+          | kubectl apply --server-side=true --filename -"
 
