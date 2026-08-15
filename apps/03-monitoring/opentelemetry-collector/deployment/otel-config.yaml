@@ -50,7 +50,6 @@ processors:
           - set(log.attributes["vpa_mem_raw"], log.body["status"]["recommendation"]["containerRecommendations"]["target"]["memory"])
           - replace_pattern(log.attributes["vpa_mem_raw"], "Mi", "")
 
-
   transform/k8s_events:
     error_mode: ignore
     log_statements:

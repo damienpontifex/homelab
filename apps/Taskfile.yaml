@@ -32,20 +32,29 @@ tasks:
     requires:
       vars:
         - APP_PATH
+    set:
+      - x
     vars:
       ARGOCD_APP:
-        sh: yq '.metadata.name' {{.APP_PATH}}/application.yaml
+        sh: yq --exit-status '.metadata.name' < "{{.APP_PATH}}/application.yaml"
     cmds:
       # Resume self heal and sync git state again
       - defer: |
-          argcd app set {{.ARGOCD_APP}} --self-heal --app-namespace argocd
-          && argocd app sync {{.ARGOCD_APP}} --app-namespace argocd --async
+          argcd app set argocd/{{.ARGOCD_APP}} --self-heal --app-namespace argocd
+          && argocd app sync argocd/{{.ARGOCD_APP}} --app-namespace argocd --async
+
+      - argocd login --core
 
       # Disable self heal so local tweaks will persist
-      - argocd app set {{.APP_NAME}} --no-self-heal --app-namespace argocd
+      - argocd app set argocd/{{.ARGOCD_APP}} --self-heal=false --app-namespace argocd
 
       - |
-        watchexec --watch "{{.APP_PATH}}" --ignore charts
-          "kubectl kustomize --enable-helm {{.APP_PATH}}
-          | kubectl apply --server-side=true --filename -"
+        watchexec --watch "{{.APP_PATH}}" --ignore charts \
+          'kubectl kustomize --enable-helm {{.APP_PATH}} | kubectl apply --server-side=true --force-conflicts --filename -'
+
+  dev-otel-collector:
+    cmds:
+      - task: dev
+        vars:
+          APP_PATH: ./03-monitoring/opentelemetry-collector
 

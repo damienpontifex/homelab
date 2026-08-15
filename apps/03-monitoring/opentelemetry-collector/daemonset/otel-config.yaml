@@ -28,10 +28,16 @@ receivers:
       k8s.pod.memory.node.utilization:
         enabled: true
 
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sclusterreceiver/README.md
+  # metrics produced -> https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sclusterreceiver/documentation.md
+  k8s_cluster:
+    node_conditions_to_report: [Ready, MemoryPressure]
+    allocatable_types_to_report: [cpu, memory]
+
 service:
   pipelines:
     metrics:
-      receivers: [kubelet_stats]
+      receivers: [k8s_cluster, kubelet_stats]
       processors: [memory_limiter, k8s_attributes, resource_detection]
       exporters: [prometheus_remote_write, otlp_http/otel_tui]
 

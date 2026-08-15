@@ -20,6 +20,7 @@ resources:
   - daemonset/rbac/kubelet-stats.yaml
   - daemonset/rbac/k8s-attributes.yaml
   - daemonset/rbac/persistent-volumes.yaml
+  - daemonset/rbac/k8s-cluster.yaml
   # Deployment RBAC — aggregated ClusterRole for opentelemetry-collector-deployment
   - deployment/rbac/aggregated.yaml
   - deployment/rbac/k8s-events.yaml
