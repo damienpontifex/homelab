@@ -1,0 +1,34 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: git-push
+spec:
+  schedule: "0 20 */1 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: jobname
+              image: alpine/git
+              args: ['/bin/sh', '/etc/git-push/git-push.sh']
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1001
+                runAsGroup: 1001
+                seccompProfile:
+                  type: RuntimeDefault
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - mountPath: /etc/git-push
+                  name: git-push-script
+          restartPolicy: OnFailure
+          volumes:
+            - name: git-push-script
+              configMap:
+                name: git-push
+                defaultMode: 0755

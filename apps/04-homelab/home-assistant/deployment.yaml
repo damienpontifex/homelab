@@ -1,0 +1,93 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # "Another instance is already running"
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: home-assistant
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: Always
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: config-bootstrap
+          image: alpine/git
+          command: [/bin/sh, /etc/init/init.sh]
+          volumeMounts:
+            - name: storage
+              mountPath: /config
+            - name: init-script
+              mountPath: /etc/init
+      containers:
+        - name: home-assistant
+          image: ghcr.io/home-assistant/home-assistant:2026.7.4
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: false
+            runAsUser: 0
+            runAsGroup: 0
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - SYS_ADMIN
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: 8123
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 5
+          #   successThreshold: 1
+          #   failureThreshold: 3
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8123
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 2
+          #   successThreshold: 1
+          #   failureThreshold: 3
+          #   periodSeconds: 10
+          env: []
+          ports:
+            - containerPort: 8123
+              name: home-assistant
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/home-assistant/tls
+              readOnly: true
+            - name: storage
+              mountPath: /config
+              readOnly: false
+      volumes:
+        - name: tls
+          secret:
+            secretName: home-assistant-app-tls-secret
+        - name: storage
+          persistentVolumeClaim:
+            claimName: home-assistant
+        - name: init-script
+          configMap:
+            name: init-script
+            defaultMode: 0755
+      restartPolicy: Always
+

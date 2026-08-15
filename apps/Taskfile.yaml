@@ -46,7 +46,7 @@ tasks:
       - argocd login --core
 
       # Disable self heal so local tweaks will persist
-      - argocd app set argocd/{{.ARGOCD_APP}} --self-heal=false --app-namespace argocd
+      - argocd app set argocd/{{.ARGOCD_APP}} --self-heal=false --app-namespace argocd || true
 
       - |
         watchexec --watch "{{.APP_PATH}}" --ignore charts \
@@ -58,3 +58,8 @@ tasks:
         vars:
           APP_PATH: ./03-monitoring/opentelemetry-collector
 
+  dev-home-assistant:
+    cmds:
+      - task: dev
+        vars:
+          APP_PATH: ./04-homelab/home-assistant
