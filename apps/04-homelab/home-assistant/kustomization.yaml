@@ -25,3 +25,6 @@ resources:
   - storage.yaml
   - certificate.yaml
   - git-push-cronjob.yaml
+  - matter-server/deployment.yaml
+  - matter-server/service.yaml
+  - matter-server/pvc.yaml

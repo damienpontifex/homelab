@@ -46,7 +46,7 @@ tasks:
       - argocd login --core
 
       # Disable self heal so local tweaks will persist
-      - argocd app set argocd/{{.ARGOCD_APP}} --self-heal=false --app-namespace argocd || true
+      - argocd app set argocd/{{.ARGOCD_APP}} --self-heal=false --app-namespace argocd --dest-namespace argocd || true
 
       - |
         watchexec --watch "{{.APP_PATH}}" --ignore charts \
