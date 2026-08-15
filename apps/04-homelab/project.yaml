@@ -10,6 +10,8 @@ spec:
   destinations:
     - name: in-cluster
       namespace: argocd
+    - name: in-cluster
+      namespace: home-assistant
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
