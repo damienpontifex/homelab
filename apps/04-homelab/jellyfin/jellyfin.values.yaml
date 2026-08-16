@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://json.schemastore.org/any.json
+service:
+  type: LoadBalancer
+  port: 443
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: grafana.pontifex.dev
+
+jellyfin:
+  env:
+    - name: JELLYFIN_PublishedServerUrl
+      value: https://media.pontifex.dev
+    # https://github.com/jellyfin/jellyfin/pull/13964
+    - name: Kestrel__Endpoints__JellyfinSecure__Url
+      value: https://*:8920
+    - name: Kestrel__Endpoints__JellyfinSecure__Certificate__Path
+      value: /etc/jellyfin/tls/tls.crt
+    - name: Kestrel__Endpoints__JellyfinSecure__Certificate__KeyPath
+      value: /etc/jellyfin/tls/tls.key
+
+volumeMounts:
+  - name: tls-certs
+    mountPath: /etc/jellyfin/tls
+    readOnly: true
+volumes:
+  - name: tls-certs
+    secret:
+      secretName: jellyfin-app-tls-secret
+      optional: false
+
