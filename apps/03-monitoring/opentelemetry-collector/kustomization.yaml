@@ -48,7 +48,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-target-allocator
   - repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     name: opentelemetry-target-allocator
-    version: 0.157.0
+    version: 0.158.0
     releaseName: opentelemetry-target-allocator
     namespace: monitoring
 
