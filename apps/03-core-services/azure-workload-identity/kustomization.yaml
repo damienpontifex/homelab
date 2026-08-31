@@ -9,7 +9,7 @@ helmCharts:
   # https://artifacthub.io/packages/helm/azure-workload-identity/workload-identity-webhook
   - repo: https://azure.github.io/azure-workload-identity/charts
     name: workload-identity-webhook
-    version: 1.6.0
+    version: 1.6.1
     releaseName: workload-identity-webhook
     includeCRDs: true
     namespace: azure-workload-identity-system
