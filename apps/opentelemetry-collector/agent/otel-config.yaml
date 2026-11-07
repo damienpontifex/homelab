@@ -6,6 +6,10 @@ receivers:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   file_log:
     include: [/var/log/pods/*/*/*.log]
+    # Avoid a feedback loop: collector export errors -> logs -> more exports
+    exclude: [/var/log/pods/monitoring_opentelemetry-collector*/*/*.log]
+    # Required by the container parser to derive k8s.namespace/pod/container from the path
+    include_file_path: true
     retry_on_failure:
       enabled: true
     operators:

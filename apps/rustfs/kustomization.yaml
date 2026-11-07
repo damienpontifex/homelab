@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: rustfs
 
+resources:
+  - create-buckets-job.yaml
+
 helmCharts:
   # https://artifacthub.io/packages/helm/rustfs/rustfs
   - repo: https://charts.rustfs.com
@@ -11,3 +14,15 @@ helmCharts:
     releaseName: rustfs
     namespace: rustfs
     valuesFile: rustfs.values.yaml
+    skipTests: true
+
+patches:
+  # The rustfs chart templates don't emit metadata.namespace, and kustomize's
+  # `namespace:` field above isn't applied to this chart's output, so set it explicitly.
+  # Without this everything lands in `default` and rustfs-svc.rustfs.svc doesn't resolve.
+  - target:
+      name: ".*"
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: rustfs

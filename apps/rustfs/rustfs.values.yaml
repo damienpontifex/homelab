@@ -7,6 +7,11 @@ config:
     region: ap-southeast-2
     rust_log: warn
     log_level: warn
+# Chart default is 256Mi, too small to hold Loki chunks for long
+storageclass:
+  dataStorageSize: 5Gi
+# Chart enables an ingress for example.rustfs.com by default
+ingress: {enabled: false}
 # ingress:
 #   className: traefix
 #   hosts:

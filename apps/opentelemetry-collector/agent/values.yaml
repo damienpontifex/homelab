@@ -7,7 +7,7 @@ extraVolumes:
       name: otel-collector-agent-config
   - name: varlogpods
     hostPath:
-      path: /va/log/pods
+      path: /var/log/pods
   - name: varlibdockercontainers
     hostPath:
       path: /var/lib/docker/containers

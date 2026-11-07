@@ -19,11 +19,11 @@ tasks:
       - task: apply-manifests
 
   upload-public-oidc:
-    cmds:
-      # Upload openid-configuration
-      - kubectl get  --raw /.well-known/openid-configuration | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name ".well-known/openid-configuration" --data @- --content-type "application/json" --overwrite
-      # Upload jwks
-      - kubectl get --raw /openid/v1/jwks | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name "openid/v1/jwks" --data @- --content-type "application/json" --overwrite
+    cmds: []
+    # # Upload openid-configuration
+    # - kubectl get  --raw /.well-known/openid-configuration | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name ".well-known/openid-configuration" --data @- --content-type "application/json" --overwrite
+    # # Upload jwks
+    # - kubectl get --raw /openid/v1/jwks | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name "openid/v1/jwks" --data @- --content-type "application/json" --overwrite
 
   render-manifests:
     cmds:

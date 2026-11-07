@@ -1,0 +1,31 @@
+# Loki doesn't create its buckets, and rustfs starts empty.
+# Retries (backoffLimit) until rustfs is ready; idempotent if buckets exist.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rustfs-create-buckets
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: create-buckets
+          image: amazon/aws-cli:latest
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              for b in loki-chunks loki-ruler; do
+                aws s3api head-bucket --bucket "$b" 2>/dev/null || aws s3 mb "s3://$b"
+              done
+          env:
+            - name: AWS_ENDPOINT_URL
+              value: http://rustfs-svc:9000
+            - name: AWS_DEFAULT_REGION
+              value: ap-southeast-2
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef: {name: rustfs-secret, key: RUSTFS_ACCESS_KEY}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: rustfs-secret, key: RUSTFS_SECRET_KEY}

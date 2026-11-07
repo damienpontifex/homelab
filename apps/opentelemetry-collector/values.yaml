@@ -43,10 +43,10 @@ extraEnvs:
     valueFrom:
       fieldRef:
         fieldPath: metadata.labels['topology.kubernetes.io/zone']
+  # Pods don't carry a cluster label (only region/zone topology labels are copied
+  # from the node), so a fieldRef here resolved to "". Set it explicitly.
   - name: K8S_CLUSTER_NAME
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.labels['app.kubernetes.io/cluster']
+    value: homelab
   - name: OTEL_RESOURCE_ATTRIBUTES
     value: deployment.environment.name=dev,cloud.provider=home,k8s.cluster.name=$(K8S_CLUSTER_NAME),cloud.availability_zone=$(K8S_NODE_ZONE),cloud.region=$(K8S_NODE_REGION)
 
