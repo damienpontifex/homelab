@@ -3,12 +3,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: home-assistant
+  labels:
+    app.kubernetes.io/component: home-assistant-server
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: home-assistant-server
   replicas: 1
   strategy:
     type: Recreate # "Another instance is already running"
   template:
     metadata:
+      labels:
+        app.kubernetes.io/component: home-assistant-server
       annotations:
         kubectl.kubernetes.io/default-container: home-assistant
     spec:

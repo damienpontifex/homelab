@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto-mqtt
+  labels:
+    app.kubernetes.io/component: mosquitto-mqtt
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: mosquitto-mqtt
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: mosquitto-mqtt
+      labels:
+        app.kubernetes.io/component: mosquitto-mqtt
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: Always
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mosquitto-mqtt
+          image: eclipse-mosquitto:2.1.2-alpine
+          args: []
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - SYS_ADMIN
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mqtt
+              containerPort: 1883
+          volumeMounts:
+            - name: mosquitto-data
+              mountPath: /mosquitto/data
+      restartPolicy: Always
+      volumes:
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-mqtt-pvc
+

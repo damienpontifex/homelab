@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prometheus-community/helm-charts/refs/heads/main/charts/prometheus/values.schema.json
+server:
+  extraFlags:
+    - web.enable-otlp-receiver
+    - web.enable-remote-write-receiver
+
+# Dependencies in Chart.yaml
+alertmanager: {enabled: true}
+prometheus-node-exporter: {enabled: false}
+kube-state-metrics: {enabled: false}
+prometheus-pushgateway: {enabled: false}
+
+# All scraping done by opentelemetry collector so disable all below
+scrapeConfigs:
+  prometheus: {enabled: false}
+  kubernetes-api-servers: {enabled: false}
+  kubernetes-nodes: {enabled: false}
+  kubernetes-nodes-cadvisor: {enabled: false}
+  kubernetes-service-endpoints: {enabled: false}
+  kubernetes-service-endpoints-slow: {enabled: false}
+  prometheus-pushgateway: {enabled: false}
+  kubernetes-services: {enabled: false}
+  kubernetes-pods: {enabled: false}
+  kubernetes-pods-slow: {enabled: false}
+

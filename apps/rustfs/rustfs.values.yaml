@@ -1,0 +1,20 @@
+mode:
+  standalone: {enabled: true}
+  distributed: {enabled: false}
+replicaCount: 1
+config:
+  rustfs:
+    region: ap-southeast-2
+    rust_log: warn
+    log_level: warn
+# ingress:
+#   className: traefix
+#   hosts:
+#     - host: rustfs.home.pontifex.dev
+#       paths:
+#         - path: /
+#           pathType: Prefix
+#   tls:
+#     enabled: true
+#     certManager:
+#       enabled: true

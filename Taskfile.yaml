@@ -3,26 +3,20 @@
 version: '3'
 
 includes:
-  talos:
-    taskfile: ./talos/Taskfile.yaml
-    dir: ./talos
-  apps:
-    taskfile: ./apps/Taskfile.yaml
-    dir: ./apps
-  k3d:
-    taskfile: ./k3d/Taskfile.yaml
-    dir: ./k3d
+  # talos:
+  #   taskfile: ./clusters/talos
+  # apps:
+  #   taskfile: ./apps/Taskfile.yaml
+  #   dir: ./apps
+  local:
+    taskfile: ./clusters/local
+    dir: ./clusters/local
 
 vars:
   GREETING: Hello, world!
 
 tasks:
   default:
-    desc: Print a greeting message
-    cmds:
-      - echo "{{.GREETING}}"
-    silent: true
-  list:
     desc: List available tasks
     silent: true
     cmds:

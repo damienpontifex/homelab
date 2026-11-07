@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  local:
+    desc: Start k3d for local dev
+    deps:
+      - clean
+    cmds:
+      - k3d cluster create --config k3d-config.yaml
+      - task: upload-public-oidc
+      - task: apply-manifests
+
+  upload-public-oidc:
+    cmds:
+      # Upload openid-configuration
+      - kubectl get  --raw /.well-known/openid-configuration | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name ".well-known/openid-configuration" --data @- --content-type "application/json" --overwrite
+      # Upload jwks
+      - kubectl get --raw /openid/v1/jwks | az storage blob upload --account-name pontifexhomelaboidc --container-name oidc --auth-mode key --name "openid/v1/jwks" --data @- --content-type "application/json" --overwrite
+
+  render-manifests:
+    cmds:
+      - kubectl kustomize --enable-helm --load-restrictor LoadRestrictionsNone .
+  apply-manifests:
+    cmds:
+      - kubectl kustomize --enable-helm --load-restrictor LoadRestrictionsNone . | kubectl apply --server-side=true --filename -
+
+  clean:
+    cmds:
+      - k3d cluster delete --config k3d-config.yaml > /dev/null 2>&1 || true
+

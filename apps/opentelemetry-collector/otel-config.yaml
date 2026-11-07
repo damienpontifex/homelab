@@ -1,0 +1,53 @@
+###############################################################
+# Processors configuration
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor
+###############################################################
+processors:
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/resourcedetectionprocessor/README.md
+  resource_detection:
+    detectors: [env, system]
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/k8sattributesprocessor/README.md
+  k8s_attributes:
+    auth_type: serviceAccount
+    extract:
+      metadata:
+        - k8s.namespace.name
+        - k8s.deployment.name
+        - k8s.statefulset.name
+        - k8s.daemonset.name
+        - k8s.cronjob.name
+        - k8s.job.name
+        - k8s.node.name
+        - k8s.pod.name
+
+exporters:
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/debugexporter/README.md
+  debug:
+    verbosity: detailed
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlp_http/prometheus:
+    endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/otlp
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlp_http/loki:
+    endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlp_http/otel_tui:
+    endpoint: http://otel-tui.monitoring.svc.cluster.local:4318
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusremotewritereceiver/README.md
+  prometheus_remote_write:
+    endpoint: http://prometheus-server.monitoring.svc.cluster.local/api/v1/write
+    resource_to_telemetry_conversion:
+      enabled: true
+
+extensions:
+  health_check:
+    endpoint: ${env:MY_POD_IP}:13133
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/zpagesextension/README.md
+  zpages:
+
+service:
+  extensions: [health_check, zpages]

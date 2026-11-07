@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-collector/values.schema.json
+mode: daemonset
+
+extraVolumes:
+  - name: otel-collector-config
+    configMap:
+      name: otel-collector-agent-config
+  - name: varlogpods
+    hostPath:
+      path: /va/log/pods
+  - name: varlibdockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
+
+extraVolumeMounts:
+  - name: otel-collector-config
+    mountPath: /conf
+    readOnly: true
+  - name: varlogpods
+    mountPath: /var/log/pods
+    readOnly: true
+  - name: varlibdockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+
+service:
+  enabled: true
+  trafficDistribution: PreferSameNode

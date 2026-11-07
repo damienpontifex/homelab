@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../namespaces.yaml
+  - ../../apps/prometheus-crds
+  - ../../apps/opentelemetry-collector
+  - ../../apps/loki
+  - ../../apps/prometheus
+  - ../../apps/grafana
+  - ../../apps/rustfs

@@ -9,5 +9,5 @@ spec:
       protocol: TCP
       port: 5580
       targetPort: 5580
-      appProtocol: kubernetes.io/wss
+      appProtocol: kubernetes.io/ws
 

@@ -1,0 +1,740 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1beta1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "dffezr5xr0aqdcc"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": true,
+        "title": "Source (GitHub)",
+        "tooltip": "View source file in repository",
+        "type": "link",
+        "url": "https://github.com/damienpontifex/homelab/blob/main/apps/monitoring/grafana/dashboardskubernetes-overview.json"
+      },
+      {
+        "asDropdown": true,
+        "icon": "external link",
+        "includeVars": true,
+        "keepTime": true,
+        "tags": [
+          "kubernetes"
+        ],
+        "targetBlank": false,
+        "title": "Kubernetes",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
+      }
+    ],
+    "liveNow": true,
+    "panels": [
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "count(group by (node) (kube_pod_info))",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Nodes",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 2,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "count(group by (namespace) (kube_namespace_status_phase))",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Namespaces",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 4,
+          "y": 0
+        },
+        "id": 3,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "count(\n    max by (cluster, namespace, workload, workload_type, asserts_env, asserts_site) (\n      # replicaset\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\"$namespace\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset) (last_over_time((kube_replicaset_owner{namespace=~\"$namespace\", replicaset=~\".+\", owner_kind=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"replicaset\", \"(.+)\"\n          )\n          , \"workload_type\", \"replicaset\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_replicaset)\n      max by (cluster, namespace, replicaset, asserts_env, asserts_site) (last_over_time((kube_replicaset_spec_replicas{namespace=~\"$namespace\", replicaset=~\".+\"})[$__range:]))\n      * on (cluster, namespace, replicaset) group_left (workload, workload_type)\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, replicaset, owner_name) (last_over_time((kube_replicaset_owner{namespace=~\"$namespace\", replicaset=~\".+\", owner_is_controller=\"true\", owner_kind=\"Deployment\", owner_name!=\"\"})[$__range:]))\n              , \"workload\", \"$1\", \"owner_name\", \"(.+)\"\n          )\n          , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # deployment (kube_deployment)\n      label_replace(\n        label_replace(\n            max by (cluster, namespace, deployment, asserts_env, asserts_site) (last_over_time((kube_deployment_spec_replicas{namespace=~\"$namespace\", deployment=~\".+\"})[$__range:]))\n            , \"workload\", \"$1\", \"deployment\", \"(.+)\"\n        )\n        , \"workload_type\", \"deployment\", \"\", \"\"\n      )\n\n      OR\n\n      # daemonset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, daemonset, asserts_env, asserts_site) (last_over_time((kube_daemonset_status_desired_number_scheduled{namespace=~\"$namespace\", daemonset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"daemonset\", \"(.+)\"\n          )\n      , \"workload_type\", \"daemonset\", \"\", \"\"\n      )\n\n      OR\n\n      # statefulset\n      label_replace(\n          label_replace(\n              max by (cluster, namespace, statefulset, asserts_env, asserts_site) (last_over_time((kube_statefulset_replicas{namespace=~\"$namespace\", statefulset=~\".+\"})[$__range:]))\n              , \"workload\", \"$1\", \"statefulset\", \"(.+)\"\n          )\n      , \"workload_type\", \"statefulset\", \"\", \"\"\n      )\n\n      OR\n\n      # everything else\n      last_over_time((namespace_workload_pod:kube_pod_owner:relabel{\n        namespace=~\".+\",\n        workload=~\".+\",\n        workload_type!=\"replicaset\",\n        workload_type!=\"deployment\",\n        workload_type!=\"daemonset\",\n        workload_type!=\"statefulset\"\n      })[$__range:])\n    )\n    )",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Workloads",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 6,
+          "y": 0
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "count(group by (cluster, namespace, pod) (kube_pod_info{namespace=~\"$namespace\", pod!=\"\"}))",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Pods",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 2,
+          "x": 8,
+          "y": 0
+        },
+        "id": 5,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "count(group by (cluster, namespace, pod, container) (kube_pod_container_info{namespace=~\"$namespace\", pod!=\"\", container!=\"POD\", container!=\"\"}))",
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Containers",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed"
+              }
+            },
+            "mappings": [],
+            "max": 0,
+            "min": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 0.6
+                },
+                {
+                  "color": "red",
+                  "value": 0.9
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 7,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "  sum(\n    label_join(\n          max by (instance) (node_memory_Active_file_bytes)\n        + on (instance) group_left ()\n          max by (instance) (node_memory_AnonPages_bytes)\n      or\n        max by (instance) (node_memory_working_set_bytes),\n      \"node\",\n      \",\",\n      \"instance\"\n    )\n  )",
+            "legendFormat": "Memory",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cluster Memory Usage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "dashed"
+              }
+            },
+            "mappings": [],
+            "max": 0,
+            "min": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 0.6
+                },
+                {
+                  "color": "red",
+                  "value": 0.9
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 4
+        },
+        "id": 6,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "expr": "  sum(\n    label_join(\n          sum by (instance) (\n            max by (instance, cpu, core) (1 - rate(node_cpu_seconds_total{mode=~\"idle\"}[$__rate_interval]) \u003e= 0)\n          )\n        or\n          sum by (instance) (rate(node_cpu_usage_seconds_total[$__rate_interval]) \u003e= 0)\n      or\n        sum by (instance) (\n          label_join(\n            label_join(k8s_node_cpu_usage, \"cluster\", \",\", \"k8s_cluster_name\"),\n            \"instance\",\n            \",\",\n            \"k8s_node_name\"\n          )\n        ),\n      \"node\",\n      \",\",\n      \"instance\"\n    )\n  )\n/ on (cluster)\n  sum by (cluster) (\n      sum by (cluster) (max by (node, resource) (kube_node_status_capacity{resource=~\"cpu\"}))\n    or\n      sum by (cluster) (\n        label_join(\n          label_join(system_cpu_logical_count, \"cluster\", \",\", \"k8s_cluster_name\"),\n          \"node\",\n          \",\",\n          \"k8s_node_name\"\n        )\n      )\n  )",
+            "legendFormat": "CPU",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cluster CPU Usage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "filterable": true,
+              "footer": {
+                "reducers": []
+              },
+              "inspect": true
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        },
+        "id": 8,
+        "options": {
+          "cellHeight": "sm",
+          "frameIndex": 0,
+          "showHeader": true
+        },
+        "pluginVersion": "12.4.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "exemplar": false,
+            "expr": "last_over_time((max by (asserts_env, asserts_site, cluster, container_runtime_version, internal_ip, kernel_version, kubelet_version, node, os_image, pod_cidr, provider_id, system_uuid) (kube_node_info{node=~\".+\"}))[$__range:])",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "__auto",
+            "range": false,
+            "refId": "info"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "editorMode": "code",
+            "exemplar": false,
+            "expr": "avg_over_time((sum by (cluster, node) (label_join(sum by (cluster, instance) (max by (cluster, instance, cpu, core) (1 - rate(node_cpu_seconds_total{instance=~\".+\", mode=~\"idle\"}[$__rate_interval]) \u003e= 0)) or sum by (cluster, instance) (rate(node_cpu_usage_seconds_total{instance=~\".+\"}[$__rate_interval]) \u003e= 0) or sum by (cluster, instance) (label_join(label_join(k8s_node_cpu_usage, \"cluster\", \",\", \"k8s_cluster_name\"), \"instance\", \",\", \"k8s_node_name\")), \"node\", \",\", \"instance\")))[$__range:])",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "__auto",
+            "range": false,
+            "refId": "cpu_usage_avg"
+          }
+        ],
+        "title": "Nodes",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "node",
+              "mode": "outer"
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "node",
+                  "container_runtime_version",
+                  "internal_ip",
+                  "kernel_version",
+                  "kubelet_version",
+                  "os_image",
+                  "pod_cidr"
+                ]
+              }
+            }
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "preload": false,
+    "schemaVersion": 42,
+    "tags": [
+      "kubernetes"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": ".+",
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "definition": "label_values(kube_namespace_status_phase{job=\"monitoring/kube-state-metrics\"},namespace)",
+          "includeAll": true,
+          "name": "namespace",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values(kube_namespace_status_phase{job=\"monitoring/kube-state-metrics\"},namespace)",
+            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          },
+          "refresh": 2,
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Kubernetes Overview",
+    "weekStart": ""
+  }
+}

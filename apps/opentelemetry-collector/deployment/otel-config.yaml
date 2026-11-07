@@ -21,6 +21,12 @@ receivers:
         mode: watch
         group: autoscaling.k8s.io
 
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sclusterreceiver/README.md
+  # metrics produced -> https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sclusterreceiver/documentation.md
+  k8s_cluster:
+    node_conditions_to_report: [Ready, MemoryPressure]
+    allocatable_types_to_report: [cpu, memory]
+
 processors:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/transformprocessor/README.md
   transform/k8s_objects:
@@ -85,16 +91,16 @@ service:
       receivers: [prometheus]
       processors: [memory_limiter, resource_detection]
       exporters: [otlp_http/prometheus, otlp_http/otel_tui]
-    logs:
-      receivers: [k8s_events]
-      processors: [memory_limiter, resource_detection, transform/k8s_events]
-      exporters: [otlp_http/loki, otlp_http/otel_tui]
-    logs/k8s_objects:
-      receivers: [k8s_objects]
-      processors: [memory_limiter, resource_detection, transform/k8s_objects, transform/k8s_vpa_objects]
-      exporters: [otlp_http/loki, signal_to_metrics, otlp_http/otel_tui]
+    # logs:
+    #   receivers: [k8s_events]
+    #   processors: [memory_limiter, resource_detection, transform/k8s_events]
+    #   exporters: [otlp_http/loki, otlp_http/otel_tui]
+    # logs/k8s_objects:
+    #   receivers: [k8s_objects]
+    #   processors: [memory_limiter, resource_detection, transform/k8s_objects, transform/k8s_vpa_objects]
+    #   exporters: [otlp_http/loki, signal_to_metrics, otlp_http/otel_tui]
 
-    metrics/vpa:
-      receivers: [signal_to_metrics]
-      processors: [memory_limiter]
-      exporters: [debug, otlp_http/otel_tui]
+    # metrics/vpa:
+    #   receivers: [signal_to_metrics]
+    #   processors: [memory_limiter]
+    #   exporters: [debug, otlp_http/otel_tui]

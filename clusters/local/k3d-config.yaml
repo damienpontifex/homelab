@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rancher/k3d/main/pkg/config/config.versions.schema.json
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: homelab
+servers: 1
+agents: 1
+kubeAPI:
+  hostPort: "6443"
+
+ports:
+  - port: 8081:80 # same as `--port '8080:80@loadbalancer'`
+    nodeFilters:
+      - loadbalancer
+
+registries:
+  create:
+    name: registry
+    # Caches images in local docker
+    image: ligfx/k3d-registry-dockerd:latest
+    proxy:
+      remoteURL: "*"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  config: |
+    mirrors:
+      "*":
+        endpoint:
+          - http://registry:5000
+
+options:
+  k3d:
+    wait: true
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+  k3s:
+    extraArgs:
+      - arg: --kube-apiserver-arg=service-account-issuer=https://pontifexhomelaboidc.blob.core.windows.net/oidc
+        nodeFilters:
+          - "server:*"
+      - arg: --kube-apiserver-arg=service-account-jwks-uri=https://pontifexhomelaboidc.blob.core.windows.net/oidc/openid/v1/jwks
+        nodeFilters:
+          - "server:*"
+          # - arg: --kube-apiserver-arg=oidc-issuer-url=https://sts.windows.net/ff2b9041-8733-4fbd-a4e6-23f30567c4a4/
+          # - arg: --kube-apiserver-arg=oidc-client-id=71b2438a-ea2b-4e75-abae-1ef1b1659677
+          # - arg: --kube-apiserver-arg=oidc-username-claim=email
+          # - arg: --kube-apiserver-arg=oidc-groups-claim=groups
+          # - arg: "--kube-apiserver-arg=oidc-groups-prefix=azure:"
+      # Using k3d-registry-dockerd
+      - arg: "--disable-default-registry-endpoint"
+        nodeFilters:
+          - "all:*"
+    nodeLabels:
+      - label: pontifex.dev/cluster=homelab
+        nodeFilters: ['all:*']
+      - label: topology.kubernetes.io/region=home
+        nodeFilters: ['all:*']
+      - label: topology.kubernetes.io/zone=home-a
+        nodeFilters: ['all:*']

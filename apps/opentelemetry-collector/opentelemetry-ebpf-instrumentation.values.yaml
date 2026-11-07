@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-telemetry/opentelemetry-helm-charts/refs/heads/main/charts/opentelemetry-ebpf-instrumentation/values.schema.json
+config:
+  create: true
+  data:
+    cluster_name: homelab

@@ -4,9 +4,5 @@ mode: deployment
 extraVolumes:
   - name: otel-collector-config
     configMap:
-      name: otel-collector-singleton-config
-
-# RBAC is managed via Kustomize ClusterRole aggregation in deployment/rbac/
-clusterRole:
-  create: false
+      name: otel-collector-config
 

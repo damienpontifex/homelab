@@ -12,16 +12,24 @@ ipam:
   mode: "kubernetes"
   operator:
     clusterPoolIPv4PodCIDRList: ["10.42.0.0/16"]
+    clusterPoolIPv6PodCIDRList: ["fd42::/64"]
 # Use Node IPs as IPAM
 nodeIPAM:
   enabled: true
 
 # Enable eBPF-based kube-proxy replacement for better performance
 kubeProxyReplacement: true
-autoDirectNodeRoutes: false
+autoDirectNodeRoutes: true
 
 bpf:
   masquerade: true
+ipMasqAgent:
+  enabled: true
+  config:
+    nonMasqueradeCIDRs:
+      - 10.42.0.0/16 # Pod IPv4 CIDR
+      - fd42::/64 # Pod IPv6 CIDR
+      - 10.0.0.0/8 # Home network
 
 l2announcements:
   enabled: true
